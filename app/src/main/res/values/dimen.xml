@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="full_width_height">430dp</dimen>
+    <dimen name="logo_margin_start">50dp</dimen>
+
+    <dimen name="genre_corner">12dp</dimen>
+    <dimen name="half_padding">8dp</dimen>
+    <dimen name="full_padding">16dp</dimen>
+
+    <dimen name="lb_details_v2_card_height">430dp</dimen>
+
+</resources>
