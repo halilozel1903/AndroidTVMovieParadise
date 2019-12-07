@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<fr.bmartel.youtubetv.YoutubeTvView
+    android:id="@+id/player"
+    app:yt_videoQuality="hd1080"
+    app:yt_autoHide="auto"
+    app:yt_autoplay="true"
+    app:yt_debug="false"
+    app:yt_showControls="none"
+    app:yt_showNowPlayingCard="true"
+    app:yt_showRelatedVideos="false"
+    app:yt_showVideoInfo="false"
+    app:yt_videoAnnotation="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+
+
+
+

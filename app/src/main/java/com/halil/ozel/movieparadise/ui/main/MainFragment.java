@@ -36,13 +36,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-/**
- * Created by <a href="mailto:marcus@gabilheri.com">Marcus Gabilheri</a>
- *
- * @author Marcus Gabilheri
- * @version 1.0
- * @since 10/8/16.
- */
+
 public class MainFragment extends BrowseFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
 
     @Inject

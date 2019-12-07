@@ -22,8 +22,8 @@ public class HttpClientModule {
 
     private static final long DISK_CACHE_SIZE = 50 * 1024 * 1024; // 50MB
 
-    public static final String BACKDROP_URL = "http://image.tmdb.org/t/p/w1280/";
-    public static final String POSTER_URL = "http://image.tmdb.org/t/p/w500/";
+    public static final String BACKDROP_URL = "https://image.tmdb.org/t/p/w1280/";
+    public static final String POSTER_URL = "https://image.tmdb.org/t/p/w500/";
     public static final String API_URL = "https://api.themoviedb.org/3/";
     public static final String NOW_PLAYING = "movie/now_playing";
     public static final String LATEST = "movie/latest";
@@ -34,7 +34,6 @@ public class HttpClientModule {
     public static final String PERSON = "person/";
     public static final String DISCOVER = "discover/movie/";
     public static final String SEARCH_MOVIE = "search/movie/";
-    public static final String TV = "tv/";
 
     @Provides
     @AppScope

@@ -39,6 +39,7 @@ import com.halil.ozel.movieparadise.data.models.Video;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.ui.base.PaletteUtils;
 import com.halil.ozel.movieparadise.ui.movies.MoviePresenter;
+import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
 
 
 import java.util.List;
@@ -126,7 +127,10 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
             switch (actionId) {
                 case 0:
                     if (mYoutubeID != null) {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/watch?v=" + mYoutubeID)));
+
+                        Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                        intent.putExtra("videoId",mYoutubeID);
+                        startActivity(intent);
                     }
                     break;
             }
@@ -223,6 +227,7 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
 
     private void handleVideoResponse(VideoResponse response) {
         mYoutubeID = getTrailer(response.getResults(), "official");
+
         if (mYoutubeID == null) {
             mYoutubeID = getTrailer(response.getResults(), "trailer");
         }
