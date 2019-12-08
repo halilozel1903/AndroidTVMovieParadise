@@ -1,4 +1,4 @@
-package com.halil.ozel.movieparadise.ui.details;
+package com.halil.ozel.movieparadise.ui.detail;
 
 import android.support.v17.leanback.widget.Presenter;
 import android.view.LayoutInflater;
@@ -13,15 +13,15 @@ public class MovieDetailsDescriptionPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_details, parent, false);
-        return new MovieDetailsViewHolder(v);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_details, parent, false);
+        return new MovieDetailsViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-        MovieDetails movie = (MovieDetails) item;
+        MovieDetails movieDetails = (MovieDetails) item;
         MovieDetailsViewHolder holder = (MovieDetailsViewHolder) viewHolder;
-        holder.bind(movie);
+        holder.bind(movieDetails);
     }
 
     @Override

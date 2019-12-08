@@ -26,7 +26,6 @@ public class HttpClientModule {
     public static final String POSTER_URL = "https://image.tmdb.org/t/p/w500/";
     public static final String API_URL = "https://api.themoviedb.org/3/";
     public static final String NOW_PLAYING = "movie/now_playing";
-    public static final String LATEST = "movie/latest";
     public static final String POPULAR = "movie/popular";
     public static final String TOP_RATED = "movie/top_rated";
     public static final String UPCOMING = "movie/upcoming";

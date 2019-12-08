@@ -1,4 +1,4 @@
-package com.halil.ozel.movieparadise.ui.details;
+package com.halil.ozel.movieparadise.ui.detail;
 
 import android.content.Context;
 import android.support.v17.leanback.widget.ImageCardView;
@@ -16,35 +16,34 @@ import com.halil.ozel.movieparadise.data.models.CastMember;
 
 public class PersonPresenter extends Presenter {
 
-    Context mContext;
+    Context context;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
 
-        if (mContext == null) {
+        if (context == null) {
             // We do this to avoid creating a new ContextThemeWrapper for each one of the cards
             // If we look inside the ImageCardView they warn us about the same this.
-            // Example: Try using the constructor: ImageCardView(context, style)
-            // It is deprecated right? This is because that constructor creates a new ContextThemeWrapper every time a
+            // It is deprecated right? This is because that constructor creates a new ContextThemeWrapper every time
             // ImageCardView is allocated.
-            mContext = new ContextThemeWrapper(parent.getContext(), R.style.PersonCardTheme);
+            context = new ContextThemeWrapper(parent.getContext(), R.style.PersonCardTheme);
         }
 
-        return new ViewHolder(new ImageCardView(mContext));
+        return new ViewHolder(new ImageCardView(context));
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
-        ImageCardView view = (ImageCardView) viewHolder.view;
+        ImageCardView imageCardView = (ImageCardView) viewHolder.view;
         CastMember member = (CastMember) item;
 
-        Glide.with(view.getContext())
+        Glide.with(imageCardView.getContext())
                 .load(HttpClientModule.POSTER_URL + member.getProfilePath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(view.getMainImageView());
+                .into(imageCardView.getMainImageView());
 
-        view.setTitleText(member.getName());
-        view.setContentText(member.getCharacter());
+        imageCardView.setTitleText(member.getName());
+        imageCardView.setContentText(member.getCharacter());
     }
 
     @Override

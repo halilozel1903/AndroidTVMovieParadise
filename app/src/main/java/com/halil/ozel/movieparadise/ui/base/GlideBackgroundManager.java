@@ -19,7 +19,6 @@ import java.util.TimerTask;
 
 public class GlideBackgroundManager {
 
-    private static final String TAG = GlideBackgroundManager.class.getSimpleName();
     private static final int BACKGROUND_UPDATE_DELAY = 200;
 
     private WeakReference<Activity> mActivityWeakReference;
@@ -30,10 +29,8 @@ public class GlideBackgroundManager {
 
     public static GlideBackgroundManager instance;
 
-    /**
-     * @param activity
-     *      The activity to which this WindowManager is attached
-     */
+
+    //  The activity to which this WindowManager is attached
     public GlideBackgroundManager(Activity activity) {
         mActivityWeakReference = new WeakReference<>(activity);
         mBackgroundManager = BackgroundManager.getInstance(activity);
@@ -72,26 +69,25 @@ public class GlideBackgroundManager {
         }
     }
 
-    /**
-     * Cancels an ongoing background change
-     */
+
+    // Cancels an ongoing background change
     public void cancelBackgroundChange() {
         mBackgroundURI = null;
         cancelTimer();
     }
 
-    /**
-     * Stops the timer
-     */
+
+
+    // Stops the timer
     private void cancelTimer() {
         if (mBackgroundTimer != null) {
             mBackgroundTimer.cancel();
         }
     }
 
-    /**
-     * Starts the background change timer
-     */
+
+
+    // Starts the background change timer
     private void startBackgroundTimer() {
         cancelTimer();
         mBackgroundTimer = new Timer();
@@ -99,9 +95,8 @@ public class GlideBackgroundManager {
         mBackgroundTimer.schedule(new UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY);
     }
 
-    /**
-     * Updates the background with the last known URI
-     */
+
+    // Updates the background with the last known URI
     public void updateBackground() {
         if (mActivityWeakReference.get() != null) {
             Glide.with(mActivityWeakReference.get())

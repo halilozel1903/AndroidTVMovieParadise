@@ -5,7 +5,7 @@ import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.dagger.AppScope;
 import com.halil.ozel.movieparadise.dagger.modules.ApplicationModule;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
-import com.halil.ozel.movieparadise.ui.details.MovieDetailsFragment;
+import com.halil.ozel.movieparadise.ui.detail.MovieDetailsFragment;
 import com.halil.ozel.movieparadise.ui.main.MainFragment;
 
 import javax.inject.Singleton;

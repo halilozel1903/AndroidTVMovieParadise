@@ -12,7 +12,7 @@ import timber.log.Timber;
 public class App extends Application {
 
     private static App instance;
-    private ApplicationComponent mApplicationComponent;
+    private ApplicationComponent applicationComponent;
 
     @Override
     public void onCreate() {
@@ -24,12 +24,12 @@ public class App extends Application {
         }
 
         // Creates Dagger Graph
-        mApplicationComponent = DaggerApplicationComponent.builder()
+        applicationComponent = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
                 .httpClientModule(new HttpClientModule())
                 .build();
 
-        mApplicationComponent.inject(this);
+        applicationComponent.inject(this);
     }
 
     public static App instance() {
@@ -37,7 +37,7 @@ public class App extends Application {
     }
 
     public ApplicationComponent appComponent() {
-        return mApplicationComponent;
+        return applicationComponent;
     }
 
 }

@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.details.MovieDetailsActivity" />
+        <activity android:name=".ui.detail.MovieDetailsActivity" />
     </application>
     <uses-feature
         android:name="android.software.leanback"

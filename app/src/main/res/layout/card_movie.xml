@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:background="#000000"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="180dp"
@@ -14,16 +15,10 @@
         android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/vote_average_tv"
-        android:padding="8dp"
-        android:gravity="end|center_vertical"
-        android:drawablePadding="8dp"
+        android:id="@+id/title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:textSize="16sp"
-        android:drawableEnd="@drawable/ic_star"
-        tools:text="4.0"/>
+        tools:text="Black Mirror"/>
 
 </LinearLayout>

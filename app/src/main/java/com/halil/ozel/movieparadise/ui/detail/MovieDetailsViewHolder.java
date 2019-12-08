@@ -1,4 +1,4 @@
-package com.halil.ozel.movieparadise.ui.details;
+package com.halil.ozel.movieparadise.ui.detail;
 
 import android.graphics.drawable.GradientDrawable;
 import android.support.v17.leanback.widget.Presenter;
@@ -78,23 +78,23 @@ public class MovieDetailsViewHolder extends Presenter.ViewHolder {
                 int primaryDarkColor = movie.getPaletteColors().getStatusBarColor();
 
                 // Adds each genre to the genre layout
-                for (Genre g : movie.getGenres()) {
-                    TextView tv = new TextView(itemView.getContext());
-                    tv.setText(g.getName());
+                for (Genre genre : movie.getGenres()) {
+                    TextView textView = new TextView(itemView.getContext());
+                    textView.setText(genre.getName());
                     GradientDrawable shape = new GradientDrawable();
                     shape.setShape(GradientDrawable.RECTANGLE);
                     shape.setCornerRadius(corner);
                     shape.setColor(primaryDarkColor);
-                    tv.setPadding(_8dp, _8dp, _8dp, _8dp);
-                    tv.setBackground(shape);
+                    textView.setPadding(_8dp, _8dp, _8dp, _8dp);
+                    textView.setBackground(shape);
 
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.WRAP_CONTENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT));
                     params.setMargins(0, 0, _16dp, 0);
-                    tv.setLayoutParams(params);
+                    textView.setLayoutParams(params);
 
-                    mGenresLayout.addView(tv);
+                    mGenresLayout.addView(textView);
                 }
 
             }

@@ -25,8 +25,8 @@ import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
-import com.halil.ozel.movieparadise.ui.details.MovieDetailsActivity;
-import com.halil.ozel.movieparadise.ui.details.MovieDetailsFragment;
+import com.halil.ozel.movieparadise.ui.detail.MovieDetailsActivity;
+import com.halil.ozel.movieparadise.ui.detail.MovieDetailsFragment;
 import com.halil.ozel.movieparadise.ui.movies.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movies.MoviePresenter;
 
@@ -40,16 +40,23 @@ import timber.log.Timber;
 public class MainFragment extends BrowseFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
 
     @Inject
-    TheMovieDbAPI mDbAPI;
+    TheMovieDbAPI theMovieDbAPI;
 
-    private GlideBackgroundManager mBackgroundManager;
+    private GlideBackgroundManager glideBackgroundManager;
 
+    // rows - 0 - now playing
     private static final int NOW_PLAYING = 0;
+
+    // rows - 1 - top rated
     private static final int TOP_RATED = 1;
+
+    // rows - 2 - popular
     private static final int POPULAR = 2;
+
+    // rows - 3 - upcoming
     private static final int UPCOMING = 3;
 
-    SparseArray<MovieRow> mRows;
+    SparseArray<MovieRow> movieRowSparseArray;
 
     public static MainFragment newInstance() {
         Bundle args = new Bundle();
@@ -65,15 +72,13 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
 
         // The background manager allows us to manage a dimmed background that does not interfere with the rows
         // It is the preferred way to set the background of a fragment
-        mBackgroundManager = new GlideBackgroundManager(getActivity());
+        glideBackgroundManager = new GlideBackgroundManager(getActivity());
 
         // The brand color will be used as the background for the Headers fragment
         setBrandColor(ContextCompat.getColor(getActivity(), R.color.primary_transparent));
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);
 
-        // The TMDB logo on the right corner. It is necessary to show based on their API usage policy
-        setBadgeDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.powered_by));
 
         createDataRows();
         createRows();
@@ -84,31 +89,41 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         fetchUpcomingMovies();
     }
 
-    /**
-     * Creates the data rows objects
-     */
+
+
+    // Creates the data rows objects
     private void createDataRows() {
-        mRows = new SparseArray<>();
+
+        movieRowSparseArray = new SparseArray<>();
+
         MoviePresenter moviePresenter = new MoviePresenter();
-        mRows.put(NOW_PLAYING, new MovieRow()
+
+        //row - 0 - create objects
+        movieRowSparseArray.put(NOW_PLAYING, new MovieRow()
                 .setId(NOW_PLAYING)
                 .setAdapter(new ArrayObjectAdapter(moviePresenter))
                 .setTitle("Now Playing")
                 .setPage(1)
         );
-        mRows.put(TOP_RATED, new MovieRow()
+
+        //row - 1 - create objects
+        movieRowSparseArray.put(TOP_RATED, new MovieRow()
                 .setId(TOP_RATED)
                 .setAdapter(new ArrayObjectAdapter(moviePresenter))
                 .setTitle("Top Rated")
                 .setPage(1)
         );
-        mRows.put(POPULAR, new MovieRow()
+
+        //row - 2 - create objects
+        movieRowSparseArray.put(POPULAR, new MovieRow()
                 .setId(POPULAR)
                 .setAdapter(new ArrayObjectAdapter(moviePresenter))
                 .setTitle("Popular")
                 .setPage(1)
         );
-        mRows.put(UPCOMING, new MovieRow()
+
+        //row - 3 - create objects
+        movieRowSparseArray.put(UPCOMING, new MovieRow()
                 .setId(UPCOMING)
                 .setAdapter(new ArrayObjectAdapter(moviePresenter))
                 .setTitle("Upcoming")
@@ -116,15 +131,13 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         );
     }
 
-    /**
-     * Creates the rows and sets up the adapter of the fragment
-     */
+    // Creates the rows and sets up the adapter of the fragment
     private void createRows() {
         // Creates the RowsAdapter for the Fragment
         // The ListRowPresenter tells to render ListRow objects
         ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-        for (int i = 0; i < mRows.size(); i++) {
-            MovieRow row = mRows.get(i);
+        for (int i = 0; i < movieRowSparseArray.size(); i++) {
+            MovieRow row = movieRowSparseArray.get(i);
             // Adds a new ListRow to the adapter. Each row will contain a collection of Movies
             // That will be rendered using the MoviePresenter
             HeaderItem headerItem = new HeaderItem(row.getId(), row.getTitle());
@@ -138,11 +151,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         setOnItemViewClickedListener(this);
     }
 
-    /**
-     * Fetches now playing movies from TMDB
-     */
+    
     private void fetchNowPlayingMovies() {
-        mDbAPI.getNowPlayingMovies(Config.API_KEY_URL, mRows.get(NOW_PLAYING).getPage())
+        theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, movieRowSparseArray.get(NOW_PLAYING).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -153,11 +164,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 });
     }
 
-    /**
-     * Fetches the popular movies from TMDB
-     */
+
     private void fetchPopularMovies() {
-        mDbAPI.getPopularMovies(Config.API_KEY_URL, mRows.get(POPULAR).getPage())
+        theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, movieRowSparseArray.get(POPULAR).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -168,11 +177,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 });
     }
 
-    /**
-     * Fetches the upcoming movies from TMDB
-     */
+
     private void fetchUpcomingMovies() {
-        mDbAPI.getUpcomingMovies(Config.API_KEY_URL, mRows.get(UPCOMING).getPage())
+        theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, movieRowSparseArray.get(UPCOMING).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -183,11 +190,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 });
     }
 
-    /**
-     * Fetches the top rated movies from TMDB
-     */
+
     private void fetchTopRatedMovies() {
-        mDbAPI.getTopRatedMovies(Config.API_KEY_URL, mRows.get(TOP_RATED).getPage())
+        theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, movieRowSparseArray.get(TOP_RATED).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -198,19 +203,13 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 });
     }
 
-    /**
-     * Binds a movie response to it's adapter
-     * @param response
-     *      The response from TMDB API
-     * @param id
-     *      The ID / position of the row
-     */
+
     private void bindMovieResponse(MovieResponse response, int id) {
-        MovieRow row = mRows.get(id);
-        row.setPage(row.getPage() + 1);
-        for(Movie m : response.getResults()) {
-            if (m.getPosterPath() != null) { // Avoid showing movie without posters
-                row.getAdapter().add(m);
+        MovieRow movieRow = movieRowSparseArray.get(id);
+        movieRow.setPage(movieRow.getPage() + 1);
+        for(Movie movie : response.getResults()) {
+            if (movie.getPosterPath() != null) { // Avoid showing movie without posters
+                movieRow.getAdapter().add(movie);
             }
         }
     }
@@ -222,10 +221,10 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
             Movie movie = (Movie) item;
             // Check if the movie has a backdrop
             if(movie.getBackdropPath() != null) {
-                mBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
+                glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
             } else {
                 // If there is no backdrop for the movie we just use a default one
-                mBackgroundManager.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.material_bg));
+                glideBackgroundManager.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.material_bg));
             }
         }
     }
@@ -234,9 +233,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
     public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
-            Intent i = new Intent(getActivity(), MovieDetailsActivity.class);
+            Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
             // Pass the movie to the activity
-            i.putExtra(Movie.class.getSimpleName(), movie);
+            intent.putExtra(Movie.class.getSimpleName(), movie);
 
             if (itemViewHolder.view instanceof MovieCardView) {
                 // Pass the ImageView to allow a nice transition
@@ -244,9 +243,9 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                         getActivity(),
                         ((MovieCardView) itemViewHolder.view).getPosterIV(),
                         MovieDetailsFragment.TRANSITION_NAME).toBundle();
-                getActivity().startActivity(i, bundle);
+                getActivity().startActivity(intent, bundle);
             } else {
-                startActivity(i);
+                startActivity(intent);
             }
         }
     }

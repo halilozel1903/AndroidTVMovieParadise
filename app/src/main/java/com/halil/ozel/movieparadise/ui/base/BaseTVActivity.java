@@ -10,7 +10,7 @@ import com.halil.ozel.movieparadise.R;
 
 
 
-public class BaseTvActivity extends Activity {
+public class BaseTVActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

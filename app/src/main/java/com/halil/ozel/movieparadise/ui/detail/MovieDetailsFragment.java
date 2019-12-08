@@ -1,8 +1,7 @@
-package com.halil.ozel.movieparadise.ui.details;
+package com.halil.ozel.movieparadise.ui.detail;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v17.leanback.app.DetailsFragment;
 import android.support.v17.leanback.widget.Action;

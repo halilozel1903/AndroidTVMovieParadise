@@ -12,25 +12,19 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.ui.base.BindableCardView;
 
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by <a href="mailto:marcus@gabilheri.com">Marcus Gabilheri</a>
- *
- * @author Marcus Gabilheri
- * @version 1.0
- * @since 10/8/16.
- */
+
+
 public class MovieCardView extends BindableCardView<Movie> {
 
     @BindView(R.id.poster_iv)
     ImageView mPosterIV;
 
-    @BindView(R.id.vote_average_tv)
-    TextView mVoteAverageTV;
+    @BindView(R.id.title_tv)
+    TextView title_tv;
 
     public MovieCardView(Context context) {
         super(context);
@@ -38,12 +32,12 @@ public class MovieCardView extends BindableCardView<Movie> {
     }
 
     @Override
-    protected void bind(Movie data) {
+    protected void bind(Movie movie) {
         Glide.with(getContext())
-                .load(HttpClientModule.POSTER_URL + data.getPosterPath())
+                .load(HttpClientModule.POSTER_URL + movie.getPosterPath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mPosterIV);
-        mVoteAverageTV.setText(String.format(Locale.getDefault(), "%.2f", data.getVoteAverage()));
+        title_tv.setText(movie.getTitle());
     }
 
     public ImageView getPosterIV() {
