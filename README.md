@@ -6,6 +6,8 @@ Application is using The Movie Database.
 
 The application uses the basic components of Android TV application.
 
+Build apps that let users experience your app's immersive content on the big screen. Users can discover your content recommendations on the home screen, and the leanback library provides APIs to help you build a great use experience for a remote control.
+
 <br>
 
 ## Home Screen
@@ -60,3 +62,9 @@ Title, Poster, Labels, Director, Overview
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
 
+<br>
+
+## Sources ℹ️
+
+[Android TV](https://developer.android.com/tv/) <br>
+[Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)
