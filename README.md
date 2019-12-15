@@ -12,13 +12,17 @@ Build apps that let users experience your app's immersive content on the big scr
 
 ## Home Screen
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/nowplaying.png)
+![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
 
 This is the area where the data taken from API is displayed.
 
+The search icon is on the main page.
+
+By clicking on the icon, you can search.
+
 The App has 4 category.
 
-Now Playing, Top Rated, Popular and Upcoming 
+Now Playing, Top Rated, Popular and Upcoming
 
 <br>
 
@@ -64,7 +68,26 @@ Title, Poster, Labels, Director, Overview
 
 <br>
 
+## Search Screen
+
+You can search for the desired movie on the search screen.
+
+![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search.png)
+
+Search results are displayed instantly.
+
+![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result.png)
+
+We searched the Spiderman movie.
+
+You can view the detail of the movie.
+
+![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
+
+<br>
+
 ## Sources ℹ️
 
 [Android TV](https://developer.android.com/tv/) <br>
-[Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)
+[Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
+[Android TV app tutorial](hhttp://corochann.com/android-tv-application-hands-on-tutorial)
