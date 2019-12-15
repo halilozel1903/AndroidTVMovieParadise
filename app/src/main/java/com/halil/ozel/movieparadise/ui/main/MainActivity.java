@@ -12,4 +12,5 @@ public class MainActivity extends BaseTVActivity {
         super.onCreate(savedInstanceState);
         addFragment(MainFragment.newInstance());
     }
+
 }

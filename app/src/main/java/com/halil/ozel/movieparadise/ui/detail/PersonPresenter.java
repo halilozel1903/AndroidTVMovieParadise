@@ -22,10 +22,6 @@ public class PersonPresenter extends Presenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
 
         if (context == null) {
-            // We do this to avoid creating a new ContextThemeWrapper for each one of the cards
-            // If we look inside the ImageCardView they warn us about the same this.
-            // It is deprecated right? This is because that constructor creates a new ContextThemeWrapper every time
-            // ImageCardView is allocated.
             context = new ContextThemeWrapper(parent.getContext(), R.style.PersonCardTheme);
         }
 
@@ -35,15 +31,15 @@ public class PersonPresenter extends Presenter {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         ImageCardView imageCardView = (ImageCardView) viewHolder.view;
-        CastMember member = (CastMember) item;
+        CastMember castMember = (CastMember) item;
 
         Glide.with(imageCardView.getContext())
-                .load(HttpClientModule.POSTER_URL + member.getProfilePath())
+                .load(HttpClientModule.POSTER_URL + castMember.getProfilePath())
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imageCardView.getMainImageView());
 
-        imageCardView.setTitleText(member.getName());
-        imageCardView.setContentText(member.getCharacter());
+        imageCardView.setTitleText(castMember.getName());
+        imageCardView.setContentText(castMember.getCharacter());
     }
 
     @Override

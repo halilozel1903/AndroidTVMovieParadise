@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
-
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
@@ -25,10 +24,11 @@ import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
-import com.halil.ozel.movieparadise.ui.detail.MovieDetailsActivity;
+import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.MovieDetailsFragment;
 import com.halil.ozel.movieparadise.ui.movies.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movies.MoviePresenter;
+import com.halil.ozel.movieparadise.ui.search.SearchActivity;
 
 import javax.inject.Inject;
 
@@ -42,7 +42,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
     @Inject
     TheMovieDbAPI theMovieDbAPI;
 
-    private GlideBackgroundManager glideBackgroundManager;
+     GlideBackgroundManager glideBackgroundManager;
 
     // rows - 0 - now playing
     private static final int NOW_PLAYING = 0;
@@ -70,14 +70,24 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         super.onActivityCreated(savedInstanceState);
         App.instance().appComponent().inject(this);
 
-        // The background manager allows us to manage a dimmed background that does not interfere with the rows
-        // It is the preferred way to set the background of a fragment
         glideBackgroundManager = new GlideBackgroundManager(getActivity());
 
-        // The brand color will be used as the background for the Headers fragment
         setBrandColor(ContextCompat.getColor(getActivity(), R.color.primary_transparent));
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);
+
+
+        // search icon background color
+        setSearchAffordanceColor(getResources().getColor(R.color.black));
+
+
+        // search icon clicked
+        setOnSearchClickedListener(v -> {
+
+            Intent intent = new Intent(getActivity(), SearchActivity.class);
+            startActivity(intent);
+
+        });
 
 
         createDataRows();
@@ -185,9 +195,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, UPCOMING);
                     startEntranceTransition();
-                }, e -> {
-                    Timber.e(e, "Error fetching upcoming movies: %s", e.getMessage());
-                });
+                }, e -> Timber.e(e, "Error fetching upcoming movies: %s", e.getMessage()));
     }
 
 
@@ -198,9 +206,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, TOP_RATED);
                     startEntranceTransition();
-                }, e -> {
-                    Timber.e(e, "Error fetching top rated movies: %s", e.getMessage());
-                });
+                }, e -> Timber.e(e, "Error fetching top rated movies: %s", e.getMessage()));
     }
 
 
@@ -233,7 +239,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
     public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
-            Intent intent = new Intent(getActivity(), MovieDetailsActivity.class);
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
             // Pass the movie to the activity
             intent.putExtra(Movie.class.getSimpleName(), movie);
 

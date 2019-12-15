@@ -7,6 +7,7 @@ import com.halil.ozel.movieparadise.dagger.modules.ApplicationModule;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.ui.detail.MovieDetailsFragment;
 import com.halil.ozel.movieparadise.ui.main.MainFragment;
+import com.halil.ozel.movieparadise.ui.search.SearchFragment;
 
 import javax.inject.Singleton;
 
@@ -23,4 +24,5 @@ public interface ApplicationComponent {
     void inject(App app);
     void inject(MainFragment mainFragment);
     void inject(MovieDetailsFragment movieDetailsFragment);
+    void inject(SearchFragment searchFragment);
 }

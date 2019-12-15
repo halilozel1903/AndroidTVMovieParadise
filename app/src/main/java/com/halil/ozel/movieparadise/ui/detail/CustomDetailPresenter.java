@@ -8,11 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class CustomMovieDetailsPresenter extends FullWidthDetailsOverviewRowPresenter {
+public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter {
 
     private int previousState = STATE_FULL;
 
-    public CustomMovieDetailsPresenter(Presenter detailsPresenter, DetailsOverviewLogoPresenter logoPresenter) {
+    public CustomDetailPresenter(Presenter detailsPresenter, DetailsOverviewLogoPresenter logoPresenter) {
         super(detailsPresenter, logoPresenter);
         setInitialState(FullWidthDetailsOverviewRowPresenter.STATE_FULL);
     }

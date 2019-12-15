@@ -10,7 +10,7 @@ import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 
 
-public class MovieDetailsActivity extends BaseTVActivity {
+public class DetailActivity extends BaseTVActivity {
 
     GlideBackgroundManager glideBackgroundManager;
 

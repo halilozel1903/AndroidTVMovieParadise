@@ -1,14 +1,11 @@
 package com.halil.ozel.movieparadise.data.models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.squareup.moshi.Json;
 
 import java.util.List;
 
 
-public class MovieDetails implements Parcelable {
+public class MovieDetails  {
 
     private boolean adult;
     private String overview;
@@ -241,69 +238,5 @@ public class MovieDetails implements Parcelable {
         return this;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
-        dest.writeString(this.overview);
-        dest.writeByte(this.video ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.genres);
-        dest.writeString(this.title);
-        dest.writeFloat(this.popularity);
-        dest.writeInt(this.budget);
-        dest.writeInt(this.runtime);
-        dest.writeInt(this.revenue);
-        dest.writeString(this.tagline);
-        dest.writeString(this.status);
-        dest.writeString(this.releaseDate);
-        dest.writeString(this.posterPath);
-        dest.writeString(this.originalTitle);
-        dest.writeString(this.originalLanguage);
-        dest.writeString(this.backdropPath);
-        dest.writeInt(this.voteCount);
-        dest.writeFloat(this.voteAverage);
-        dest.writeString(this.imdbId);
-        dest.writeParcelable(this.paletteColors, flags);
-        dest.writeString(this.director);
-    }
-
-    protected MovieDetails(Parcel in) {
-        this.adult = in.readByte() != 0;
-        this.overview = in.readString();
-        this.video = in.readByte() != 0;
-        this.genres = in.createTypedArrayList(Genre.CREATOR);
-        this.title = in.readString();
-        this.popularity = in.readFloat();
-        this.budget = in.readInt();
-        this.runtime = in.readInt();
-        this.revenue = in.readInt();
-        this.tagline = in.readString();
-        this.status = in.readString();
-        this.releaseDate = in.readString();
-        this.posterPath = in.readString();
-        this.originalTitle = in.readString();
-        this.originalLanguage = in.readString();
-        this.backdropPath = in.readString();
-        this.voteCount = in.readInt();
-        this.voteAverage = in.readFloat();
-        this.imdbId = in.readString();
-        this.paletteColors = in.readParcelable(PaletteColors.class.getClassLoader());
-        this.director = in.readString();
-    }
-
-    public static final Creator<MovieDetails> CREATOR = new Creator<MovieDetails>() {
-        @Override
-        public MovieDetails createFromParcel(Parcel source) {
-            return new MovieDetails(source);
-        }
-
-        @Override
-        public MovieDetails[] newArray(int size) {
-            return new MovieDetails[size];
-        }
-    };
 }

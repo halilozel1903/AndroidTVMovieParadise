@@ -6,4 +6,5 @@
     <color name="primary_dark_transparent">#BF05151b</color>
     <color name="accent_color">#01d277</color>
     <color name="yellow">#ffeb3b</color>
+    <color name="black">#000000</color>
 </resources>

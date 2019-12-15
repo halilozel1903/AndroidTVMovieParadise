@@ -30,8 +30,6 @@ public class HttpClientModule {
     public static final String TOP_RATED = "movie/top_rated";
     public static final String UPCOMING = "movie/upcoming";
     public static final String MOVIE = "movie/";
-    public static final String PERSON = "person/";
-    public static final String DISCOVER = "discover/movie/";
     public static final String SEARCH_MOVIE = "search/movie/";
 
     @Provides

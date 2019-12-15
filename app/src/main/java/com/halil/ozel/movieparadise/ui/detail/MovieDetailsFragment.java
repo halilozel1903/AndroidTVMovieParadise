@@ -49,37 +49,23 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-/**
- * Created by <a href="mailto:marcus@gabilheri.com">Marcus Gabilheri</a>
- *
- * @author Marcus Gabilheri
- * @version `1.0
- * @since 10/11/16.
- */
 public class MovieDetailsFragment extends DetailsFragment implements Palette.PaletteAsyncListener {
 
     public static String TRANSITION_NAME = "poster_transition";
 
-    // Injects the API using Dagger
     @Inject
-    TheMovieDbAPI mDbAPI;
+    TheMovieDbAPI theMovieDbAPI;
 
-    private Movie movie;
-    private MovieDetails movieDetails;
-    private ArrayObjectAdapter mAdapter;
-    private CustomMovieDetailsPresenter mFullWidthMovieDetailsPresenter;
-    private DetailsOverviewRow mDetailsOverviewRow;
-    private ArrayObjectAdapter mCastAdapter = new ArrayObjectAdapter(new PersonPresenter());
-    private ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    Movie movie;
+    MovieDetails movieDetails;
+    ArrayObjectAdapter mAdapter;
+    CustomDetailPresenter customDetailPresenter;
+    DetailsOverviewRow detailsOverviewRow;
+    ArrayObjectAdapter mCastAdapter = new ArrayObjectAdapter(new PersonPresenter());
+    ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
     String mYoutubeID;
 
-    /**
-     * Creates a new instance of a MovieDetailsFragment
-     * @param movie
-     *      The movie to be used by this fragment
-     * @return
-     *      A newly created instance of MovieDetailsFragment
-     */
+
     public static MovieDetailsFragment newInstance(Movie movie) {
         Bundle args = new Bundle();
         args.putParcelable(Movie.class.getSimpleName(), movie);
@@ -91,13 +77,11 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Injects this into the main component. Necessary for Dagger 2
         App.instance().appComponent().inject(this);
         if (getArguments() == null || !getArguments().containsKey(Movie.class.getSimpleName())) {
-            throw new RuntimeException("An movie is necessary for MovieDetailsFragment");
+            throw new RuntimeException("A movie is necessary for MovieDetailFragment");
         }
 
-        // Retrieves the movie from the arguments
         movie = getArguments().getParcelable(Movie.class.getSimpleName());
         setUpAdapter();
         setUpDetailsOverviewRow();
@@ -105,23 +89,19 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
         setupRecommendationsRow();
     }
 
-    /**
-     * Sets up the adapter for this Fragment
-     */
+
     private void setUpAdapter() {
-        // Create the FullWidthPresenter
-        mFullWidthMovieDetailsPresenter = new CustomMovieDetailsPresenter(new MovieDetailsDescriptionPresenter(),
+
+        customDetailPresenter = new CustomDetailPresenter(new DetailDescriptionPresenter(),
                 new DetailsOverviewLogoPresenter());
 
-        // Handle the transition, the Helper is mainly used because the ActivityTransition is being passed from
-        // The Activity into the Fragment
-        FullWidthDetailsOverviewSharedElementHelper helper = new FullWidthDetailsOverviewSharedElementHelper();
-        helper.setSharedElementEnterTransition(getActivity(), TRANSITION_NAME); // the transition name is important
-        mFullWidthMovieDetailsPresenter.setListener(helper); // Attach the listener
-        // Define if this element is participating in the transition or not
-        mFullWidthMovieDetailsPresenter.setParticipatingEntranceTransition(false);
 
-        mFullWidthMovieDetailsPresenter.setOnActionClickedListener(action -> {
+        FullWidthDetailsOverviewSharedElementHelper helper = new FullWidthDetailsOverviewSharedElementHelper();
+        helper.setSharedElementEnterTransition(getActivity(), TRANSITION_NAME);
+        customDetailPresenter.setListener(helper);
+        customDetailPresenter.setParticipatingEntranceTransition(false);
+
+        customDetailPresenter.setOnActionClickedListener(action -> {
             int actionId = (int) action.getId();
             switch (actionId) {
                 case 0:
@@ -136,45 +116,35 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
         });
 
 
-        // Class presenter selector allows the Adapter to render Rows and the details
-        // It can be used in any of the Adapters by the Leanback library
+
         ClassPresenterSelector classPresenterSelector = new ClassPresenterSelector();
-        classPresenterSelector.addClassPresenter(DetailsOverviewRow.class, mFullWidthMovieDetailsPresenter);
+        classPresenterSelector.addClassPresenter(DetailsOverviewRow.class, customDetailPresenter);
         classPresenterSelector.addClassPresenter(ListRow.class, new ListRowPresenter());
         mAdapter = new ArrayObjectAdapter(classPresenterSelector);
         setAdapter(mAdapter);
     }
 
-    /**
-     * Sets up the details overview rows
-     */
+
     private void setUpDetailsOverviewRow() {
-        mDetailsOverviewRow = new DetailsOverviewRow(new MovieDetails());
-        // Add the DetailsOverviewRow to the adapter like we did on the MainFragment
-        mAdapter.add(mDetailsOverviewRow);
+        detailsOverviewRow = new DetailsOverviewRow(new MovieDetails());
+        mAdapter.add(detailsOverviewRow);
         loadImage(HttpClientModule.POSTER_URL + movie.getPosterPath());
         fetchMovieDetails();
     }
 
-    /**
-     * Fetches the movie details for a specific Movie.
-     */
+
     private void fetchMovieDetails() {
-        mDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
+        theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindMovieDetails, e -> {
-                    Timber.e(e, "Error fetching data: %s", e.getMessage());
-                });
+                .subscribe(this::bindMovieDetails, e -> Timber.e(e, "Error fetching data: %s", e.getMessage()));
     }
 
     private void fetchCastMembers() {
-        mDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
+        theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindCastMembers, e -> {
-                    Timber.e(e, "Error fetching data: %s", e.getMessage());
-                });
+                .subscribe(this::bindCastMembers, e -> Timber.e(e, "Error fetching data: %s", e.getMessage()));
     }
 
     private void setUpCastMembers() {
@@ -196,8 +166,7 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
 
     private void bindMovieDetails(MovieDetails movieDetails) {
         this.movieDetails = movieDetails;
-        // Bind the details to the row
-        mDetailsOverviewRow.setItem(this.movieDetails);
+        detailsOverviewRow.setItem(this.movieDetails);
         fetchVideos();
     }
 
@@ -207,21 +176,17 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     }
 
     private void fetchRecommendations() {
-        mDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
+        theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindRecommendations, e -> {
-                    Timber.e(e, "Error fetching recommendations: %s", e.getMessage());
-                });
+                .subscribe(this::bindRecommendations, e -> Timber.e(e, "Error fetching recommendations: %s", e.getMessage()));
     }
 
     private void fetchVideos() {
-        mDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
+        theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleVideoResponse, e -> {
-                    Timber.e(e, "Error fetching video response: %s", e.getMessage());
-                });
+                .subscribe(this::handleVideoResponse, e -> Timber.e(e, "Error fetching video response: %s", e.getMessage()));
     }
 
     private void handleVideoResponse(VideoResponse response) {
@@ -232,30 +197,22 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
         }
 
         if (mYoutubeID == null) {
-            mYoutubeID = getTrailer(response.getResults(), "teaser");
-        }
-
-        if (mYoutubeID == null) {
             mYoutubeID = getTrailerByType(response.getResults(), "trailer");
-        }
-
-        if (mYoutubeID == null) {
-            mYoutubeID = getTrailerByType(response.getResults(), "featurette");
         }
 
         if (mYoutubeID != null) {
             SparseArrayObjectAdapter adapter = new SparseArrayObjectAdapter();
             adapter.set(0, new Action(0, "WATCH TRAILER", null, null));
-            mDetailsOverviewRow.setActionsAdapter(adapter);
+            detailsOverviewRow.setActionsAdapter(adapter);
             notifyDetailsChanged();
         }
     }
 
     private String getTrailer(List<Video> videos, String keyword) {
         String id = null;
-        for(Video v : videos) {
-            if (v.getName().toLowerCase().contains(keyword)) {
-                id = v.getKey();
+        for(Video video : videos) {
+            if (video.getName().toLowerCase().contains(keyword)) {
+                id = video.getKey();
             }
         }
         return id;
@@ -279,15 +236,11 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     private SimpleTarget<GlideDrawable> mGlideDrawableSimpleTarget = new SimpleTarget<GlideDrawable>() {
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-            mDetailsOverviewRow.setImageDrawable(resource);
+            detailsOverviewRow.setImageDrawable(resource);
         }
     };
 
-    /**
-     * Loads the poster image into the DetailsOverviewRow
-     * @param url
-     *      The poster URL
-     */
+
     private void loadImage(String url) {
         Glide.with(getActivity())
                 .load(url)
@@ -307,11 +260,7 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
                 .into(mGlideDrawableSimpleTarget);
     }
 
-    /**
-     * Generates a palette from a Bitmap
-     * @param bmp
-     *      The bitmap from which we want to generate the palette
-     */
+
     private void changePalette(Bitmap bmp) {
         Palette.from(bmp).generate(this);
     }
@@ -319,8 +268,8 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     @Override
     public void onGenerated(Palette palette) {
         PaletteColors colors = PaletteUtils.getPaletteColors(palette);
-        mFullWidthMovieDetailsPresenter.setActionsBackgroundColor(colors.getStatusBarColor());
-        mFullWidthMovieDetailsPresenter.setBackgroundColor(colors.getToolbarBackgroundColor());
+        customDetailPresenter.setActionsBackgroundColor(colors.getStatusBarColor());
+        customDetailPresenter.setBackgroundColor(colors.getToolbarBackgroundColor());
         if (movieDetails != null) {
             this.movieDetails.setPaletteColors(colors);
         }
@@ -328,8 +277,8 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     }
 
     private void notifyDetailsChanged() {
-        mDetailsOverviewRow.setItem(this.movieDetails);
-        int index = mAdapter.indexOf(mDetailsOverviewRow);
+        detailsOverviewRow.setItem(this.movieDetails);
+        int index = mAdapter.indexOf(detailsOverviewRow);
         mAdapter.notifyArrayItemRangeChanged(index, 1);
     }
 }

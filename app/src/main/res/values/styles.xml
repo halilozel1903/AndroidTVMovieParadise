@@ -9,6 +9,7 @@
     </style>
 
     <style name="PersonCardViewStyle" parent="Widget.Leanback.ImageCardView.ImageStyle">
+        <item name="android:background">#000000</item>
         <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">250dp</item>
     </style>

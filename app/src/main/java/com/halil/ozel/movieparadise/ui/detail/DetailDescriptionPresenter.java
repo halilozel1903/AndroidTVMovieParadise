@@ -9,18 +9,18 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 
 
-public class MovieDetailsDescriptionPresenter extends Presenter {
+public class DetailDescriptionPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_details, parent, false);
-        return new MovieDetailsViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_detail, parent, false);
+        return new MovieDetailViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         MovieDetails movieDetails = (MovieDetails) item;
-        MovieDetailsViewHolder holder = (MovieDetailsViewHolder) viewHolder;
+        MovieDetailViewHolder holder = (MovieDetailViewHolder) viewHolder;
         holder.bind(movieDetails);
     }
 

@@ -4,7 +4,6 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
-import com.halil.ozel.movieparadise.data.models.Person;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 
 import retrofit2.http.GET;
@@ -38,12 +37,6 @@ public interface TheMovieDbAPI {
             @Query("page") int page
     );
 
-    @GET(HttpClientModule.MOVIE + "{id}/similar")
-    Observable<MovieResponse> getSimilarMovies(
-            @Path("id") String movieId,
-            @Query("api_key") String apiKey
-    );
-
     @GET(HttpClientModule.MOVIE + "{id}/recommendations")
     Observable<MovieResponse> getRecommendations(
             @Path("id") String movieId,
@@ -68,20 +61,9 @@ public interface TheMovieDbAPI {
             @Query("api_key") String apiKey
     );
 
-    @GET(HttpClientModule.PERSON + "{id}")
-    Observable<Person> getPerson(
-            @Path("id") int personId,
-            @Query("api_key") String apiKey
-    );
-
-    @GET(HttpClientModule.DISCOVER)
-    Observable<MovieResponse> getMoviesForCastID(
-            @Query("with_cast") int castId,
-            @Query("api_key") String apiKey
-    );
 
     @GET(HttpClientModule.SEARCH_MOVIE)
-    Observable<MovieResponse> searchMovies(
+    Observable<MovieResponse> getSearchMovies(
             @Query("query") String query,
             @Query("api_key") String apiKey
     );
