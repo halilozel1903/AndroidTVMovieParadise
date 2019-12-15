@@ -1,5 +1,7 @@
 # Movie Paradise
 
+![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/androidtv.png)
+
 Movie Paradise is an Android TV app.
 
 Application is using The Movie Database.
@@ -90,4 +92,4 @@ You can view the detail of the movie.
 
 [Android TV](https://developer.android.com/tv/) <br>
 [Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
-[Android TV app tutorial](hhttp://corochann.com/android-tv-application-hands-on-tutorial)
+[Android TV app tutorial](http://corochann.com/android-tv-application-hands-on-tutorial)
