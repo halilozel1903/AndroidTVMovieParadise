@@ -18,12 +18,10 @@ public class DetailActivity extends BaseTVActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Retrieve the movie through the intent
         Movie movie = getIntent().getExtras().getParcelable(Movie.class.getSimpleName());
         DetailFragment detailsFragment = DetailFragment.newInstance(movie);
-        addFragment(detailsFragment); // Method from BaseTVActivity
+        addFragment(detailsFragment);
 
-        // Sets the background of the activity to the backdrop of the movie
         glideBackgroundManager = new GlideBackgroundManager(this);
         if (movie != null && movie.getBackdropPath() != null) {
             glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
