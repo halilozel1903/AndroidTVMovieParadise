@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MovieDetailViewHolder extends Presenter.ViewHolder {
+public class DetailViewHolder extends Presenter.ViewHolder {
 
     @BindView(R.id.movie_title)
     TextView movieTitleTV;
@@ -44,7 +44,7 @@ public class MovieDetailViewHolder extends Presenter.ViewHolder {
 
     private View itemView;
 
-    public MovieDetailViewHolder(View view) {
+    public DetailViewHolder(View view) {
         super(view);
         ButterKnife.bind(this, view);
         itemView = view;

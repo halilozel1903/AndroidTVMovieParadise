@@ -1,4 +1,4 @@
-package com.halil.ozel.movieparadise.ui.movies;
+package com.halil.ozel.movieparadise.ui.movie;
 
 import android.content.Context;
 import android.widget.ImageView;

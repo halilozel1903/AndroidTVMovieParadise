@@ -37,7 +37,7 @@ import com.halil.ozel.movieparadise.data.models.PaletteColors;
 import com.halil.ozel.movieparadise.data.models.Video;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.ui.base.PaletteUtils;
-import com.halil.ozel.movieparadise.ui.movies.MoviePresenter;
+import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
 
 
@@ -49,7 +49,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class MovieDetailsFragment extends DetailsFragment implements Palette.PaletteAsyncListener {
+public class DetailFragment extends DetailsFragment implements Palette.PaletteAsyncListener {
 
     public static String TRANSITION_NAME = "poster_transition";
 
@@ -66,10 +66,10 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
     String mYoutubeID;
 
 
-    public static MovieDetailsFragment newInstance(Movie movie) {
+    public static DetailFragment newInstance(Movie movie) {
         Bundle args = new Bundle();
         args.putParcelable(Movie.class.getSimpleName(), movie);
-        MovieDetailsFragment fragment = new MovieDetailsFragment();
+        DetailFragment fragment = new DetailFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,7 +79,7 @@ public class MovieDetailsFragment extends DetailsFragment implements Palette.Pal
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
         if (getArguments() == null || !getArguments().containsKey(Movie.class.getSimpleName())) {
-            throw new RuntimeException("A movie is necessary for MovieDetailFragment");
+            throw new RuntimeException("A movie is necessary for DetailFragment");
         }
 
         movie = getArguments().getParcelable(Movie.class.getSimpleName());

@@ -20,7 +20,7 @@ public class DetailActivity extends BaseTVActivity {
 
         // Retrieve the movie through the intent
         Movie movie = getIntent().getExtras().getParcelable(Movie.class.getSimpleName());
-        MovieDetailsFragment detailsFragment = MovieDetailsFragment.newInstance(movie);
+        DetailFragment detailsFragment = DetailFragment.newInstance(movie);
         addFragment(detailsFragment); // Method from BaseTVActivity
 
         // Sets the background of the activity to the backdrop of the movie

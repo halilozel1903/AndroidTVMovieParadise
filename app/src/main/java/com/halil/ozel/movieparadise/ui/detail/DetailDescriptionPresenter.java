@@ -14,13 +14,13 @@ public class DetailDescriptionPresenter extends Presenter {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_detail, parent, false);
-        return new MovieDetailViewHolder(view);
+        return new DetailViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         MovieDetails movieDetails = (MovieDetails) item;
-        MovieDetailViewHolder holder = (MovieDetailViewHolder) viewHolder;
+        DetailViewHolder holder = (DetailViewHolder) viewHolder;
         holder.bind(movieDetails);
     }
 

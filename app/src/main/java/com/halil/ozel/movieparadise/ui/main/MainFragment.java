@@ -25,9 +25,9 @@ import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
-import com.halil.ozel.movieparadise.ui.detail.MovieDetailsFragment;
-import com.halil.ozel.movieparadise.ui.movies.MovieCardView;
-import com.halil.ozel.movieparadise.ui.movies.MoviePresenter;
+import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
+import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
+import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.search.SearchActivity;
 
 import javax.inject.Inject;
@@ -248,7 +248,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
                         getActivity(),
                         ((MovieCardView) itemViewHolder.view).getPosterIV(),
-                        MovieDetailsFragment.TRANSITION_NAME).toBundle();
+                        DetailFragment.TRANSITION_NAME).toBundle();
                 getActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);
