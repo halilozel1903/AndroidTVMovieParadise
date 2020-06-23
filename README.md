@@ -1,6 +1,7 @@
 # Movie Paradise
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/androidtv.jpg)
+![Screenshot](https://github.com/halilozel1903/AndroidTVMovieParadise/blob/master/screenshots/androidtv.png)
+
 
 Movie Paradise is an Android TV app.
 
