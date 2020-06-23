@@ -10,6 +10,10 @@ The application uses the basic components of Android TV application.
 
 Build apps that let users experience your app's immersive content on the big screen. Users can discover your content recommendations on the home screen, and the leanback library provides APIs to help you build a great use experience for a remote control.
 
+I wrote a blog post about Android TV. You can access the article from the link below.
+
+https://medium.com/@halilozel1903/android-tv-uygulaması-geliştirmek-293ab43c274d
+
 <br>
 
 ## Home Screen
