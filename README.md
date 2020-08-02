@@ -3,9 +3,11 @@
 ![Screenshot](https://github.com/halilozel1903/AndroidTVMovieParadise/blob/master/screenshots/androidtv.png)
 
 
-Movie Paradise is an Android TV app.
+Movie Paradise is an Android TV app. This app is working Android TV & Android STB.
 
 Application is using The Movie Database.
+
+https://www.themoviedb.org/documentation/api
 
 The application uses the basic components of Android TV application.
 
@@ -13,7 +15,7 @@ Build apps that let users experience your app's immersive content on the big scr
 
 I wrote a blog post about Android TV. You can access the article from the link below.
 
-https://medium.com/@halilozel1903/android-tv-uygulaması-geliştirmek-293ab43c274d
+https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
 <br>
 
