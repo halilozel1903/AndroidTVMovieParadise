@@ -1,4 +1,4 @@
-# Movie Paradise
+# Movie Paradise 🎥
 
 ![Screenshot](https://github.com/halilozel1903/AndroidTVMovieParadise/blob/master/screenshots/androidtv.png)
 
@@ -7,7 +7,7 @@ Android TV is a version of the Android operating system. It is developed by Goog
 
 Movie Paradise is an Android TV app. This app is working Android TV & Android STB.
 
-Application is using The Movie Database.
+Application is using The Movie Database. 👇🏻
 
 https://www.themoviedb.org/documentation/api
 
@@ -21,7 +21,7 @@ https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
 <br>
 
-## Home Screen
+## Home Screen 📺
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
 
@@ -33,7 +33,7 @@ By clicking on the icon, you can search.
 
 The App has 4 category.
 
-Now Playing, Top Rated, Popular and Upcoming
+**Now Playing**, **Top Rated**, **Popular** and **Upcoming**
 
 <br>
 
@@ -97,19 +97,20 @@ You can view the detail of the movie.
 
 <br>
 
-## Sources ℹ️
+## Sources 📚
 
-[Android TV](https://developer.android.com/tv/) <br>
-[Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
-[Android TV app tutorial](http://corochann.com/android-tv-application-hands-on-tutorial)
+- [How to develop Android TV App?](https://halilozel1903.medium.com/how-to-develop-android-tv-app-5e251f3aa56b)
+- [Android TV](https://developer.android.com/tv/) <br>
+- [Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
+
 
 <br>
 
-## License
+## License ℹ️
 ```
 MIT License
 
-Copyright (c) 2020 Halil Özel
+Copyright (c) 2021 Halil Özel
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
