@@ -37,27 +37,27 @@ The App has 4 category.
 
 <br>
 
-### Now Playing
+### Now Playing ▶️
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/nowplaying_focus.png)
 
-### Top Rated
+### Top Rated 🔝
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/toprated.png)
 
-### Popular
+### Popular 🥳
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/popular.png)
 
 
-### Upcoming
+### Upcoming 🔜
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/upcoming.png)
 
 <br> <br>
 
 
-## Detail Screen
+## Detail Screen ✅
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
 
@@ -68,18 +68,18 @@ Title, Poster, Labels, Director, Overview
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
 
 
-### Detail Screen Recommend
+### Detail Screen Recommend 🎁
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_recommend.png)
 
 
-### Detail Screen Cast
+### Detail Screen Cast 🙎🏼‍♀️ 👨
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
 
 <br>
 
-## Search Screen
+## Search Screen 🔎
 
 You can search for the desired movie on the search screen.
 
