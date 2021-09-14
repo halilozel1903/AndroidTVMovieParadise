@@ -1,11 +1,11 @@
-# Movie Paradise 🎥
+# Movie 🎬 Paradise 🎥
 
 ![Screenshot](https://github.com/halilozel1903/AndroidTVMovieParadise/blob/master/screenshots/androidtv.png)
 
 Android TV is a version of the Android operating system. It is developed by Google for soundbars, set-top boxes, digital media players, and TVs with native applications. It is a replacement for Google TV. The Android TV platform was first launched in June 2014.This platform has also been adopted as smart TV middleware by a company such as Sharp and Sony.
 
 
-Movie Paradise is an Android TV app. This app is working Android TV & Android STB.
+Movie Paradise is an Android TV 📺 app. This app is working Android TV & Android STB. 📹 🎞
 
 Application is using The Movie Database. 👇🏻
 
@@ -110,7 +110,7 @@ You can view the detail of the movie.
 ```
 MIT License
 
-Copyright (c) 2021 Halil Özel
+Copyright (c) 2021 Halil OZEL
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
