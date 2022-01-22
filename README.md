@@ -19,8 +19,6 @@ I wrote a blog post about Android TV. You can access the article from the link b
 
 https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
-<br>
-
 ## Home Screen 📺
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
@@ -34,8 +32,6 @@ By clicking on the icon, you can search.
 The App has 4 category.
 
 **Now Playing**, **Top Rated**, **Popular** and **Upcoming**
-
-<br>
 
 ### Now Playing ▶️
 
@@ -54,16 +50,12 @@ The App has 4 category.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/upcoming.png)
 
-<br> <br>
-
 
 ## Detail Screen ✅
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
 
-The detail page shows many content.
-
-Title, Poster, Labels, Director, Overview
+The detail page shows many content. Title, Poster, Labels, Director, Overview
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
 
@@ -77,7 +69,6 @@ Title, Poster, Labels, Director, Overview
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
 
-<br>
 
 ## Search Screen 🔎
 
@@ -89,13 +80,10 @@ Search results are displayed instantly.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result.png)
 
-We searched the Spiderman movie.
-
-You can view the detail of the movie.
+We searched the Spiderman movie. You can view the detail of the movie.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
 
-<br>
 
 ## Sources 📚
 
@@ -110,7 +98,7 @@ You can view the detail of the movie.
 ```
 MIT License
 
-Copyright (c) 2021 Halil OZEL
+Copyright (c) 2022 Halil OZEL
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
