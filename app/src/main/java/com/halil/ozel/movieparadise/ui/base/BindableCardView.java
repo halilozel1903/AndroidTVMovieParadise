@@ -1,8 +1,8 @@
 package com.halil.ozel.movieparadise.ui.base;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v17.leanback.widget.BaseCardView;
+import androidx.annotation.LayoutRes;
+import androidx.leanback.widget.BaseCardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 

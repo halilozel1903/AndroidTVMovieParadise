@@ -1,6 +1,6 @@
 package com.halil.ozel.movieparadise.ui.main;
 
-import android.support.v17.leanback.widget.ArrayObjectAdapter;
+import androidx.leanback.widget.ArrayObjectAdapter;
 
 
 

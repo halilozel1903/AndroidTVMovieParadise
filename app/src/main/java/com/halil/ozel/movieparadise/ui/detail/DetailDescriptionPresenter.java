@@ -1,6 +1,6 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
-import android.support.v17.leanback.widget.Presenter;
+import androidx.leanback.widget.Presenter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

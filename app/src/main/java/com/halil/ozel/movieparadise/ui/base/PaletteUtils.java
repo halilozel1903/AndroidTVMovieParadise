@@ -1,7 +1,8 @@
 package com.halil.ozel.movieparadise.ui.base;
 
 import android.graphics.Color;
-import android.support.v7.graphics.Palette;
+
+import androidx.palette.graphics.Palette;
 
 import com.halil.ozel.movieparadise.data.models.PaletteColors;
 

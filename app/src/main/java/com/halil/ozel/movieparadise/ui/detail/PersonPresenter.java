@@ -1,9 +1,10 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
 import android.content.Context;
-import android.support.v17.leanback.widget.ImageCardView;
-import android.support.v17.leanback.widget.Presenter;
-import android.support.v7.view.ContextThemeWrapper;
+
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.leanback.widget.ImageCardView;
+import androidx.leanback.widget.Presenter;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;

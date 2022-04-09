@@ -1,7 +1,7 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
 import android.graphics.drawable.GradientDrawable;
-import android.support.v17.leanback.widget.Presenter;
+import androidx.leanback.widget.Presenter;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;

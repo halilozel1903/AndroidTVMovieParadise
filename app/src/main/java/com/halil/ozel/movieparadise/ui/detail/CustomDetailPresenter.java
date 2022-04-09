@@ -1,11 +1,13 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
-import android.support.v17.leanback.widget.DetailsOverviewLogoPresenter;
-import android.support.v17.leanback.widget.FullWidthDetailsOverviewRowPresenter;
-import android.support.v17.leanback.widget.Presenter;
-import android.support.v17.leanback.widget.RowPresenter;
+import androidx.leanback.widget.DetailsOverviewLogoPresenter;
+import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter;
+import androidx.leanback.widget.Presenter;
+import androidx.leanback.widget.RowPresenter;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.halil.ozel.movieparadise.R;
 
 
 public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter {
@@ -23,11 +25,11 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
 
         layoutParams.setMarginStart(view.getResources().getDimensionPixelSize(
-                android.support.v17.leanback.R.dimen.lb_details_v2_logo_margin_start));
-        layoutParams.topMargin = view.getResources().getDimensionPixelSize(android.support.v17.leanback.R.dimen.lb_details_v2_blank_height) - layoutParams.height / 2;
+                R.dimen.lb_details_v2_logo_margin_start));
+        layoutParams.topMargin = view.getResources().getDimensionPixelSize(R.dimen.lb_details_v2_blank_height) - layoutParams.height / 2;
 
-        float offset = view.getResources().getDimensionPixelSize(android.support.v17.leanback.R.dimen.lb_details_v2_actions_height) + view
-                .getResources().getDimensionPixelSize(android.support.v17.leanback.R.dimen.lb_details_v2_description_margin_top) + (layoutParams.height / 2);
+        float offset = view.getResources().getDimensionPixelSize(R.dimen.lb_details_v2_actions_height) + view
+                .getResources().getDimensionPixelSize(R.dimen.lb_details_v2_description_margin_top) + (layoutParams.height / 2);
 
         switch (viewHolder.getState()) {
             case STATE_FULL:
@@ -54,7 +56,7 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
         FullWidthDetailsOverviewRowPresenter.ViewHolder viewHolder = (FullWidthDetailsOverviewRowPresenter.ViewHolder) holder;
         View view = viewHolder.getOverviewView();
         view.setBackgroundColor(getBackgroundColor());
-        view.findViewById(android.support.v17.leanback.R.id.details_overview_actions_background)
+        view.findViewById(R.id.details_overview_actions_background)
                 .setBackgroundColor(getActionsBackgroundColor());
     }
 }

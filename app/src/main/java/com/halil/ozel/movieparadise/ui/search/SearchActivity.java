@@ -2,7 +2,7 @@ package com.halil.ozel.movieparadise.ui.search;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v17.leanback.app.SearchFragment;
+import androidx.leanback.app.SearchFragment;
 
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
