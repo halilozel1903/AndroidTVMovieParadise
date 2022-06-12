@@ -80,7 +80,7 @@ Search results are displayed instantly.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result.png)
 
-We searched the Spiderman movie. You can view the detail of the movie.
+We searched the SpiderMan movie. You can view the detail of the movie.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
 
@@ -92,7 +92,11 @@ We searched the Spiderman movie. You can view the detail of the movie.
 - [Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
 
 
-<br>
+## Donation 💸
+
+If this project help 💁 you reduce time to develop, you can give me a cup of coffee. ☕
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/halilozel1903)
 
 ## License ℹ️
 ```
