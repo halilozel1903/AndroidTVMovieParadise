@@ -19,7 +19,7 @@ I wrote a blog post about Android TV. You can access the article from the link b
 
 https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
-## Home Screen 📺
+## Home 🏡 Screen 📺
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
 
@@ -33,25 +33,25 @@ The App has 4 category.
 
 **Now Playing**, **Top Rated**, **Popular** and **Upcoming**
 
-### Now Playing ▶️
+## Now Playing ▶️
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/nowplaying_focus.png)
 
-### Top Rated 🔝
+## Top ✍🏻 Rated 🔝
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/toprated.png)
 
-### Popular 🥳
+## Popular 🥳
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/popular.png)
 
 
-### Upcoming 🔜
+## Upcoming 🔜
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/upcoming.png)
 
 
-## Detail Screen ✅
+## Detail 📜 Screen ✅
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
 
@@ -60,12 +60,12 @@ The detail page shows many content. Title, Poster, Labels, Director, Overview
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
 
 
-### Detail Screen Recommend 🎁
+## Detail Screen Recommend 🎁
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_recommend.png)
 
 
-### Detail Screen Cast 🙎🏼‍♀️ 👨
+## Detail Screen Cast 🙎🏼‍♀️ 👨
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
 
@@ -84,13 +84,11 @@ We searched the SpiderMan movie. You can view the detail of the movie.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
 
-
 ## Sources 📚
 
 - [How to develop Android TV App?](https://halilozel1903.medium.com/how-to-develop-android-tv-app-5e251f3aa56b)
 - [Android TV](https://developer.android.com/tv/) <br>
 - [Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
-
 
 ## Donation 💸
 
