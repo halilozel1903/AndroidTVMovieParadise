@@ -5,7 +5,7 @@ import com.squareup.moshi.Json;
 import java.util.List;
 
 
-public class MovieDetails  {
+public class MovieDetails {
 
     private boolean adult;
     private String overview;

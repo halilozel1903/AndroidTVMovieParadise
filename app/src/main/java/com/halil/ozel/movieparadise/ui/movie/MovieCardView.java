@@ -17,7 +17,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-
 public class MovieCardView extends BindableCardView<Movie> {
 
     @BindView(R.id.poster_iv)

@@ -36,12 +36,7 @@ public class HttpClientModule {
     @AppScope
     public OkHttpClient provideOkHttpClient(Application app) {
         File cacheDir = new File(app.getCacheDir(), "http");
-        return new OkHttpClient.Builder()
-                .readTimeout(1, TimeUnit.MINUTES)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .cache(new okhttp3.Cache(cacheDir, DISK_CACHE_SIZE))
-                .build();
+        return new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).connectTimeout(1, TimeUnit.MINUTES).writeTimeout(1, TimeUnit.MINUTES).cache(new okhttp3.Cache(cacheDir, DISK_CACHE_SIZE)).build();
     }
 
     @Provides
@@ -49,15 +44,8 @@ public class HttpClientModule {
     public Retrofit provideFithubRestAdapter(MoshiConverterFactory moshiConverterFactory, OkHttpClient okHttpClient) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        okHttpClient = okHttpClient.newBuilder()
-                .addInterceptor(interceptor)
-                .build();
-        return new Retrofit.Builder()
-                .baseUrl(API_URL)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(moshiConverterFactory)
-                .build();
+        okHttpClient = okHttpClient.newBuilder().addInterceptor(interceptor).build();
+        return new Retrofit.Builder().baseUrl(API_URL).client(okHttpClient).addCallAdapterFactory(RxJavaCallAdapterFactory.create()).addConverterFactory(moshiConverterFactory).build();
     }
 
     @Provides

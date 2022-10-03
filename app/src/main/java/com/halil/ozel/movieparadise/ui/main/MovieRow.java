@@ -3,7 +3,6 @@ package com.halil.ozel.movieparadise.ui.main;
 import androidx.leanback.widget.ArrayObjectAdapter;
 
 
-
 public class MovieRow {
 
     private int page;

@@ -2,6 +2,7 @@ package com.halil.ozel.movieparadise.ui.search;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.DetailsOverviewRow;
 import androidx.leanback.widget.HeaderItem;
@@ -40,7 +41,6 @@ import timber.log.Timber;
 public class SearchFragment extends androidx.leanback.app.SearchFragment
         implements androidx.leanback.app.SearchFragment.SearchResultProvider, OnItemViewClickedListener {
 
-
     @Inject
     TheMovieDbAPI theMovieDbAPI;
 
@@ -74,20 +74,16 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
         setSearchResultProvider(this);
 
         setupSearchRow();
-
-
     }
 
 
     @Override
     public ObjectAdapter getResultsAdapter() {
-
         return mAdapter;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
-
         theMovieDbAPI.getSearchMovies(query, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -105,7 +101,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-
         theMovieDbAPI.getSearchMovies(query, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -130,7 +125,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
     private void setupSearchRow() {
         mAdapter.add(new ListRow(new HeaderItem(0, "" + ""), arrayObjectAdapter));
         setOnItemViewClickedListener(this);
-
     }
 
 
@@ -171,7 +165,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         setSearchQuery(data, true);
     }
 
@@ -194,7 +187,5 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
                 startActivity(intent);
             }
         }
-
     }
-
 }

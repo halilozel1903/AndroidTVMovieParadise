@@ -8,8 +8,6 @@ import android.os.Bundle;
 import com.halil.ozel.movieparadise.R;
 
 
-
-
 public class BaseTVActivity extends Activity {
 
     @Override
@@ -23,5 +21,4 @@ public class BaseTVActivity extends Activity {
         fragmentTransaction.replace(R.id.tv_frame_content, fragment);
         fragmentTransaction.commit();
     }
-
 }

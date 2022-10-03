@@ -2,6 +2,7 @@ package com.halil.ozel.movieparadise.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.leanback.app.BrowseFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.HeaderItem;
@@ -14,6 +15,7 @@ import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+
 import android.util.SparseArray;
 
 import com.halil.ozel.movieparadise.App;
@@ -42,7 +44,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
     @Inject
     TheMovieDbAPI theMovieDbAPI;
 
-     GlideBackgroundManager glideBackgroundManager;
+    GlideBackgroundManager glideBackgroundManager;
 
     // rows - 0 - now playing
     private static final int NOW_PLAYING = 0;
@@ -98,7 +100,6 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         fetchPopularMovies();
         fetchUpcomingMovies();
     }
-
 
 
     // Creates the data rows objects
@@ -161,7 +162,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         setOnItemViewClickedListener(this);
     }
 
-    
+
     private void fetchNowPlayingMovies() {
         theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, movieRowSparseArray.get(NOW_PLAYING).getPage())
                 .subscribeOn(Schedulers.io())
@@ -213,7 +214,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
     private void bindMovieResponse(MovieResponse response, int id) {
         MovieRow movieRow = movieRowSparseArray.get(id);
         movieRow.setPage(movieRow.getPage() + 1);
-        for(Movie movie : response.getResults()) {
+        for (Movie movie : response.getResults()) {
             if (movie.getPosterPath() != null) { // Avoid showing movie without posters
                 movieRow.getAdapter().add(movie);
             }
@@ -226,7 +227,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
             // Check if the movie has a backdrop
-            if(movie.getBackdropPath() != null) {
+            if (movie.getBackdropPath() != null) {
                 glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
             } else {
                 // If there is no backdrop for the movie we just use a default one

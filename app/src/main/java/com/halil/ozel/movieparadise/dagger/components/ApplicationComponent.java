@@ -22,7 +22,10 @@ import dagger.Component;
 public interface ApplicationComponent {
 
     void inject(App app);
+
     void inject(MainFragment mainFragment);
+
     void inject(DetailFragment movieDetailsFragment);
+
     void inject(SearchFragment searchFragment);
 }

@@ -1,7 +1,9 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
 import android.graphics.drawable.GradientDrawable;
+
 import androidx.leanback.widget.Presenter;
+
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -96,11 +98,7 @@ public class DetailViewHolder extends Presenter.ViewHolder {
 
                     mGenresLayout.addView(textView);
                 }
-
             }
-
-
         }
-
     }
 }

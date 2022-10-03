@@ -1,8 +1,10 @@
 package com.halil.ozel.movieparadise.ui.base;
 
 import android.content.Context;
+
 import androidx.annotation.LayoutRes;
 import androidx.leanback.widget.BaseCardView;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
@@ -32,6 +34,7 @@ public abstract class BindableCardView<T> extends BaseCardView {
     }
 
     protected abstract void bind(T data);
+
     protected abstract @LayoutRes
     int getLayoutResource();
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.leanback.app.BackgroundManager;
 
 import com.bumptech.glide.Glide;
@@ -77,14 +78,12 @@ public class GlideBackgroundManager {
     }
 
 
-
     // Stops the timer
     private void cancelTimer() {
         if (mBackgroundTimer != null) {
             mBackgroundTimer.cancel();
         }
     }
-
 
 
     // Starts the background change timer

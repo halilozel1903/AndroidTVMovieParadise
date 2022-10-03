@@ -1,6 +1,7 @@
 package com.halil.ozel.movieparadise.ui.movie;
 
 import androidx.leanback.widget.Presenter;
+
 import android.view.ViewGroup;
 
 import com.halil.ozel.movieparadise.data.models.Movie;

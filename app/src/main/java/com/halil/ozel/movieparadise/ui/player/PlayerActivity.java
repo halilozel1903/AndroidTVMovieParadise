@@ -9,11 +9,7 @@ import com.halil.ozel.movieparadise.R;
 import fr.bmartel.youtubetv.YoutubeTvView;
 
 public class PlayerActivity extends Activity {
-
-
     YoutubeTvView youtubeTvView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +21,5 @@ public class PlayerActivity extends Activity {
 
         // videoId for playing video
         youtubeTvView.playVideo(intent.getStringExtra("videoId"));
-
     }
-
-
 }

@@ -39,5 +39,4 @@ public class App extends Application {
     public ApplicationComponent appComponent() {
         return applicationComponent;
     }
-
 }

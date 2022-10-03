@@ -3,7 +3,6 @@ package com.halil.ozel.movieparadise.data.models;
 import java.util.List;
 
 
-
 public class CreditsResponse {
 
     private int id;
