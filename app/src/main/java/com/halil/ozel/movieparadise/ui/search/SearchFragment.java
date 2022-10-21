@@ -132,7 +132,7 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
         arrayObjectAdapter.addAll(0, responseObj.getResults());
     }
 
-    private SimpleTarget<GlideDrawable> mGlideDrawableSimpleTarget = new SimpleTarget<GlideDrawable>() {
+    private final SimpleTarget<GlideDrawable> mGlideDrawableSimpleTarget = new SimpleTarget<GlideDrawable>() {
         @Override
         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
             detailsOverviewRow.setImageDrawable(resource);
