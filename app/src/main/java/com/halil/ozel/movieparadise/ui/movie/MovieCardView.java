@@ -1,5 +1,6 @@
 package com.halil.ozel.movieparadise.ui.movie;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,9 +20,11 @@ import butterknife.ButterKnife;
 
 public class MovieCardView extends BindableCardView<Movie> {
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.poster_iv)
     ImageView mPosterIV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.title_tv)
     TextView title_tv;
 
