@@ -10,6 +10,7 @@ import fr.bmartel.youtubetv.YoutubeTvView;
 
 public class PlayerActivity extends Activity {
     YoutubeTvView youtubeTvView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

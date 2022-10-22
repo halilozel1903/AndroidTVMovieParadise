@@ -60,8 +60,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
         SearchFragment fragment = new SearchFragment();
         fragment.setArguments(args);
         return fragment;
-
-
     }
 
     @Override
