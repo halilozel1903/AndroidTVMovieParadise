@@ -3,9 +3,13 @@ package com.halil.ozel.movieparadise.ui.detail;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.MenuItem;
+
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.app.DetailsFragment;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
+import androidx.leanback.widget.BaseOnItemViewClickedListener;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.DetailsOverviewRow;
@@ -13,6 +17,10 @@ import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
+import androidx.leanback.widget.OnItemViewClickedListener;
+import androidx.leanback.widget.Presenter;
+import androidx.leanback.widget.Row;
+import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.SparseArrayObjectAdapter;
 import androidx.palette.graphics.Palette;
 
@@ -37,6 +45,7 @@ import com.halil.ozel.movieparadise.data.models.PaletteColors;
 import com.halil.ozel.movieparadise.data.models.Video;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.ui.base.PaletteUtils;
+import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
 
@@ -49,7 +58,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class DetailFragment extends DetailsFragment implements Palette.PaletteAsyncListener {
+public class DetailFragment extends DetailsFragment implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
 
     public static String TRANSITION_NAME = "poster_transition";
 
@@ -87,6 +96,7 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         setUpDetailsOverviewRow();
         setUpCastMembers();
         setupRecommendationsRow();
+        setOnItemViewClickedListener(this);
     }
 
 
@@ -103,15 +113,13 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
 
         customDetailPresenter.setOnActionClickedListener(action -> {
             int actionId = (int) action.getId();
-            switch (actionId) {
-                case 0:
-                    if (mYoutubeID != null) {
+            if (actionId == 0) {
+                if (mYoutubeID != null) {
 
-                        Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                        intent.putExtra("videoId",mYoutubeID);
-                        startActivity(intent);
-                    }
-                    break;
+                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                    intent.putExtra("videoId", mYoutubeID);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -228,7 +236,6 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         return id;
     }
 
-
     private void bindRecommendations(MovieResponse response) {
         mRecommendationsAdapter.addAll(0, response.getResults());
     }
@@ -280,5 +287,26 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         detailsOverviewRow.setItem(this.movieDetails);
         int index = mAdapter.indexOf(detailsOverviewRow);
         mAdapter.notifyArrayItemRangeChanged(index, 1);
+    }
+
+    @Override
+    public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+        if (item instanceof Movie) {
+            Movie movie = (Movie) item;
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            // Pass the movie to the activity
+            intent.putExtra(Movie.class.getSimpleName(), movie);
+
+            if (itemViewHolder.view instanceof MovieCardView) {
+                // Pass the ImageView to allow a nice transition
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        getActivity(),
+                        ((MovieCardView) itemViewHolder.view).getPosterIV(),
+                        DetailFragment.TRANSITION_NAME).toBundle();
+                getActivity().startActivity(intent, bundle);
+            } else {
+                startActivity(intent);
+            }
+        }
     }
 }
