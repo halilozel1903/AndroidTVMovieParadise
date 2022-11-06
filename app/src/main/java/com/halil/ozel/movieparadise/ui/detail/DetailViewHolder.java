@@ -1,5 +1,6 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.GradientDrawable;
 
 import androidx.leanback.widget.Presenter;
@@ -20,31 +21,39 @@ import butterknife.ButterKnife;
 
 public class DetailViewHolder extends Presenter.ViewHolder {
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.movie_title)
     TextView movieTitleTV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.movie_year)
     TextView movieYearTV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.overview)
     TextView movieOverview;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.runtime)
     TextView mRuntimeTV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.tagline)
     TextView mTaglineTV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.director_tv)
     TextView mDirectorTv;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.overview_label)
     TextView mOverviewLabelTV;
 
+    @SuppressLint("NonConstantResourceId")
     @BindView(R.id.genres)
     LinearLayout mGenresLayout;
 
-    private View itemView;
+    private final View itemView;
 
     public DetailViewHolder(View view) {
         super(view);
@@ -79,7 +88,6 @@ public class DetailViewHolder extends Presenter.ViewHolder {
                 mDirectorTv.setTextColor(movie.getPaletteColors().getTextColor());
                 int primaryDarkColor = movie.getPaletteColors().getStatusBarColor();
 
-                // Adds each genre to the genre layout
                 for (Genre genre : movie.getGenres()) {
                     TextView textView = new TextView(itemView.getContext());
                     textView.setText(genre.getName());

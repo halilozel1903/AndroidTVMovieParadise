@@ -25,7 +25,5 @@ public class DetailDescriptionPresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {
-
-    }
+    public void onUnbindViewHolder(ViewHolder viewHolder) {}
 }

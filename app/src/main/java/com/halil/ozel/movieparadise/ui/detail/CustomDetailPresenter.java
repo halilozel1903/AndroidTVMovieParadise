@@ -4,6 +4,7 @@ import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.FullWidthDetailsOverviewRowPresenter;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.RowPresenter;
+
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -56,7 +57,6 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
         FullWidthDetailsOverviewRowPresenter.ViewHolder viewHolder = (FullWidthDetailsOverviewRowPresenter.ViewHolder) holder;
         View view = viewHolder.getOverviewView();
         view.setBackgroundColor(getBackgroundColor());
-        view.findViewById(R.id.details_overview_actions_background)
-                .setBackgroundColor(getActionsBackgroundColor());
+        view.findViewById(R.id.details_overview_actions_background).setBackgroundColor(getActionsBackgroundColor());
     }
 }

@@ -20,11 +20,9 @@ public class PersonPresenter extends Presenter {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
-
         if (context == null) {
             context = new ContextThemeWrapper(parent.getContext(), R.style.PersonCardTheme);
         }
-
         return new ViewHolder(new ImageCardView(context));
     }
 
@@ -43,7 +41,5 @@ public class PersonPresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {
-
-    }
+    public void onUnbindViewHolder(ViewHolder viewHolder) {}
 }

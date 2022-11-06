@@ -43,15 +43,10 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
-
     MovieResponse movieResponse;
-
     Movie movie;
-
-    ArrayObjectAdapter mAdapter;
-
+    ArrayObjectAdapter arrayAdapter;
     DetailsOverviewRow detailsOverviewRow;
-
     ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(new MoviePresenter());
 
 
@@ -66,18 +61,15 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
-
-        mAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-
+        arrayAdapter = new ArrayObjectAdapter(new ListRowPresenter());
         setSearchResultProvider(this);
-
         setupSearchRow();
     }
 
 
     @Override
     public ObjectAdapter getResultsAdapter() {
-        return mAdapter;
+        return arrayAdapter;
     }
 
     @Override
@@ -93,7 +85,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
                 });
 
         performSearch();
-
         return true;
     }
 
@@ -110,7 +101,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
                 });
 
         performSearch();
-
         return true;
     }
 
@@ -121,7 +111,7 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
 
     private void setupSearchRow() {
-        mAdapter.add(new ListRow(new HeaderItem(0, "" + ""), arrayObjectAdapter));
+        arrayAdapter.add(new ListRow(new HeaderItem(0, "" + ""), arrayObjectAdapter));
         setOnItemViewClickedListener(this);
     }
 
@@ -157,7 +147,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
 
     private void performSearch() {
-
         arrayObjectAdapter.clear();
     }
 
@@ -169,7 +158,6 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Override
     public void onItemClicked(Presenter.ViewHolder viewHolder, Object item, RowPresenter.ViewHolder itemViewHolder, Row row) {
-
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
             Intent intent = new Intent(getActivity(), DetailActivity.class);
