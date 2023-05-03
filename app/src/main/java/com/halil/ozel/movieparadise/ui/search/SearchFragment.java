@@ -3,6 +3,7 @@ package com.halil.ozel.movieparadise.ui.search;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.DetailsOverviewRow;
 import androidx.leanback.widget.HeaderItem;
@@ -13,7 +14,6 @@ import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
-import androidx.core.app.ActivityOptionsCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -36,7 +36,6 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class SearchFragment extends androidx.leanback.app.SearchFragment
         implements androidx.leanback.app.SearchFragment.SearchResultProvider, OnItemViewClickedListener {
@@ -74,14 +73,14 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Override
     public boolean onQueryTextChange(String query) {
-        theMovieDbAPI.getSearchMovies(query, Config.API_KEY_URL)
+        theMovieDbAPI.getSearchMovies(query, true, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindSearch, e -> {
                     loadImage(movie.getPosterPath());
                     bindMovieDetails(movieResponse);
                     performSearch();
-                    Timber.e(e, "Error fetching search response: %query", e.getMessage());
+                    System.out.println(e.getMessage());
                 });
 
         performSearch();
@@ -90,14 +89,14 @@ public class SearchFragment extends androidx.leanback.app.SearchFragment
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        theMovieDbAPI.getSearchMovies(query, Config.API_KEY_URL)
+        theMovieDbAPI.getSearchMovies(query,true, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindSearch, e -> {
                     loadImage(movie.getPosterPath());
                     bindMovieDetails(movieResponse);
                     performSearch();
-                    Timber.e(e, "Error fetching search response: %query", e.getMessage());
+                    System.out.println(e.getMessage());
                 });
 
         performSearch();
