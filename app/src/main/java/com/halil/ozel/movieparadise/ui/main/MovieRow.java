@@ -10,8 +10,7 @@ public class MovieRow {
     private ArrayObjectAdapter adapter;
     private String title;
 
-    public MovieRow() {
-    }
+    public MovieRow() {}
 
     public int getPage() {
         return page;
