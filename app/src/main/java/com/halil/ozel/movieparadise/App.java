@@ -7,8 +7,6 @@ import com.halil.ozel.movieparadise.dagger.components.DaggerApplicationComponent
 import com.halil.ozel.movieparadise.dagger.modules.ApplicationModule;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 
-import timber.log.Timber;
-
 public class App extends Application {
 
     private static App instance;
@@ -18,10 +16,6 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-
-        if (BuildConfig.DEBUG) {
-            Timber.plant(new Timber.DebugTree());
-        }
 
         // Creates Dagger Graph
         applicationComponent = DaggerApplicationComponent.builder()
