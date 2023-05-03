@@ -39,6 +39,6 @@ public interface TheMovieDbAPI {
 
 
     @GET(HttpClientModule.SEARCH_MOVIE)
-    Observable<MovieResponse> getSearchMovies(@Query("query") String query, @Query("api_key") String apiKey);
+    Observable<MovieResponse> getSearchMovies(@Query("query") String query,@Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
 
 }
