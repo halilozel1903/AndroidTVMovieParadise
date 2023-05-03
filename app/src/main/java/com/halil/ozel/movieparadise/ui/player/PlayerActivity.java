@@ -15,12 +15,8 @@ public class PlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
-
         youtubeTvView = findViewById(R.id.player);
-
         Intent intent = getIntent();
-
-        // videoId for playing video
         youtubeTvView.playVideo(intent.getStringExtra("videoId"));
     }
 }
