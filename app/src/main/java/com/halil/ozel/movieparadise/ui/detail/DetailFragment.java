@@ -3,6 +3,7 @@ package com.halil.ozel.movieparadise.ui.detail;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.app.DetailsFragment;
@@ -53,7 +54,6 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class DetailFragment extends DetailsFragment implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
 
@@ -137,14 +137,14 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindMovieDetails, e -> Timber.e(e, "Error fetching data: %s", e.getMessage()));
+                .subscribe(this::bindMovieDetails, e -> System.out.println(e.getMessage()));
     }
 
     private void fetchCastMembers() {
         theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindCastMembers, e -> Timber.e(e, "Error fetching data: %s", e.getMessage()));
+                .subscribe(this::bindCastMembers, e -> System.out.println(e.getMessage()));
     }
 
     private void setUpCastMembers() {
@@ -179,14 +179,14 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindRecommendations, e -> Timber.e(e, "Error fetching recommendations: %s", e.getMessage()));
+                .subscribe(this::bindRecommendations, e -> System.out.println(e.getMessage()));
     }
 
     private void fetchVideos() {
         theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleVideoResponse, e -> Timber.e(e, "Error fetching video response: %s", e.getMessage()));
+                .subscribe(this::handleVideoResponse, e -> System.out.println(e.getMessage()));
     }
 
     private void handleVideoResponse(VideoResponse response) {
