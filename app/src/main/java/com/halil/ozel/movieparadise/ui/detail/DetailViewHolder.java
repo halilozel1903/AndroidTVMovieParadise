@@ -1,13 +1,11 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
-import android.annotation.SuppressLint;
 import android.graphics.drawable.GradientDrawable;
-
-import androidx.leanback.widget.Presenter;
-
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.leanback.widget.Presenter;
 
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.data.models.Genre;
@@ -15,50 +13,31 @@ import com.halil.ozel.movieparadise.data.models.MovieDetails;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 public class DetailViewHolder extends Presenter.ViewHolder {
 
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.movie_title)
     TextView movieTitleTV;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.movie_year)
     TextView movieYearTV;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.overview)
     TextView movieOverview;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.runtime)
     TextView mRuntimeTV;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.tagline)
     TextView mTaglineTV;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.director_tv)
     TextView mDirectorTv;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.overview_label)
     TextView mOverviewLabelTV;
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.genres)
     LinearLayout mGenresLayout;
 
     private final View itemView;
 
     public DetailViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
         itemView = view;
+        movieTitleTV = itemView.findViewById(R.id.movie_title);
+        movieYearTV = itemView.findViewById(R.id.movie_year);
+        movieOverview = itemView.findViewById(R.id.overview);
+        mRuntimeTV = itemView.findViewById(R.id.runtime);
+        mTaglineTV = itemView.findViewById(R.id.tagline);
+        mDirectorTv = itemView.findViewById(R.id.director_tv);
+        mOverviewLabelTV = itemView.findViewById(R.id.overview_label);
+        mGenresLayout = itemView.findViewById(R.id.genres);
     }
 
     public void bind(MovieDetails movie) {
