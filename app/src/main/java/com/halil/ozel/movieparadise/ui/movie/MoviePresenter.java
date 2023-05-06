@@ -6,11 +6,9 @@ import android.view.ViewGroup;
 
 import com.halil.ozel.movieparadise.data.models.Movie;
 
-
 public class MoviePresenter extends Presenter {
 
-    public MoviePresenter() {
-    }
+    public MoviePresenter() {}
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
@@ -23,6 +21,5 @@ public class MoviePresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {
-    }
+    public void onUnbindViewHolder(ViewHolder viewHolder) {}
 }
