@@ -85,17 +85,12 @@ public class GlideBackgroundManager {
         }
     }
 
-
-    // Starts the background change timer
     private void startBackgroundTimer() {
         cancelTimer();
         mBackgroundTimer = new Timer();
-        /* set delay time to reduce too much background image loading process */
         mBackgroundTimer.schedule(new UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY);
     }
 
-
-    // Updates the background with the last known URI
     public void updateBackground() {
         if (mActivityWeakReference.get() != null) {
             Glide.with(mActivityWeakReference.get())
@@ -104,5 +99,4 @@ public class GlideBackgroundManager {
                     .into(mGlideDrawableSimpleTarget);
         }
     }
-
 }
