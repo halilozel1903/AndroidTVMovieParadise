@@ -4,7 +4,6 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 
 
 public class MovieRow {
-
     private int page;
     private int id;
     private ArrayObjectAdapter adapter;
