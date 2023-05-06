@@ -2,7 +2,10 @@ package com.halil.ozel.movieparadise.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.SparseArray;
 
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.content.ContextCompat;
 import androidx.leanback.app.BrowseFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.HeaderItem;
@@ -13,10 +16,6 @@ import androidx.leanback.widget.OnItemViewSelectedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.ContextCompat;
-
-import android.util.SparseArray;
 
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
@@ -36,7 +35,6 @@ import javax.inject.Inject;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 
 public class MainFragment extends BrowseFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
@@ -78,17 +76,13 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);
 
-
         // search icon background color
         setSearchAffordanceColor(getResources().getColor(R.color.black));
 
-
         // search icon clicked
         setOnSearchClickedListener(v -> {
-
             Intent intent = new Intent(getActivity(), SearchActivity.class);
             startActivity(intent);
-
         });
 
 
@@ -170,9 +164,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, NOW_PLAYING);
                     startEntranceTransition();
-                }, e -> {
-                    Timber.e(e, "Error fetching now playing movies: %s", e.getMessage());
-                });
+                }, e -> System.out.println(e.getMessage()));
     }
 
 
@@ -183,9 +175,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, POPULAR);
                     startEntranceTransition();
-                }, e -> {
-                    Timber.e(e, "Error fetching popular movies: %s", e.getMessage());
-                });
+                }, e -> System.out.println(e.getMessage()));
     }
 
 
@@ -196,7 +186,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, UPCOMING);
                     startEntranceTransition();
-                }, e -> Timber.e(e, "Error fetching upcoming movies: %s", e.getMessage()));
+                }, e -> System.out.println(e.getMessage()));
     }
 
 
@@ -207,7 +197,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
                 .subscribe(response -> {
                     bindMovieResponse(response, TOP_RATED);
                     startEntranceTransition();
-                }, e -> Timber.e(e, "Error fetching top rated movies: %s", e.getMessage()));
+                }, e -> System.out.println(e.getMessage()));
     }
 
 
