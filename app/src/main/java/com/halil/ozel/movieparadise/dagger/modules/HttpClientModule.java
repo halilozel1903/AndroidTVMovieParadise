@@ -30,12 +30,12 @@ public class HttpClientModule {
     public static final String TOP_RATED = "movie/top_rated";
     public static final String UPCOMING = "movie/upcoming";
     public static final String MOVIE = "movie/";
-    public static final String SEARCH_MOVIE = "search/movie/";
+    public static final String SEARCH_MOVIE = "search/movie";
 
     @Provides
     @AppScope
     public OkHttpClient provideOkHttpClient(Application app) {
-        File cacheDir = new File(app.getCacheDir(), "http");
+        File cacheDir = new File(app.getCacheDir(), "https");
         return new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).connectTimeout(1, TimeUnit.MINUTES).writeTimeout(1, TimeUnit.MINUTES).cache(new okhttp3.Cache(cacheDir, DISK_CACHE_SIZE)).build();
     }
 
