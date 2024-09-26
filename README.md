@@ -4,10 +4,11 @@
 
 Android TV is a version of the Android operating system. It's developed by Google for soundbars, set-top boxes, digital media players, and TVs with native applications. It's a replacement for Google TV. Android TV platform was first launched in June 2014. This platform has also been adopted as smart TV middleware by a company such as Sharp and Sony.
 
+**Project Objective**: This app is designed to provide users with a seamless movie discovery and streaming experience on the big screen.
 
 Movie Paradise is an Android TV 📺 app. This app is working Android TV & Android STB. 📹 🎞
 
-Application is using The Movie Database. 👇🏻
+The application uses **The Movie Database (TMDb)** API to fetch movie data: 👇🏻
 
 https://www.themoviedb.org/documentation/api
 
@@ -19,7 +20,9 @@ I wrote a blog post about Android TV. You can access the article from the link b
 
 https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
-## Home 🏡 Screen 📺
+## Features
+
+### Home 🏡 Screen 📺
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
 
@@ -29,50 +32,58 @@ The search icon is on the main page.
 
 By clicking on the icon, you can search.
 
-The App has 4 category.
+### Categories
+The app organizes movies into four categories to make browsing easier:
+- **Now Playing**: Movies currently in theaters.
+- **Top Rated**: Highest-rated movies based on user reviews.
+- **Popular**: Trending movies with the most views.
+- **Upcoming**: Future releases for the movie buffs to look forward to.
 
-**Now Playing**, **Top Rated**, **Popular** and **Upcoming**
-
-## Now Playing ▶️
+### Now Playing ▶️
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/nowplaying_focus.png)
 
-## Top ✍🏻 Rated 🔝
+### Top ✍🏻 Rated 🔝
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/toprated.png)
 
-## Popular 🥳
+### Popular 🥳
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/popular.png)
 
 
-## Upcoming 🔜
+### Upcoming 🔜
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/upcoming.png)
 
 
-## Detail 📜 Screen ✅
+### Detail 📜 Screen ✅
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
 
-The detail page shows many content. Title, Poster, Labels, Director, Overview
+When a movie is selected, a detailed screen appears showing:
+- **Title**
+- **Poster**
+- **Labels** (ex. Genre, Release Date)
+- **Director's name**
+- Brief **overview** of the plot
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
 
 
-## Detail Screen Recommend 🎁
+### Detail Screen Recommend 🎁
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_recommend.png)
 
 
-## Detail Screen Cast 🙎🏼‍♀️ 👨
+### Detail Screen Cast 🙎🏼‍♀️ 👨
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
 
 
-## Search Screen 🔎
+### Search Screen 🔎
 
-You can search for the desired movie on the search screen.
+The search icon is placed directly on the home screen. Users can search for movies by clicking on the search icon, typing the movie name, and getting instant results. This feature makes it easy to quickly find your favorite movies.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search.png)
 
@@ -83,6 +94,19 @@ Search results are displayed instantly.
 We searched the SpiderMan movie. You can view the detail of the movie.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
+
+## How to Build the App
+Using standard Android TV components and libraries, follow these steps to build the app locally:
+
+1.  Clone the repository:
+```shell
+git clone https://github.com/your-repository-url/AndroidTVMovieParadise.git
+```
+2.  Open the project in Android Studio.
+3.  Sync Gradle files.
+4.  Get an API key from [The Movie Database] (https://www.themoviedb.org/documentation/api). 
+5.  Add the API key to the project.
+6.  Build and run the app on an Android TV device.
 
 ## Sources 📚
 
