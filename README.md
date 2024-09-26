@@ -8,7 +8,7 @@ Android TV is a version of the Android operating system. It's developed by Googl
 
 Movie Paradise is an Android TV 📺 app. This app is working Android TV & Android STB. 📹 🎞
 
-The application uses **The Movie Database (TMDb)** API to fetch movie data: 👇🏻
+The application uses **The Movie Database** API to fetch movie data: 👇🏻
 
 https://www.themoviedb.org/documentation/api
 
@@ -107,6 +107,20 @@ git clone https://github.com/your-repository-url/AndroidTVMovieParadise.git
 4.  Get an API key from [The Movie Database] (https://www.themoviedb.org/documentation/api). 
 5.  Add the API key to the project.
 6.  Build and run the app on an Android TV device.
+
+## Warnings
+**SAFETY WARNING: No Built-In Parental Controls**
+
+Note, this app does not have built-in parental control features. This can be a concern for families, as younger viewers may be able to access content that is rated for mature or other audiences.
+
+**Lack of Streaming Capabilities**
+
+Note, this app currently does not support in-app streaming directly. Rather, this app is meant to provide movie information and facilitate a better movie-picking experience. Please use another streaming service in order to watch your desired movies.
+
+**Wi-Fi Connection Necessary**
+
+Note, The Movie Database API requires an active internet connection to properly function. Users without a proper Wi-Fi connection are subject to frequent interruptions and limited functionality.
+
 
 ## Sources 📚
 
