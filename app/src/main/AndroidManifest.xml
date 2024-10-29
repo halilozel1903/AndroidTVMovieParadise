@@ -26,7 +26,8 @@
             android:icon="@drawable/banner"
             android:logo="@drawable/banner"
             android:screenOrientation="landscape"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
