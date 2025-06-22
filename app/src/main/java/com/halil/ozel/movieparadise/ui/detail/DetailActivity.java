@@ -12,17 +12,28 @@ import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 
 public class DetailActivity extends BaseTVActivity {
 
-    GlideBackgroundManager glideBackgroundManager;
+    private GlideBackgroundManager glideBackgroundManager;
+    private Movie movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Movie movie = getIntent().getExtras().getParcelable(Movie.class.getSimpleName());
+        movie = getIntent().getExtras().getParcelable(Movie.class.getSimpleName());
         DetailFragment detailsFragment = DetailFragment.newInstance(movie);
         addFragment(detailsFragment);
 
         glideBackgroundManager = new GlideBackgroundManager(this);
+        updateBackground();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateBackground();
+    }
+
+    private void updateBackground() {
         if (movie != null && movie.getBackdropPath() != null) {
             glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
         } else {
