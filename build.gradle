@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter() // needed for YoutubeTvView dependency
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.10.1'
@@ -15,7 +14,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter() // needed for YoutubeTvView dependency
     }
 }
 
