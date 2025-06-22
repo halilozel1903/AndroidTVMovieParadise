@@ -23,7 +23,9 @@ public class PersonPresenter extends Presenter {
         if (context == null) {
             context = new ContextThemeWrapper(parent.getContext(), R.style.PersonCardTheme);
         }
-        return new ViewHolder(new ImageCardView(context));
+        ImageCardView view = new ImageCardView(context);
+        view.setMainImageDimensions(200, 300);
+        return new ViewHolder(view);
     }
 
     @Override

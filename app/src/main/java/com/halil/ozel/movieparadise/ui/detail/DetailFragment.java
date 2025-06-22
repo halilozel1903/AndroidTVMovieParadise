@@ -53,6 +53,8 @@ import com.halil.ozel.movieparadise.ui.base.PaletteUtils;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
+import com.halil.ozel.movieparadise.data.models.CastMember;
+import com.halil.ozel.movieparadise.ui.detail.PersonDetailActivity;
 
 import java.util.List;
 
@@ -310,6 +312,11 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
             } else {
                 startActivity(intent);
             }
+        } else if (item instanceof CastMember) {
+            CastMember cast = (CastMember) item;
+            Intent intent = new Intent(getActivity(), PersonDetailActivity.class);
+            intent.putExtra(CastMember.class.getSimpleName(), cast);
+            startActivity(intent);
         }
     }
 }

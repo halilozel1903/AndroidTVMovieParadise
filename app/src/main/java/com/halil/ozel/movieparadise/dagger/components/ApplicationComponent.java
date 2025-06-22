@@ -6,6 +6,7 @@ import com.halil.ozel.movieparadise.dagger.AppScope;
 import com.halil.ozel.movieparadise.dagger.modules.ApplicationModule;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
+import com.halil.ozel.movieparadise.ui.detail.PersonDetailFragment;
 import com.halil.ozel.movieparadise.ui.main.MainFragment;
 import com.halil.ozel.movieparadise.ui.search.SearchFragment;
 
@@ -28,4 +29,6 @@ public interface ApplicationComponent {
     void inject(DetailFragment movieDetailsFragment);
 
     void inject(SearchFragment searchFragment);
+
+    void inject(PersonDetailFragment personDetailFragment);
 }

@@ -5,6 +5,8 @@ import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
+import com.halil.ozel.movieparadise.data.models.Person;
+import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -40,5 +42,11 @@ public interface TheMovieDbAPI {
 
     @GET(HttpClientModule.SEARCH_MOVIE)
     Observable<MovieResponse> getSearchMovies(@Query("query") String query,@Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.PERSON + "{id}")
+    Observable<Person> getPerson(@Path("id") String personId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.PERSON + "{id}/movie_credits")
+    Observable<MovieCreditsResponse> getPersonMovieCredits(@Path("id") String personId, @Query("api_key") String apiKey);
 
 }
