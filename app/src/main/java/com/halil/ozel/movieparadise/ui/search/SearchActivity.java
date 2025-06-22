@@ -3,20 +3,25 @@ package com.halil.ozel.movieparadise.ui.search;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.leanback.app.SearchFragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.halil.ozel.movieparadise.R;
-import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 
-public class SearchActivity extends BaseTVActivity {
-
-    SearchFragment searchFragment;
+/**
+ * Hosts the {@link SearchFragment} using the support Fragment API.
+ */
+public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addFragment(com.halil.ozel.movieparadise.ui.search.SearchFragment.newInstance());
-        searchFragment = (SearchFragment) getFragmentManager().findFragmentById(R.id.search_fragment);
+        setContentView(R.layout.activity_search);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.search_fragment, SearchFragment.newInstance())
+                    .commit();
+        }
     }
 
     @Override
