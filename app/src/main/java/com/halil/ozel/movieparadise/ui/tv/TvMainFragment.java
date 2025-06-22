@@ -25,6 +25,7 @@ import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
+import com.halil.ozel.movieparadise.ui.main.MovieRow;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailActivity;
 
