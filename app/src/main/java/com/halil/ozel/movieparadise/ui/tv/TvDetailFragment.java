@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import androidx.leanback.app.DetailsFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -21,6 +25,8 @@ import androidx.leanback.widget.RowPresenter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.TvShow;
@@ -36,6 +42,17 @@ public class TvDetailFragment extends DetailsFragment {
     private ArrayObjectAdapter arrayObjectAdapter;
     private CustomDetailPresenter customDetailPresenter;
     private DetailsOverviewRow detailsOverviewRow;
+    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
+        @Override
+        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+            detailsOverviewRow.setImageDrawable(resource);
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+            // no-op
+        }
+    };
 
     public static TvDetailFragment newInstance(TvShow show) {
         Bundle args = new Bundle();
@@ -78,12 +95,15 @@ public class TvDetailFragment extends DetailsFragment {
 
     private void loadImage(String url) {
         if (url == null || url.isEmpty()) {
+            Glide.with(this)
+                    .load(R.drawable.popcorn)
+                    .into(mGlideDrawableSimpleTarget);
             return;
         }
         Glide.with(this)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.popcorn)
-                .into(new ImageView(getActivity()));
+                .into(mGlideDrawableSimpleTarget);
     }
 }
