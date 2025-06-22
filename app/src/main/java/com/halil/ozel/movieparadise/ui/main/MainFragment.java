@@ -44,6 +44,8 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
 
     GlideBackgroundManager glideBackgroundManager;
 
+    private Movie selectedMovie;
+
     // rows - 0 - now playing
     private static final int NOW_PLAYING = 0;
 
@@ -211,18 +213,27 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         }
     }
 
-    @Override
-    public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
-        // Check if the item is a movie
-        if (item instanceof Movie) {
-            Movie movie = (Movie) item;
-            // Check if the movie has a backdrop
+    private void updateBackground(Movie movie) {
+        if (movie != null) {
             if (movie.getBackdropPath() != null) {
                 glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
             } else {
-                // If there is no backdrop for the movie we just use a default one
                 glideBackgroundManager.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.material_bg));
             }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateBackground(selectedMovie);
+    }
+
+    @Override
+    public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+        if (item instanceof Movie) {
+            selectedMovie = (Movie) item;
+            updateBackground(selectedMovie);
         }
     }
 
