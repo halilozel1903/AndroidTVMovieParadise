@@ -19,6 +19,8 @@ public class PlayerActivity extends Activity {
         webView = findViewById(R.id.player);
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
+        // Allow auto playback without requiring a user gesture
+        settings.setMediaPlaybackRequiresUserGesture(false);
         webView.setWebViewClient(new WebViewClient());
         String videoId = getIntent().getStringExtra("videoId");
         String html = "<html><body style=\"margin:0;\"><iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/" +
