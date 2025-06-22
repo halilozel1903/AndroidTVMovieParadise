@@ -9,9 +9,11 @@ import androidx.leanback.app.BackgroundManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
@@ -38,10 +40,15 @@ public class GlideBackgroundManager {
         mBackgroundManager.attach(activity.getWindow());
     }
 
-    private SimpleTarget<GlideDrawable> mGlideDrawableSimpleTarget = new SimpleTarget<GlideDrawable>() {
+    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
         @Override
-        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
             setBackground(resource);
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+            // no-op
         }
     };
 

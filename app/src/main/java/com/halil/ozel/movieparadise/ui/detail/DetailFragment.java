@@ -25,12 +25,18 @@ import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
@@ -232,10 +238,15 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         mRecommendationsAdapter.addAll(0, response.getResults());
     }
 
-    private SimpleTarget<GlideDrawable> mGlideDrawableSimpleTarget = new SimpleTarget<GlideDrawable>() {
+    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
         @Override
-        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
             detailsOverviewRow.setImageDrawable(resource);
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+            // no-op
         }
     };
 
@@ -244,15 +255,17 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
         Glide.with(getActivity())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(new RequestListener<String, GlideDrawable>() {
+                .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        changePalette(((GlideBitmapDrawable) resource).getBitmap());
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        if (resource instanceof BitmapDrawable) {
+                            changePalette(((BitmapDrawable) resource).getBitmap());
+                        }
                         return false;
                     }
                 })
