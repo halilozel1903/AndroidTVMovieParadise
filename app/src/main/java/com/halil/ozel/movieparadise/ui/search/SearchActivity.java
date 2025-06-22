@@ -3,14 +3,14 @@ package com.halil.ozel.movieparadise.ui.search;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.halil.ozel.movieparadise.R;
 
 /**
  * Hosts the {@link SearchFragment} using the support Fragment API.
  */
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
