@@ -38,6 +38,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
+import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
@@ -77,6 +78,7 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
     DetailsOverviewRow detailsOverviewRow;
     ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(new PersonPresenter());
     ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    ListRow mRecommendationsRow;
     String youtubeID;
 
 
@@ -179,7 +181,8 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
     }
 
     private void setupRecommendationsRow() {
-        arrayObjectAdapter.add(new ListRow(new HeaderItem(2, "Recommendations"), mRecommendationsAdapter));
+        mRecommendationsRow = new ListRow(new HeaderItem(2, "Recommendations"), mRecommendationsAdapter);
+        arrayObjectAdapter.add(mRecommendationsRow);
         fetchRecommendations();
     }
 
@@ -238,6 +241,9 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
 
     private void bindRecommendations(MovieResponse response) {
         mRecommendationsAdapter.addAll(0, response.getResults());
+        if (response.getResults() == null || response.getResults().isEmpty()) {
+            arrayObjectAdapter.remove(mRecommendationsRow);
+        }
     }
 
     private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
@@ -254,9 +260,16 @@ public class DetailFragment extends DetailsFragment implements Palette.PaletteAs
 
 
     private void loadImage(String url) {
+        if (url == null || url.isEmpty()) {
+            Glide.with(getActivity())
+                    .load(R.drawable.popcorn)
+                    .into(mGlideDrawableSimpleTarget);
+            return;
+        }
         Glide.with(getActivity())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.popcorn)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

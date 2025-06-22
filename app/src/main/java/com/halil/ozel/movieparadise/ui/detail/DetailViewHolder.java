@@ -21,6 +21,7 @@ public class DetailViewHolder extends Presenter.ViewHolder {
     TextView movieOverview;
     TextView mRuntimeTV;
     TextView mTaglineTV;
+    TextView mRatingTv;
     TextView mDirectorTv;
     TextView mOverviewLabelTV;
     LinearLayout mGenresLayout;
@@ -35,6 +36,7 @@ public class DetailViewHolder extends Presenter.ViewHolder {
         movieOverview = itemView.findViewById(R.id.overview);
         mRuntimeTV = itemView.findViewById(R.id.runtime);
         mTaglineTV = itemView.findViewById(R.id.tagline);
+        mRatingTv = itemView.findViewById(R.id.rating);
         mDirectorTv = itemView.findViewById(R.id.director_tv);
         mOverviewLabelTV = itemView.findViewById(R.id.overview_label);
         mGenresLayout = itemView.findViewById(R.id.genres);
@@ -46,6 +48,7 @@ public class DetailViewHolder extends Presenter.ViewHolder {
             mTaglineTV.setText(movie.getTagline());
             movieTitleTV.setText(movie.getTitle());
             movieYearTV.setText(String.format(Locale.getDefault(), "(%s)", movie.getReleaseDate().substring(0, 4)));
+            mRatingTv.setText(String.format(Locale.getDefault(), "%.1f/10", movie.getVoteAverage()));
             movieOverview.setText(movie.getOverview());
             mGenresLayout.removeAllViews();
 
@@ -65,6 +68,7 @@ public class DetailViewHolder extends Presenter.ViewHolder {
                 movieYearTV.setTextColor(movie.getPaletteColors().getTextColor());
                 movieOverview.setTextColor(movie.getPaletteColors().getTextColor());
                 mDirectorTv.setTextColor(movie.getPaletteColors().getTextColor());
+                mRatingTv.setTextColor(movie.getPaletteColors().getTextColor());
                 int primaryDarkColor = movie.getPaletteColors().getStatusBarColor();
 
                 for (Genre genre : movie.getGenres()) {

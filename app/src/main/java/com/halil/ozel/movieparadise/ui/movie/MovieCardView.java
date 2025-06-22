@@ -24,10 +24,18 @@ public class MovieCardView extends BindableCardView<Movie> {
 
     @Override
     protected void bind(Movie movie) {
-        Glide.with(getContext())
-                .load(HttpClientModule.POSTER_URL + movie.getPosterPath())
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mPosterIV);
+        String posterPath = movie.getPosterPath();
+        if (posterPath == null || posterPath.isEmpty()) {
+            Glide.with(getContext())
+                    .load(R.drawable.popcorn)
+                    .into(mPosterIV);
+        } else {
+            Glide.with(getContext())
+                    .load(HttpClientModule.POSTER_URL + posterPath)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.popcorn)
+                    .into(mPosterIV);
+        }
         title_tv.setText(movie.getTitle());
     }
 
