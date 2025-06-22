@@ -8,6 +8,8 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
 import com.halil.ozel.movieparadise.ui.detail.PersonDetailFragment;
 import com.halil.ozel.movieparadise.ui.main.MainFragment;
+import com.halil.ozel.movieparadise.ui.tv.TvMainFragment;
+import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.search.SearchFragment;
 
 import javax.inject.Singleton;
@@ -25,6 +27,10 @@ public interface ApplicationComponent {
     void inject(App app);
 
     void inject(MainFragment mainFragment);
+
+    void inject(TvMainFragment tvMainFragment);
+
+    void inject(TvDetailFragment tvDetailFragment);
 
     void inject(DetailFragment movieDetailsFragment);
 

@@ -4,6 +4,7 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
+import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.data.models.Person;
 import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
@@ -26,6 +27,18 @@ public interface TheMovieDbAPI {
 
     @GET(HttpClientModule.POPULAR)
     Observable<MovieResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET(HttpClientModule.TV_ON_THE_AIR)
+    Observable<TvShowResponse> getOnTheAir(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET(HttpClientModule.TV_AIRING_TODAY)
+    Observable<TvShowResponse> getAiringToday(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET(HttpClientModule.TV_POPULAR)
+    Observable<TvShowResponse> getPopularTv(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET(HttpClientModule.TV_TOP_RATED)
+    Observable<TvShowResponse> getTopRatedTv(@Query("api_key") String apiKey, @Query("page") int page);
 
     @GET(HttpClientModule.MOVIE + "{id}/recommendations")
     Observable<MovieResponse> getRecommendations(@Path("id") String movieId, @Query("api_key") String apiKey);
