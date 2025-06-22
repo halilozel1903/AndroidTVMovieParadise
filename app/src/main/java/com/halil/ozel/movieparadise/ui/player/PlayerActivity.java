@@ -19,4 +19,20 @@ public class PlayerActivity extends Activity {
         Intent intent = getIntent();
         youtubeTvView.playVideo(intent.getStringExtra("videoId"));
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (youtubeTvView != null) {
+            youtubeTvView.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (youtubeTvView != null) {
+            youtubeTvView.onPause();
+        }
+        super.onPause();
+    }
 }
