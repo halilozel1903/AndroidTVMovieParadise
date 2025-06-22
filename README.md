@@ -19,6 +19,13 @@ I wrote a blog post about Android TV. You can access the article from the link b
 
 https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
+## Building
+
+This project relies on the **YoutubeTvView** library, which is hosted on
+**JCenter**. If Gradle cannot resolve this dependency, ensure that the
+`jcenter()` repository is included in your Gradle configuration. The provided
+`build.gradle` already contains this entry.
+
 ## Home 🏡 Screen 📺
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
