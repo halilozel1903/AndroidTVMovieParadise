@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="180dp"
     android:layout_height="280dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    app:cardElevation="6dp">
 
     <FrameLayout
         android:layout_width="match_parent"

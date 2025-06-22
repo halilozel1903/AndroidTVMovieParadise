@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.widget.ArrayObjectAdapter;
-import androidx.leanback.widget.DetailsOverviewRow;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
@@ -15,20 +14,6 @@ import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import android.graphics.drawable.Drawable;
-
-import com.bumptech.glide.load.DataSource;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
@@ -49,10 +34,7 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
-    MovieResponse movieResponse;
-    Movie movie;
     ArrayObjectAdapter arrayAdapter;
-    DetailsOverviewRow detailsOverviewRow;
     ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(new MoviePresenter());
 
 
@@ -80,41 +62,23 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
 
     @Override
     public boolean onQueryTextChange(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            performSearch();
+            return true;
+        }
+
         theMovieDbAPI.getSearchMovies(query, true, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindSearch, e -> {
-                    loadImage(movie.getPosterPath());
-                    bindMovieDetails(movieResponse);
-                    performSearch();
-                    System.out.println(e.getMessage());
-                });
+                .subscribe(this::bindSearch, throwable -> System.out.println(throwable.getMessage()));
 
-        performSearch();
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        theMovieDbAPI.getSearchMovies(query,true, Config.API_KEY_URL)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindSearch, e -> {
-                    loadImage(movie.getPosterPath());
-                    bindMovieDetails(movieResponse);
-                    performSearch();
-                    System.out.println(e.getMessage());
-                });
-
-        performSearch();
-        return true;
+        return onQueryTextChange(query);
     }
-
-
-    private void bindMovieDetails(MovieResponse movieResponse) {
-        this.movieResponse = movieResponse;
-    }
-
 
     private void setupSearchRow() {
         arrayAdapter.add(new ListRow(new HeaderItem(0, "" + ""), arrayObjectAdapter));
@@ -123,38 +87,11 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
 
 
     private void bindSearch(MovieResponse responseObj) {
+        arrayObjectAdapter.clear();
         arrayObjectAdapter.addAll(0, responseObj.getResults());
     }
 
-    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
-        @Override
-        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-            detailsOverviewRow.setImageDrawable(resource);
-        }
 
-        @Override
-        public void onLoadCleared(@Nullable Drawable placeholder) {
-            // no-op
-        }
-    };
-
-    private void loadImage(String url) {
-        Glide.with(getActivity())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        return false;
-                    }
-                })
-                .into(mGlideDrawableSimpleTarget);
-    }
 
 
     private void performSearch() {
