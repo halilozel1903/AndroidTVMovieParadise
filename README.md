@@ -29,14 +29,12 @@ https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 - 🖼️ **Glide** for image loading
 - 🛠️ **Dagger** for dependency injection
 - 🗄️ **SQLBrite** for local database handling
-- 📺 **YoutubeTv** for video playback
+- 🌐 **WebView** with the YouTube IFrame Player for trailer playback
 
 ## Building
 
-This project relies on the **YoutubeTvView** library, which is hosted on
-**JCenter**. If Gradle cannot resolve this dependency, ensure that the
-`jcenter()` repository is included in your Gradle configuration. The provided
-`build.gradle` already contains this entry.
+All dependencies are available from **Maven Central**, so no additional
+repositories are required to build the project.
 
 ## Home 🏡 Screen 📺
 
