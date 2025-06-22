@@ -21,17 +21,9 @@ public class PlayerActivity extends Activity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (youtubeTvView != null) {
-            youtubeTvView.onResume();
-        }
-    }
-
-    @Override
     protected void onPause() {
         if (youtubeTvView != null) {
-            youtubeTvView.onPause();
+            youtubeTvView.pause();
         }
         super.onPause();
     }
