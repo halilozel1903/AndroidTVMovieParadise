@@ -88,8 +88,9 @@ title, poster, labels, director and overview.
 ## Search Screen 🔎
 
 The search experience has been modernized using the `SearchSupportFragment` from
-the latest Leanback library. Results still appear instantly as you type. In the
-example below we looked up the Spider-Man movie and opened its details.
+the latest Leanback library. Results appear instantly while typing and the movie
+cards now feature rounded corners for a more polished look. In the example below
+we looked up the Spider-Man movie and opened its details.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search.png)
 
