@@ -20,6 +20,13 @@ import androidx.leanback.widget.RowPresenter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import android.graphics.drawable.Drawable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
@@ -47,6 +54,18 @@ public class PersonDetailFragment extends DetailsFragment implements OnItemViewC
     private CustomDetailPresenter presenter;
     private DetailsOverviewRow detailsRow;
     private ArrayObjectAdapter movieAdapter = new ArrayObjectAdapter(new MoviePresenter());
+
+    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
+        @Override
+        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+            detailsRow.setImageDrawable(resource);
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+            // no-op
+        }
+    };
 
     public static PersonDetailFragment newInstance(CastMember cast) {
         Bundle args = new Bundle();
@@ -120,7 +139,7 @@ public class PersonDetailFragment extends DetailsFragment implements OnItemViewC
         Glide.with(getActivity())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(detailsRow.getImageView(getActivity()));
+                .into(mGlideDrawableSimpleTarget);
     }
 
     @Override
