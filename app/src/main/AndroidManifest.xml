@@ -23,10 +23,10 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:banner="@drawable/banner"
+            android:exported="true"
             android:icon="@drawable/banner"
             android:logo="@drawable/banner"
             android:screenOrientation="landscape"
-            android:exported="true"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,6 +36,7 @@
         </activity>
         <activity android:name=".ui.detail.DetailActivity" />
     </application>
+
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
