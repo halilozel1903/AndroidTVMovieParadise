@@ -19,6 +19,18 @@ I wrote a blog post about Android TV. You can access the article from the link b
 
 https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
 
+## Technologies Used 🛠️
+
+- ☕ **Java** – Main programming language
+- 📐 **AndroidX & Material Components**
+- 📺 **Leanback** library for TV UI components
+- 🌐 **Retrofit** and **OkHttp** for network requests
+- ♻️ **RxJava** and **RxAndroid** for reactive programming
+- 🖼️ **Glide** for image loading
+- 🛠️ **Dagger** for dependency injection
+- 🗄️ **SQLBrite** for local database handling
+- 📺 **YoutubeTv** for video playback
+
 ## Building
 
 This project relies on the **YoutubeTvView** library, which is hosted on
@@ -30,15 +42,10 @@ This project relies on the **YoutubeTvView** library, which is hosted on
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
 
-This is the area where the data taken from API is displayed.
-
-The search icon is on the main page.
-
-By clicking on the icon, you can search.
-
-The App has 4 category.
-
-**Now Playing**, **Top Rated**, **Popular** and **Upcoming**
+This is the area where the data retrieved from the API is displayed. The search
+icon sits right on the main page, letting you quickly find a movie. The home
+screen is organized into four categories: **Now Playing**, **Top Rated**,
+**Popular** and **Upcoming**.
 
 ## Now Playing ▶️
 
@@ -62,7 +69,8 @@ The App has 4 category.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
 
-The detail page shows many content. Title, Poster, Labels, Director, Overview
+The detail page provides extensive information about a movie, including its
+title, poster, labels, director and overview.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
 
@@ -79,15 +87,13 @@ The detail page shows many content. Title, Poster, Labels, Director, Overview
 
 ## Search Screen 🔎
 
-You can search for the desired movie on the search screen.
+You can search for any movie on the dedicated search screen, and results appear
+instantly. In the example below we looked up the Spider-Man movie and opened its
+details.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search.png)
 
-Search results are displayed instantly.
-
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result.png)
-
-We searched the SpiderMan movie. You can view the detail of the movie.
 
 ![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
 
