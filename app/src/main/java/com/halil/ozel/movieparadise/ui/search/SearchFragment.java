@@ -44,8 +44,8 @@ import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class SearchFragment extends androidx.leanback.app.SearchFragment
-        implements androidx.leanback.app.SearchFragment.SearchResultProvider, OnItemViewClickedListener {
+public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
+        implements androidx.leanback.app.SearchSupportFragment.SearchResultProvider, OnItemViewClickedListener {
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
