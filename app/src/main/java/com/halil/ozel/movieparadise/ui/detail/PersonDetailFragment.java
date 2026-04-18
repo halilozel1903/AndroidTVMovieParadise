@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.leanback.app.DetailsFragment;
+import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
@@ -40,10 +40,10 @@ import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class PersonDetailFragment extends DetailsFragment implements OnItemViewClickedListener {
+public class PersonDetailFragment extends DetailsSupportFragment implements OnItemViewClickedListener {
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;

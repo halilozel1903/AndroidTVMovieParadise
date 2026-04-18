@@ -12,7 +12,7 @@ import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import rx.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 public interface TheMovieDbAPI {
 

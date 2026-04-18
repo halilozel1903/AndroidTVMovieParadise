@@ -6,7 +6,7 @@ import android.util.SparseArray;
 
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
-import androidx.leanback.app.BrowseFragment;
+import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
@@ -39,11 +39,11 @@ import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
-public class MainFragment extends BrowseFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
+public class MainFragment extends BrowseSupportFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
@@ -89,7 +89,7 @@ public class MainFragment extends BrowseFragment implements OnItemViewSelectedLi
         setHeadersTransitionOnBackEnabled(true);
 
         // search icon background color
-        setSearchAffordanceColor(getResources().getColor(R.color.black));
+        setSearchAffordanceColor(ContextCompat.getColor(getActivity(), R.color.black));
 
         // search icon clicked
         setOnSearchClickedListener(v -> {

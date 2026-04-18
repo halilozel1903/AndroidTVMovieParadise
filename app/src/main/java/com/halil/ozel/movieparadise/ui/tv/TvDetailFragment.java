@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import androidx.leanback.app.DetailsFragment;
+import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
@@ -34,7 +34,7 @@ import com.halil.ozel.movieparadise.ui.detail.CustomDetailPresenter;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailDescriptionPresenter;
 
 /** Very lightweight detail fragment for TV shows. */
-public class TvDetailFragment extends DetailsFragment {
+public class TvDetailFragment extends DetailsSupportFragment {
 
     public static String TRANSITION_NAME = "poster_transition";
 

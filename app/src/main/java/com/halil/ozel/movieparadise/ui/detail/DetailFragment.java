@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.leanback.app.DetailsFragment;
+import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
@@ -61,10 +61,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class DetailFragment extends DetailsFragment implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
+public class DetailFragment extends DetailsSupportFragment implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
 
     public static String TRANSITION_NAME = "poster_transition";
 
