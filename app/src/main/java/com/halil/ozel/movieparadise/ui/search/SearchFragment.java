@@ -26,8 +26,8 @@ import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
         implements androidx.leanback.app.SearchSupportFragment.SearchResultProvider, OnItemViewClickedListener {

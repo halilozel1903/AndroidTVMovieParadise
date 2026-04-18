@@ -6,7 +6,7 @@ import android.util.SparseArray;
 
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
-import androidx.leanback.app.BrowseFragment;
+import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
@@ -26,16 +26,14 @@ import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.main.MovieRow;
-import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
-import com.halil.ozel.movieparadise.ui.tv.TvDetailActivity;
 
 import javax.inject.Inject;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /** Fragment that lists TV series categories. */
-public class TvMainFragment extends BrowseFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
+public class TvMainFragment extends BrowseSupportFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;

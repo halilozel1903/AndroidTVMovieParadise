@@ -1,14 +1,15 @@
 package com.halil.ozel.movieparadise.ui.base;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.halil.ozel.movieparadise.R;
 
 
-public class BaseTVActivity extends Activity {
+public class BaseTVActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +18,7 @@ public class BaseTVActivity extends Activity {
     }
 
     public void addFragment(Fragment fragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.tv_frame_content, fragment);
         fragmentTransaction.commit();
     }
