@@ -74,19 +74,14 @@ public class DetailViewHolder extends Presenter.ViewHolder {
             mDirectorTv.setVisibility(View.GONE);
         }
 
-        int badgeBgColor = ContextCompat.getColor(itemView.getContext(), R.color.accent_color);
-        if (movie.getPaletteColors() != null) {
-            badgeBgColor = movie.getPaletteColors().getStatusBarColor();
-        }
-
         if (movie.getGenres() != null) {
             for (Genre genre : movie.getGenres()) {
-                mGenresLayout.addView(createGenreBadge(genre, badgeBgColor));
+                mGenresLayout.addView(createGenreBadge(genre));
             }
         }
     }
 
-    private TextView createGenreBadge(Genre genre, int badgeBgColor) {
+    private TextView createGenreBadge(Genre genre) {
         int paddingH = (int) itemView.getResources().getDimension(R.dimen.full_padding);
         int paddingV = (int) itemView.getResources().getDimension(R.dimen.half_padding);
 
@@ -98,15 +93,15 @@ public class DetailViewHolder extends Presenter.ViewHolder {
         badge.setFocusable(true);
         badge.setClickable(true);
         badge.setPadding(paddingH, paddingV, paddingH, paddingV);
-        badge.setBackground(createGenreBackground(badgeBgColor, false));
+        badge.setBackground(createGenreBackground(false));
         badge.setOnClickListener(v -> {
             if (genreClickListener != null) {
                 genreClickListener.onGenreClicked(genre);
             }
         });
         badge.setOnFocusChangeListener((v, hasFocus) -> {
-            v.animate().scaleX(hasFocus ? 1.04f : 1f).scaleY(hasFocus ? 1.04f : 1f).setDuration(120).start();
-            v.setBackground(createGenreBackground(badgeBgColor, hasFocus));
+            v.animate().scaleX(1f).scaleY(1f).setDuration(80).start();
+            v.setBackground(createGenreBackground(hasFocus));
         });
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -117,14 +112,18 @@ public class DetailViewHolder extends Presenter.ViewHolder {
         return badge;
     }
 
-    private GradientDrawable createGenreBackground(int color, boolean focused) {
+    private GradientDrawable createGenreBackground(boolean focused) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(itemView.getResources().getDimension(R.dimen.genre_corner));
-        shape.setColor(color);
-        if (focused) {
-            shape.setStroke(3, ContextCompat.getColor(itemView.getContext(), R.color.white));
-        }
+        shape.setColor(ContextCompat.getColor(
+                itemView.getContext(),
+                focused ? R.color.accent_color : R.color.genre_chip_background));
+        shape.setStroke(
+                focused ? 2 : 1,
+                ContextCompat.getColor(
+                        itemView.getContext(),
+                        focused ? R.color.white : R.color.details_surface_stroke));
         return shape;
     }
 }

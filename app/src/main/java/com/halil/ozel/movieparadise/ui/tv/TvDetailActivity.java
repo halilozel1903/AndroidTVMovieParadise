@@ -9,6 +9,8 @@ import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 
+import java.util.Objects;
+
 /** Activity displaying details for a TV show. */
 public class TvDetailActivity extends BaseTVActivity {
 
@@ -18,9 +20,8 @@ public class TvDetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerMainBackFallback();
 
-        tvShow = getIntent().getExtras().getParcelable(TvShow.class.getSimpleName());
+        tvShow = Objects.requireNonNull(getIntent().getExtras()).getParcelable(TvShow.class.getSimpleName());
         TvDetailFragment detailsFragment = TvDetailFragment.newInstance(tvShow);
         addFragment(detailsFragment);
 

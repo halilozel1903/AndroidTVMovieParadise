@@ -13,6 +13,7 @@
     <color name="card_scrim_end">#F2000000</color>
     <color name="details_surface">#E61B222B</color>
     <color name="details_surface_stroke">#33FFFFFF</color>
+    <color name="genre_chip_background">#CC111820</color>
     <color name="text_secondary">#CCFFFFFF</color>
     <color name="genre_badge_text">#FFFFFF</color>
     <color name="rating_gold">#FFD700</color>

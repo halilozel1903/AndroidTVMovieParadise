@@ -19,7 +19,6 @@ public class PersonDetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerMainBackFallback();
 
         // API-33 safe parcelable extraction
         Bundle extras = getIntent().getExtras();

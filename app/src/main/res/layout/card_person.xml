@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/poster_card_width"
     android:layout_height="@dimen/poster_card_height"
-    app:cardBackgroundColor="@color/black"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="@dimen/card_corner_radius"
     app:cardElevation="12dp"
     app:cardPreventCornerOverlap="false">
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/cast_label"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="match_parent"
