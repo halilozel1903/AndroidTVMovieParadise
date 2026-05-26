@@ -1,6 +1,7 @@
 package com.halil.ozel.movieparadise.ui.base;
 
 import android.content.Context;
+import android.graphics.Color;
 
 import androidx.annotation.LayoutRes;
 import androidx.leanback.widget.BaseCardView;
@@ -29,6 +30,7 @@ public abstract class BindableCardView<T> extends BaseCardView {
     private void initLayout() {
         setFocusable(true);
         setFocusableInTouchMode(true);
+        setBackgroundColor(Color.TRANSPARENT);
         LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(getLayoutResource(), this);
     }

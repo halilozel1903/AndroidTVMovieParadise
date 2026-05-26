@@ -3,7 +3,7 @@ package com.halil.ozel.movieparadise.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 
 public class CastMember implements Parcelable {
@@ -13,13 +13,13 @@ public class CastMember implements Parcelable {
     private String name;
     private int order;
 
-    @Json(name = "cast_id")
+    @SerializedName("cast_id")
     private int castId;
 
-    @Json(name = "credit_id")
+    @SerializedName("credit_id")
     private String creditId;
 
-    @Json(name = "profile_path")
+    @SerializedName("profile_path")
     private String profilePath;
 
     public CastMember() {

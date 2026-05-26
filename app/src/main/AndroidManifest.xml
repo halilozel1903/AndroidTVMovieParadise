@@ -35,6 +35,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.detail.DetailActivity" />
+        <activity android:name=".ui.genre.GenreMoviesActivity" />
         <activity android:name=".ui.tv.TvDetailActivity" />
         <activity android:name=".ui.tv.TvMainActivity" />
         <activity android:name=".ui.detail.PersonDetailActivity" />
