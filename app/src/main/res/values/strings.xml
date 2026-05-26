@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">Movie Paradise</string>
     <string name="under">-</string>
+    <string name="director_label">Director: %s</string>
+    <string name="overview_label">Overview</string>
+    <string name="cast_label">Cast</string>
+    <string name="recommendations_label">Recommendations</string>
+    <string name="movies_label">Movies</string>
+    <string name="watch_trailer">WATCH TRAILER</string>
+    <string name="minutes_format">%d min</string>
+    <string name="rating_format">⭐ %.1f / 10</string>
+    <string name="year_format">(%s)</string>
 </resources>
+
