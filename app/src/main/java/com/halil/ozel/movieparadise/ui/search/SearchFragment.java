@@ -2,9 +2,12 @@ package com.halil.ozel.movieparadise.ui.search;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.widget.ArrayObjectAdapter;
+import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
@@ -18,7 +21,6 @@ import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
-import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
@@ -27,21 +29,29 @@ import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
-        implements androidx.leanback.app.SearchSupportFragment.SearchResultProvider, OnItemViewClickedListener {
+        implements androidx.leanback.app.SearchSupportFragment.SearchResultProvider,
+                   OnItemViewClickedListener {
+
+    private static final String TAG = "SearchFragment";
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
-    ArrayObjectAdapter arrayAdapter;
-    ArrayObjectAdapter arrayObjectAdapter = new ArrayObjectAdapter(new MoviePresenter());
 
+    private ArrayObjectAdapter rowsAdapter;
+    private final ArrayObjectAdapter resultsAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    private final CompositeDisposable disposables = new CompositeDisposable();
+    @Nullable
+    private Disposable searchDisposable;
+    private String lastQuery = "";
 
     public static SearchFragment newInstance() {
-        Bundle args = new Bundle();
         SearchFragment fragment = new SearchFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(new Bundle());
         return fragment;
     }
 
@@ -49,74 +59,76 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
-        arrayAdapter = new ArrayObjectAdapter(new ListRowPresenter());
-        setSearchResultProvider(this);
-        setupSearchRow();
-    }
 
+        rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
+        rowsAdapter.add(new ListRow(new HeaderItem(0, ""), resultsAdapter));
+
+        setSearchResultProvider(this);
+        setOnItemViewClickedListener(this);
+    }
 
     @Override
     public ObjectAdapter getResultsAdapter() {
-        return arrayAdapter;
+        return rowsAdapter;
     }
 
     @Override
     public boolean onQueryTextChange(String query) {
-        if (query == null || query.trim().isEmpty()) {
-            performSearch();
+        String normalizedQuery = query == null ? "" : query.trim();
+        if (normalizedQuery.equals(lastQuery)) {
             return true;
         }
 
-        theMovieDbAPI.getSearchMovies(query, true, Config.API_KEY_URL)
+        lastQuery = normalizedQuery;
+        resultsAdapter.clear();
+        cancelActiveSearch();
+        if (normalizedQuery.isEmpty()) return true;
+
+        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, true, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindSearch, throwable -> System.out.println(throwable.getMessage()));
-
+                .subscribe(response -> {
+                            if (normalizedQuery.equals(lastQuery) && response.getResults() != null) {
+                                resultsAdapter.addAll(0, response.getResults());
+                            }
+                        },
+                           e -> Log.e(TAG, "Search error", e));
+        disposables.add(searchDisposable);
         return true;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        return onQueryTextChange(query);
+        return true;
     }
 
-    private void setupSearchRow() {
-        arrayAdapter.add(new ListRow(new HeaderItem(0, "" + ""), arrayObjectAdapter));
-        setOnItemViewClickedListener(this);
-    }
-
-
-    private void bindSearch(MovieResponse responseObj) {
-        arrayObjectAdapter.clear();
-        arrayObjectAdapter.addAll(0, responseObj.getResults());
-    }
-
-
-
-
-    private void performSearch() {
-        arrayObjectAdapter.clear();
+    private void cancelActiveSearch() {
+        if (searchDisposable != null && !searchDisposable.isDisposed()) {
+            searchDisposable.dispose();
+        }
+        searchDisposable = null;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        setSearchQuery(data, true);
+    public void onDestroy() {
+        cancelActiveSearch();
+        disposables.clear();
+        super.onDestroy();
     }
 
-
     @Override
-    public void onItemClicked(Presenter.ViewHolder viewHolder, Object item, RowPresenter.ViewHolder itemViewHolder, Row row) {
-        if (item instanceof Movie) {
-            Movie movie = (Movie) item;
+    public void onItemClicked(Presenter.ViewHolder viewHolder, Object item,
+                              RowPresenter.ViewHolder rowVH, Row row) {
+        if (item instanceof Movie movie) {
             Intent intent = new Intent(getActivity(), DetailActivity.class);
             intent.putExtra(Movie.class.getSimpleName(), movie);
 
-            if (itemViewHolder.view instanceof MovieCardView) {
+            if (viewHolder.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((MovieCardView) itemViewHolder.view).getPosterIV(),
+                        requireActivity(),
+                        ((MovieCardView) viewHolder.view).getPosterIV(),
                         DetailFragment.TRANSITION_NAME).toBundle();
-                getActivity().startActivity(intent, bundle);
+                requireActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);
             }

@@ -18,6 +18,7 @@ public class TvDetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerMainBackFallback();
 
         tvShow = getIntent().getExtras().getParcelable(TvShow.class.getSimpleName());
         TvDetailFragment detailsFragment = TvDetailFragment.newInstance(tvShow);

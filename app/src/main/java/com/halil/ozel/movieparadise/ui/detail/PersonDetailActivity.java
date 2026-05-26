@@ -1,7 +1,9 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
+import androidx.core.os.BundleCompat;
 
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
@@ -17,7 +19,15 @@ public class PersonDetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        castMember = getIntent().getParcelableExtra(CastMember.class.getSimpleName());
+        registerMainBackFallback();
+
+        // API-33 safe parcelable extraction
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            castMember = BundleCompat.getParcelable(
+                    extras, CastMember.class.getSimpleName(), CastMember.class);
+        }
+
         addFragment(PersonDetailFragment.newInstance(castMember));
         glideBackgroundManager = new GlideBackgroundManager(this);
         updateBackground();

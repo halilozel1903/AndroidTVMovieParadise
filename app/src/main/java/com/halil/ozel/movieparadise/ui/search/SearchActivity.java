@@ -3,9 +3,11 @@ package com.halil.ozel.movieparadise.ui.search;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.FragmentActivity;
 
 import com.halil.ozel.movieparadise.R;
+import com.halil.ozel.movieparadise.ui.main.MainActivity;
 
 /**
  * Hosts the {@link SearchFragment} using the support Fragment API.
@@ -16,6 +18,15 @@ public class SearchActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (isTaskRoot()) {
+                    startActivity(new Intent(SearchActivity.this, MainActivity.class));
+                }
+                finish();
+            }
+        });
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()

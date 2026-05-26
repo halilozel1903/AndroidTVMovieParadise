@@ -55,6 +55,13 @@ public interface TheMovieDbAPI {
     @GET(HttpClientModule.SEARCH_MOVIE)
     Observable<MovieResponse> getSearchMovies(@Query("query") String query,@Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
 
+    @GET(HttpClientModule.DISCOVER_MOVIE)
+    Observable<MovieResponse> getMoviesByGenre(@Query("with_genres") int genreId,
+                                               @Query("sort_by") String sortBy,
+                                               @Query("include_adult") Boolean includeAdult,
+                                               @Query("page") int page,
+                                               @Query("api_key") String apiKey);
+
     @GET(HttpClientModule.PERSON + "{id}")
     Observable<Person> getPerson(@Path("id") String personId, @Query("api_key") String apiKey);
 
