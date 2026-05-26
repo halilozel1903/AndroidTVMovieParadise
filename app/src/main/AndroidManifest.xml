@@ -25,6 +25,7 @@
             android:banner="@drawable/banner"
             android:exported="true"
             android:icon="@drawable/banner"
+            android:launchMode="singleTop"
             android:logo="@drawable/banner"
             android:screenOrientation="landscape"
             tools:ignore="DiscouragedApi">
