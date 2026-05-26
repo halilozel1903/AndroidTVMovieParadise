@@ -2,15 +2,15 @@ package com.halil.ozel.movieparadise.ui.base;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
-import androidx.leanback.widget.BaseCardView;
 
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 
 
-public abstract class BindableCardView<T> extends BaseCardView {
+public abstract class BindableCardView<T> extends FrameLayout {
 
     public BindableCardView(Context context) {
         super(context);
