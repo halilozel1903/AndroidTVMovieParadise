@@ -1,4 +1,8 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <solid android:color="#80000000"/>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/card_scrim_end"
+        android:startColor="@color/card_scrim_start" />
     <corners android:bottomLeftRadius="12dp" android:bottomRightRadius="12dp" />
 </shape>
