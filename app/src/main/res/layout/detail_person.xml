@@ -5,20 +5,23 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="16dp"
+    app:cardBackgroundColor="@color/details_surface"
     app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="6dp">
+    app:cardElevation="14dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/person_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             tools:text="Person Name"/>
@@ -27,6 +30,7 @@
             android:id="@+id/person_birth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
             android:textSize="16sp"
             tools:text="1980-01-01 - Place"/>
 
@@ -36,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Biography:"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"/>
 
@@ -43,7 +48,9 @@
             android:id="@+id/person_bio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="8dp"
+            android:lineSpacingMultiplier="1.35"
+            android:textColor="@color/text_secondary"/>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

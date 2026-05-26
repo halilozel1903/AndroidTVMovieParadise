@@ -4,45 +4,39 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.leanback.app.BackgroundManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 
 import java.lang.ref.WeakReference;
-import java.util.Timer;
-import java.util.TimerTask;
 
-
+/**
+ * Manages the background image for Leanback activities using Glide.
+ * Uses Handler.postDelayed instead of legacy Timer/TimerTask.
+ */
 public class GlideBackgroundManager {
 
-    private static final int BACKGROUND_UPDATE_DELAY = 200;
+    private static final String TAG = "GlideBackgroundMgr";
+    private static final int BACKGROUND_UPDATE_DELAY_MS = 200;
 
-    private WeakReference<Activity> mActivityWeakReference;
-    private BackgroundManager mBackgroundManager;
+    private final WeakReference<Activity> mActivityRef;
+    private final BackgroundManager mBackgroundManager;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
-    private String mBackgroundURI;
-    private Timer mBackgroundTimer;
 
-    public static GlideBackgroundManager instance;
+    private String mPendingBackgroundUrl;
+    private Runnable mUpdateRunnable;
 
-
-    //  The activity to which this WindowManager is attached
-    public GlideBackgroundManager(Activity activity) {
-        mActivityWeakReference = new WeakReference<>(activity);
-        mBackgroundManager = BackgroundManager.getInstance(activity);
-        mBackgroundManager.attach(activity.getWindow());
-    }
-
-    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
+    private final CustomTarget<Drawable> mTarget = new CustomTarget<Drawable>() {
         @Override
-        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+        public void onResourceReady(@NonNull Drawable resource,
+                                    @Nullable Transition<? super Drawable> transition) {
             setBackground(resource);
         }
 
@@ -52,58 +46,53 @@ public class GlideBackgroundManager {
         }
     };
 
+    public GlideBackgroundManager(Activity activity) {
+        mActivityRef = new WeakReference<>(activity);
+        mBackgroundManager = BackgroundManager.getInstance(activity);
+        mBackgroundManager.attach(activity.getWindow());
+    }
+
+    /**
+     * Schedules a background image load with a short debounce delay,
+     * so rapid selection changes don't flood network requests.
+     */
     public void loadImage(String imageUrl) {
-        mBackgroundURI = imageUrl;
-        startBackgroundTimer();
+        mPendingBackgroundUrl = imageUrl;
+        cancelPending();
+        mUpdateRunnable = this::updateBackground;
+        mHandler.postDelayed(mUpdateRunnable, BACKGROUND_UPDATE_DELAY_MS);
     }
 
     public void setBackground(Drawable drawable) {
-        if (mBackgroundManager != null) {
-            if (!mBackgroundManager.isAttached()) {
-                mBackgroundManager.attach(mActivityWeakReference.get().getWindow());
-            }
+        if (mBackgroundManager != null && mBackgroundManager.isAttached()) {
             mBackgroundManager.setDrawable(drawable);
         }
     }
 
-    private class UpdateBackgroundTask extends TimerTask {
-        @Override
-        public void run() {
-            mHandler.post(() -> {
-                if (mBackgroundURI != null) {
-                    updateBackground();
-                }
-            });
-        }
-    }
-
-
-    // Cancels an ongoing background change
+    /** Cancels any pending background update. */
     public void cancelBackgroundChange() {
-        mBackgroundURI = null;
-        cancelTimer();
+        mPendingBackgroundUrl = null;
+        cancelPending();
     }
 
-
-    // Stops the timer
-    private void cancelTimer() {
-        if (mBackgroundTimer != null) {
-            mBackgroundTimer.cancel();
+    private void cancelPending() {
+        if (mUpdateRunnable != null) {
+            mHandler.removeCallbacks(mUpdateRunnable);
+            mUpdateRunnable = null;
         }
     }
 
-    private void startBackgroundTimer() {
-        cancelTimer();
-        mBackgroundTimer = new Timer();
-        mBackgroundTimer.schedule(new UpdateBackgroundTask(), BACKGROUND_UPDATE_DELAY);
-    }
-
-    public void updateBackground() {
-        if (mActivityWeakReference.get() != null) {
-            Glide.with(mActivityWeakReference.get())
-                    .load(mBackgroundURI)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(mGlideDrawableSimpleTarget);
+    private void updateBackground() {
+        Activity activity = mActivityRef.get();
+        if (activity == null || activity.isDestroyed()) {
+            Log.w(TAG, "Activity is gone, skipping background update");
+            return;
         }
+        if (mPendingBackgroundUrl == null) return;
+
+        Glide.with(activity)
+                .load(mPendingBackgroundUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(mTarget);
     }
 }

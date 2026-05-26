@@ -1,14 +1,15 @@
 package com.halil.ozel.movieparadise.ui.detail;
 
 import android.os.Bundle;
+
 import androidx.core.content.ContextCompat;
+import androidx.core.os.BundleCompat;
 
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
-
 
 public class DetailActivity extends BaseTVActivity {
 
@@ -18,11 +19,15 @@ public class DetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerMainBackFallback();
 
-        movie = getIntent().getExtras().getParcelable(Movie.class.getSimpleName());
-        DetailFragment detailsFragment = DetailFragment.newInstance(movie);
-        addFragment(detailsFragment);
+        // API-33 safe parcelable extraction
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            movie = BundleCompat.getParcelable(extras, Movie.class.getSimpleName(), Movie.class);
+        }
 
+        addFragment(DetailFragment.newInstance(movie));
         glideBackgroundManager = new GlideBackgroundManager(this);
         updateBackground();
     }

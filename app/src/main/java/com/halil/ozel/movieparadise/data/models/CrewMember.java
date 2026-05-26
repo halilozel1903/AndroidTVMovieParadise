@@ -3,7 +3,7 @@ package com.halil.ozel.movieparadise.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 public class CrewMember implements Parcelable {
 
@@ -12,7 +12,7 @@ public class CrewMember implements Parcelable {
     private String name;
     private String department;
 
-    @Json(name = "profile_path")
+    @SerializedName("profile_path")
     private String profilePath;
 
     public CrewMember() {

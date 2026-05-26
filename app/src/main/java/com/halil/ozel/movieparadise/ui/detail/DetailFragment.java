@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.Action;
@@ -12,6 +14,7 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.DetailsOverviewRow;
+import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
@@ -24,26 +27,22 @@ import androidx.leanback.widget.SparseArrayObjectAdapter;
 import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.Config;
+import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.CrewMember;
+import com.halil.ozel.movieparadise.data.models.Genre;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
@@ -51,36 +50,41 @@ import com.halil.ozel.movieparadise.data.models.PaletteColors;
 import com.halil.ozel.movieparadise.data.models.Video;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.ui.base.PaletteUtils;
+import com.halil.ozel.movieparadise.ui.genre.GenreMoviesActivity;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
-import com.halil.ozel.movieparadise.data.models.CastMember;
-import com.halil.ozel.movieparadise.ui.detail.PersonDetailActivity;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
-public class DetailFragment extends DetailsSupportFragment implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
-    public static String TRANSITION_NAME = "poster_transition";
+public class DetailFragment extends DetailsSupportFragment
+        implements Palette.PaletteAsyncListener, OnItemViewClickedListener {
+
+    public static final String TRANSITION_NAME = "poster_transition";
+    private static final String TAG = "DetailFragment";
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
 
-    Movie movie;
-    MovieDetails movieDetails;
-    ArrayObjectAdapter arrayObjectAdapter;
-    CustomDetailPresenter customDetailPresenter;
-    DetailsOverviewRow detailsOverviewRow;
-    ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(new PersonPresenter());
-    ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
-    ListRow mRecommendationsRow;
-    String youtubeID;
-
+    private Movie movie;
+    private MovieDetails movieDetails;
+    private ArrayObjectAdapter arrayObjectAdapter;
+    private CustomDetailPresenter customDetailPresenter;
+    private DetailsOverviewRow detailsOverviewRow;
+    private final ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(new PersonPresenter());
+    private final ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    private ListRow mRecommendationsRow;
+    private String youtubeID;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static DetailFragment newInstance(Movie movie) {
         Bundle args = new Bundle();
@@ -94,11 +98,12 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
+
         if (getArguments() == null || !getArguments().containsKey(Movie.class.getSimpleName())) {
             throw new RuntimeException("A movie is necessary for DetailFragment");
         }
-
         movie = getArguments().getParcelable(Movie.class.getSimpleName());
+
         setUpAdapter();
         setUpDetailsOverviewRow();
         setUpCastMembers();
@@ -106,10 +111,9 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         setOnItemViewClickedListener(this);
     }
 
-
     private void setUpAdapter() {
-        customDetailPresenter = new CustomDetailPresenter(new DetailDescriptionPresenter(),
-                new DetailsOverviewLogoPresenter());
+        customDetailPresenter = new CustomDetailPresenter(
+                new DetailDescriptionPresenter(this::openGenreMovies), new DetailsOverviewLogoPresenter());
 
         FullWidthDetailsOverviewSharedElementHelper helper = new FullWidthDetailsOverviewSharedElementHelper();
         helper.setSharedElementEnterTransition(getActivity(), TRANSITION_NAME);
@@ -117,23 +121,19 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         customDetailPresenter.setParticipatingEntranceTransition(false);
 
         customDetailPresenter.setOnActionClickedListener(action -> {
-            int actionId = (int) action.getId();
-            if (actionId == 0) {
-                if (youtubeID != null) {
-                    Intent intent = new Intent(getActivity(), PlayerActivity.class);
-                    intent.putExtra("videoId", youtubeID);
-                    startActivity(intent);
-                }
+            if ((int) action.getId() == 0 && youtubeID != null) {
+                Intent intent = new Intent(getActivity(), PlayerActivity.class);
+                intent.putExtra("videoId", youtubeID);
+                startActivity(intent);
             }
         });
 
-        ClassPresenterSelector classPresenterSelector = new ClassPresenterSelector();
-        classPresenterSelector.addClassPresenter(DetailsOverviewRow.class, customDetailPresenter);
-        classPresenterSelector.addClassPresenter(ListRow.class, new ListRowPresenter());
-        arrayObjectAdapter = new ArrayObjectAdapter(classPresenterSelector);
+        ClassPresenterSelector selector = new ClassPresenterSelector();
+        selector.addClassPresenter(DetailsOverviewRow.class, customDetailPresenter);
+        selector.addClassPresenter(ListRow.class, new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
+        arrayObjectAdapter = new ArrayObjectAdapter(selector);
         setAdapter(arrayObjectAdapter);
     }
-
 
     private void setUpDetailsOverviewRow() {
         detailsOverviewRow = new DetailsOverviewRow(new MovieDetails());
@@ -142,113 +142,115 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         fetchMovieDetails();
     }
 
-
     private void fetchMovieDetails() {
-        theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindMovieDetails, e -> System.out.println(e.getMessage()));
+                .subscribe(this::bindMovieDetails, e -> Log.e(TAG, "fetchMovieDetails error", e)));
     }
 
     private void fetchCastMembers() {
-        theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindCastMembers, e -> System.out.println(e.getMessage()));
+                .subscribe(this::bindCastMembers, e -> Log.e(TAG, "fetchCastMembers error", e)));
     }
 
     private void setUpCastMembers() {
-        arrayObjectAdapter.add(new ListRow(new HeaderItem(0, "Cast"), castAdapter));
+        arrayObjectAdapter.add(new ListRow(new HeaderItem(0, getString(R.string.cast_label)), castAdapter));
         fetchCastMembers();
     }
 
     private void bindCastMembers(CreditsResponse response) {
         castAdapter.addAll(0, response.getCast());
-        if (!response.getCrew().isEmpty()) {
-            for(CrewMember c : response.getCrew()) {
-                if (c.getJob().equals("Director")) {
-                    movieDetails.setDirector(c.getName());
-                    notifyDetailsChanged();
-                }
-            }
-        }
+        // Find director from crew list
+        response.getCrew().stream()
+                .filter(c -> "Director".equals(c.getJob()))
+                .findFirst()
+                .ifPresent(c -> {
+                    if (movieDetails != null) {
+                        movieDetails.setDirector(c.getName());
+                        notifyDetailsChanged();
+                    }
+                });
     }
 
-    private void bindMovieDetails(MovieDetails movieDetails) {
-        this.movieDetails = movieDetails;
+    private void bindMovieDetails(MovieDetails details) {
+        this.movieDetails = details;
         detailsOverviewRow.setItem(this.movieDetails);
         fetchVideos();
     }
 
     private void setupRecommendationsRow() {
-        mRecommendationsRow = new ListRow(new HeaderItem(2, "Recommendations"), mRecommendationsAdapter);
+        mRecommendationsRow = new ListRow(
+                new HeaderItem(2, getString(R.string.recommendations_label)), mRecommendationsAdapter);
         arrayObjectAdapter.add(mRecommendationsRow);
         fetchRecommendations();
     }
 
     private void fetchRecommendations() {
-        theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindRecommendations, e -> System.out.println(e.getMessage()));
+                .subscribe(this::bindRecommendations, e -> Log.e(TAG, "fetchRecommendations error", e)));
     }
 
     private void fetchVideos() {
-        theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleVideoResponse, e -> System.out.println(e.getMessage()));
+                .subscribe(this::handleVideoResponse, e -> Log.e(TAG, "fetchVideos error", e)));
     }
 
     private void handleVideoResponse(VideoResponse response) {
-        youtubeID = getTrailer(response.getResults(), "official");
-
-        if (youtubeID == null) {
-            youtubeID = getTrailer(response.getResults(), "trailer");
-        }
-
-        if (youtubeID == null) {
-            youtubeID = getTrailerByType(response.getResults(), "trailer");
-        }
+        // Priority: official trailer → name contains "trailer" → type "Trailer"
+        youtubeID = findVideoKey(response.getResults(), "official");
+        if (youtubeID == null) youtubeID = findVideoKey(response.getResults(), "trailer");
+        if (youtubeID == null) youtubeID = findVideoKeyByType(response.getResults(), "trailer");
 
         if (youtubeID != null) {
             SparseArrayObjectAdapter adapter = new SparseArrayObjectAdapter();
-            adapter.set(0, new Action(0, "WATCH TRAILER", null, null));
+            adapter.set(0, new Action(0, getString(R.string.watch_trailer)));
             detailsOverviewRow.setActionsAdapter(adapter);
             notifyDetailsChanged();
         }
     }
 
-    private String getTrailer(List<Video> videos, String keyword) {
-        String id = null;
-        for(Video video : videos) {
-            if (video.getName().toLowerCase().contains(keyword)) {
-                id = video.getKey();
-            }
-        }
-        return id;
+    private String findVideoKey(List<Video> videos, String keyword) {
+        return videos.stream()
+                .filter(v -> v.getName().toLowerCase().contains(keyword))
+                .map(Video::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
-    private String getTrailerByType(List<Video> videos, String keyword) {
-        String id = null;
-        for(Video v : videos) {
-            if (v.getType().toLowerCase().contains(keyword)) {
-                id = v.getKey();
-            }
-        }
-        return id;
+    private String findVideoKeyByType(List<Video> videos, String keyword) {
+        return videos.stream()
+                .filter(v -> v.getType().toLowerCase().contains(keyword))
+                .map(Video::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     private void bindRecommendations(MovieResponse response) {
-        mRecommendationsAdapter.addAll(0, response.getResults());
         if (response.getResults() == null || response.getResults().isEmpty()) {
             arrayObjectAdapter.remove(mRecommendationsRow);
+        } else {
+            for (Movie recommendation : response.getResults()) {
+                if (recommendation.getPosterPath() != null) {
+                    mRecommendationsAdapter.add(recommendation);
+                }
+            }
+            if (mRecommendationsAdapter.size() == 0) {
+                arrayObjectAdapter.remove(mRecommendationsRow);
+            }
         }
     }
 
-    private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
+    private final CustomTarget<Drawable> mGlideTarget = new CustomTarget<Drawable>() {
         @Override
-        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+        public void onResourceReady(@NonNull Drawable resource,
+                                    @Nullable Transition<? super Drawable> transition) {
             detailsOverviewRow.setImageDrawable(resource);
         }
 
@@ -258,35 +260,34 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         }
     };
 
-
     private void loadImage(String url) {
         if (url == null || url.isEmpty()) {
-            Glide.with(getActivity())
-                    .load(R.drawable.popcorn)
-                    .into(mGlideDrawableSimpleTarget);
+            Glide.with(requireActivity()).load(R.drawable.popcorn).into(mGlideTarget);
             return;
         }
-        Glide.with(getActivity())
+        Glide.with(requireActivity())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.popcorn)
                 .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                               Target<Drawable> target, boolean first) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model,
+                                                   Target<Drawable> target,
+                                                   DataSource source, boolean first) {
                         if (resource instanceof BitmapDrawable) {
                             changePalette(((BitmapDrawable) resource).getBitmap());
                         }
                         return false;
                     }
                 })
-                .into(mGlideDrawableSimpleTarget);
+                .into(mGlideTarget);
     }
-
 
     private void changePalette(Bitmap bmp) {
         Palette.from(bmp).generate(this);
@@ -298,7 +299,7 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         customDetailPresenter.setActionsBackgroundColor(colors.getStatusBarColor());
         customDetailPresenter.setBackgroundColor(colors.getToolbarBackgroundColor());
         if (movieDetails != null) {
-            this.movieDetails.setPaletteColors(colors);
+            movieDetails.setPaletteColors(colors);
         }
         notifyDetailsChanged();
     }
@@ -309,27 +310,43 @@ public class DetailFragment extends DetailsSupportFragment implements Palette.Pa
         arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
     }
 
-    @Override
-    public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
-        if (item instanceof Movie) {
-            Movie movie = (Movie) item;
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(Movie.class.getSimpleName(), movie);
+    private void openGenreMovies(Genre genre) {
+        if (genre == null || getActivity() == null) {
+            return;
+        }
+        Intent intent = GenreMoviesActivity.newIntent(requireActivity(), genre);
+        startActivity(intent);
+    }
 
-            if (itemViewHolder.view instanceof MovieCardView) {
+    @Override
+    public void onItemClicked(Presenter.ViewHolder itemVH, Object item,
+                              RowPresenter.ViewHolder rowVH, Row row) {
+        if (item instanceof Movie) {
+            Movie clicked = (Movie) item;
+            Intent intent = new Intent(getActivity(), DetailActivity.class);
+            intent.putExtra(Movie.class.getSimpleName(), clicked);
+
+            if (itemVH.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((MovieCardView) itemViewHolder.view).getPosterIV(),
-                        DetailFragment.TRANSITION_NAME).toBundle();
-                getActivity().startActivity(intent, bundle);
+                        requireActivity(),
+                        ((MovieCardView) itemVH.view).getPosterIV(),
+                        TRANSITION_NAME).toBundle();
+                requireActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);
             }
+
         } else if (item instanceof CastMember) {
             CastMember cast = (CastMember) item;
             Intent intent = new Intent(getActivity(), PersonDetailActivity.class);
             intent.putExtra(CastMember.class.getSimpleName(), cast);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        disposables.clear();
+        super.onDestroy();
     }
 }

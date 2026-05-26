@@ -2,12 +2,17 @@ package com.halil.ozel.movieparadise.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseArray;
+import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
 import androidx.leanback.app.BrowseSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
+import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
@@ -24,6 +29,8 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
+import com.halil.ozel.movieparadise.data.models.TvShow;
+import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
@@ -34,73 +41,62 @@ import com.halil.ozel.movieparadise.ui.tv.TvDetailActivity;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.tv.TvShowCardView;
 import com.halil.ozel.movieparadise.ui.tv.TvShowPresenter;
-import com.halil.ozel.movieparadise.data.models.TvShow;
-import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
+public class MainFragment extends BrowseSupportFragment
+        implements OnItemViewSelectedListener, OnItemViewClickedListener {
 
-public class MainFragment extends BrowseSupportFragment implements OnItemViewSelectedListener, OnItemViewClickedListener {
+    private static final String TAG = "MainFragment";
+
+    // Row index constants
+    private static final int NOW_PLAYING    = 0;
+    private static final int TOP_RATED      = 1;
+    private static final int POPULAR        = 2;
+    private static final int UPCOMING       = 3;
+    private static final int TV_ON_THE_AIR  = 4;
+    private static final int TV_AIRING_TODAY= 5;
+    private static final int TV_POPULAR     = 6;
+    private static final int TV_TOP_RATED   = 7;
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
 
-    GlideBackgroundManager glideBackgroundManager;
-
+    private GlideBackgroundManager glideBackgroundManager;
     private Object selectedItem;
-
-    // rows - 0 - now playing
-    private static final int NOW_PLAYING = 0;
-
-    // rows - 1 - top rated
-    private static final int TOP_RATED = 1;
-
-    // rows - 2 - popular
-    private static final int POPULAR = 2;
-
-    // rows - 3 - upcoming
-    private static final int UPCOMING = 3;
-    private static final int TV_ON_THE_AIR = 4;
-    private static final int TV_AIRING_TODAY = 5;
-    private static final int TV_POPULAR = 6;
-    private static final int TV_TOP_RATED = 7;
-
-    SparseArray<MovieRow> movieRowSparseArray;
+    private SparseArray<MovieRow> movieRowSparseArray;
+    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static MainFragment newInstance() {
-        Bundle args = new Bundle();
         MainFragment fragment = new MainFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(new Bundle());
         return fragment;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         App.instance().appComponent().inject(this);
 
-        glideBackgroundManager = new GlideBackgroundManager(getActivity());
+        glideBackgroundManager = new GlideBackgroundManager(requireActivity());
 
-        setBrandColor(ContextCompat.getColor(getActivity(), R.color.primary_transparent));
+        setBrandColor(ContextCompat.getColor(requireContext(), R.color.primary_dark_transparent));
         setHeadersState(HEADERS_ENABLED);
         setHeadersTransitionOnBackEnabled(true);
+        setSearchAffordanceColor(ContextCompat.getColor(requireContext(), R.color.accent_color));
 
-        // search icon background color
-        setSearchAffordanceColor(ContextCompat.getColor(getActivity(), R.color.black));
-
-        // search icon clicked
         setOnSearchClickedListener(v -> {
-            Intent intent = new Intent(getActivity(), SearchActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(requireActivity(), SearchActivity.class));
         });
-
 
         createDataRows();
         createRows();
         prepareEntranceTransition();
+
         fetchNowPlayingMovies();
         fetchTopRatedMovies();
         fetchPopularMovies();
@@ -111,247 +107,200 @@ public class MainFragment extends BrowseSupportFragment implements OnItemViewSel
         fetchTopRatedTv();
     }
 
-
-    // Creates the data rows objects
     private void createDataRows() {
-
         movieRowSparseArray = new SparseArray<>();
 
         MoviePresenter moviePresenter = new MoviePresenter();
-        TvShowPresenter tvPresenter = new TvShowPresenter();
+        TvShowPresenter tvPresenter   = new TvShowPresenter();
 
-        //row - 0 - create objects
-        movieRowSparseArray.put(NOW_PLAYING, new MovieRow()
-                .setId(NOW_PLAYING)
-                .setAdapter(new ArrayObjectAdapter(moviePresenter))
-                .setTitle("Now Playing")
-                .setPage(1)
-        );
-
-        //row - 1 - create objects
-        movieRowSparseArray.put(TOP_RATED, new MovieRow()
-                .setId(TOP_RATED)
-                .setAdapter(new ArrayObjectAdapter(moviePresenter))
-                .setTitle("Top Rated")
-                .setPage(1)
-        );
-
-        //row - 2 - create objects
-        movieRowSparseArray.put(POPULAR, new MovieRow()
-                .setId(POPULAR)
-                .setAdapter(new ArrayObjectAdapter(moviePresenter))
-                .setTitle("Popular")
-                .setPage(1)
-        );
-
-        //row - 3 - create objects
-        movieRowSparseArray.put(UPCOMING, new MovieRow()
-                .setId(UPCOMING)
-                .setAdapter(new ArrayObjectAdapter(moviePresenter))
-                .setTitle("Upcoming")
-                .setPage(1)
-        );
-
-        movieRowSparseArray.put(TV_ON_THE_AIR, new MovieRow()
-                .setId(TV_ON_THE_AIR)
-                .setAdapter(new ArrayObjectAdapter(tvPresenter))
-                .setTitle("On The Air")
-                .setPage(1)
-        );
-
-        movieRowSparseArray.put(TV_AIRING_TODAY, new MovieRow()
-                .setId(TV_AIRING_TODAY)
-                .setAdapter(new ArrayObjectAdapter(tvPresenter))
-                .setTitle("Airing Today")
-                .setPage(1)
-        );
-
-        movieRowSparseArray.put(TV_POPULAR, new MovieRow()
-                .setId(TV_POPULAR)
-                .setAdapter(new ArrayObjectAdapter(tvPresenter))
-                .setTitle("Popular TV")
-                .setPage(1)
-        );
-
-        movieRowSparseArray.put(TV_TOP_RATED, new MovieRow()
-                .setId(TV_TOP_RATED)
-                .setAdapter(new ArrayObjectAdapter(tvPresenter))
-                .setTitle("Top Rated TV")
-                .setPage(1)
-        );
+        movieRowSparseArray.put(NOW_PLAYING,     newMovieRow(NOW_PLAYING,     "Now Playing",   moviePresenter));
+        movieRowSparseArray.put(TOP_RATED,       newMovieRow(TOP_RATED,       "Top Rated",     moviePresenter));
+        movieRowSparseArray.put(POPULAR,         newMovieRow(POPULAR,         "Popular",       moviePresenter));
+        movieRowSparseArray.put(UPCOMING,        newMovieRow(UPCOMING,        "Upcoming",      moviePresenter));
+        movieRowSparseArray.put(TV_ON_THE_AIR,   newMovieRow(TV_ON_THE_AIR,   "On The Air",    tvPresenter));
+        movieRowSparseArray.put(TV_AIRING_TODAY, newMovieRow(TV_AIRING_TODAY, "Airing Today",  tvPresenter));
+        movieRowSparseArray.put(TV_POPULAR,      newMovieRow(TV_POPULAR,      "Popular TV",    tvPresenter));
+        movieRowSparseArray.put(TV_TOP_RATED,    newMovieRow(TV_TOP_RATED,    "Top Rated TV",  tvPresenter));
     }
 
-    // Creates the rows and sets up the adapter of the fragment
+    private MovieRow newMovieRow(int id, String title, Presenter presenter) {
+        return new MovieRow()
+                .setId(id)
+                .setAdapter(new ArrayObjectAdapter(presenter))
+                .setTitle(title)
+                .setPage(1);
+    }
+
     private void createRows() {
-        // Creates the RowsAdapter for the Fragment
-        // The ListRowPresenter tells to render ListRow objects
-        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter());
+        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
         for (int i = 0; i < movieRowSparseArray.size(); i++) {
             MovieRow row = movieRowSparseArray.get(i);
-            // Adds a new ListRow to the adapter. Each row will contain a collection of Movies
-            // That will be rendered using the MoviePresenter
-            HeaderItem headerItem = new HeaderItem(row.getId(), row.getTitle());
-            ListRow listRow = new ListRow(headerItem, row.getAdapter());
-            rowsAdapter.add(listRow);
+            HeaderItem header  = new HeaderItem(row.getId(), row.getTitle());
+            rowsAdapter.add(new ListRow(header, row.getAdapter()));
         }
-        // Sets this fragments Adapter.
-        // The setAdapter method is defined in the BrowseFragment of the Leanback Library
         setAdapter(rowsAdapter);
         setOnItemViewSelectedListener(this);
         setOnItemViewClickedListener(this);
     }
 
+    // ── Fetch helpers ────────────────────────────────────────────────────────
 
     private void fetchNowPlayingMovies() {
-        theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, movieRowSparseArray.get(NOW_PLAYING).getPage())
+        disposables.add(theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, movieRowSparseArray.get(NOW_PLAYING).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    bindMovieResponse(response, NOW_PLAYING);
-                    startEntranceTransition();
-                }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindMovieResponse(r, NOW_PLAYING); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchNowPlaying error", e)));
     }
 
+    private void fetchTopRatedMovies() {
+        disposables.add(theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, movieRowSparseArray.get(TOP_RATED).getPage())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(r -> { bindMovieResponse(r, TOP_RATED); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchTopRated error", e)));
+    }
 
     private void fetchPopularMovies() {
-        theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, movieRowSparseArray.get(POPULAR).getPage())
+        disposables.add(theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, movieRowSparseArray.get(POPULAR).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    bindMovieResponse(response, POPULAR);
-                    startEntranceTransition();
-                }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindMovieResponse(r, POPULAR); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchPopular error", e)));
     }
 
-
     private void fetchUpcomingMovies() {
-        theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, movieRowSparseArray.get(UPCOMING).getPage())
+        disposables.add(theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, movieRowSparseArray.get(UPCOMING).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    bindMovieResponse(response, UPCOMING);
-                    startEntranceTransition();
-                }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindMovieResponse(r, UPCOMING); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchUpcoming error", e)));
     }
 
     private void fetchOnTheAir() {
-        theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, movieRowSparseArray.get(TV_ON_THE_AIR).getPage())
+        disposables.add(theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, movieRowSparseArray.get(TV_ON_THE_AIR).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_ON_THE_AIR); startEntranceTransition(); }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindTvResponse(r, TV_ON_THE_AIR); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchOnTheAir error", e)));
     }
 
     private void fetchAiringToday() {
-        theMovieDbAPI.getAiringToday(Config.API_KEY_URL, movieRowSparseArray.get(TV_AIRING_TODAY).getPage())
+        disposables.add(theMovieDbAPI.getAiringToday(Config.API_KEY_URL, movieRowSparseArray.get(TV_AIRING_TODAY).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_AIRING_TODAY); startEntranceTransition(); }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindTvResponse(r, TV_AIRING_TODAY); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchAiringToday error", e)));
     }
 
     private void fetchPopularTv() {
-        theMovieDbAPI.getPopularTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_POPULAR).getPage())
+        disposables.add(theMovieDbAPI.getPopularTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_POPULAR).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_POPULAR); startEntranceTransition(); }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindTvResponse(r, TV_POPULAR); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchPopularTv error", e)));
     }
 
     private void fetchTopRatedTv() {
-        theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_TOP_RATED).getPage())
+        disposables.add(theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_TOP_RATED).getPage())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_TOP_RATED); startEntranceTransition(); }, e -> System.out.println(e.getMessage()));
+                .subscribe(r -> { bindTvResponse(r, TV_TOP_RATED); startEntranceTransition(); },
+                           e -> Log.e(TAG, "fetchTopRatedTv error", e)));
     }
 
+    // ── Bind helpers ─────────────────────────────────────────────────────────
 
-    private void fetchTopRatedMovies() {
-        theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, movieRowSparseArray.get(TOP_RATED).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    bindMovieResponse(response, TOP_RATED);
-                    startEntranceTransition();
-                }, e -> System.out.println(e.getMessage()));
-    }
-
-
-    private void bindMovieResponse(MovieResponse response, int id) {
-        MovieRow movieRow = movieRowSparseArray.get(id);
-        movieRow.setPage(movieRow.getPage() + 1);
-        for (Movie movie : response.getResults()) {
-            if (movie.getPosterPath() != null) { // Avoid showing movie without posters
-                movieRow.getAdapter().add(movie);
-            }
-        }
-    }
-
-    private void bindTvResponse(TvShowResponse response, int id) {
-        MovieRow row = movieRowSparseArray.get(id);
+    private void bindMovieResponse(MovieResponse response, int rowId) {
+        MovieRow row = movieRowSparseArray.get(rowId);
         row.setPage(row.getPage() + 1);
-        for (TvShow tvShow : response.getResults()) {
-            if (tvShow.getPosterPath() != null) {
-                row.getAdapter().add(tvShow);
+        for (Movie movie : response.getResults()) {
+            if (movie.getPosterPath() != null) {
+                row.getAdapter().add(movie);
             }
         }
     }
+
+    private void bindTvResponse(TvShowResponse response, int rowId) {
+        MovieRow row = movieRowSparseArray.get(rowId);
+        row.setPage(row.getPage() + 1);
+        for (TvShow show : response.getResults()) {
+            if (show.getPosterPath() != null) {
+                row.getAdapter().add(show);
+            }
+        }
+    }
+
+    // ── Background ───────────────────────────────────────────────────────────
+
     private void updateBackground(Object item) {
+        String path = null;
         if (item instanceof Movie) {
-            Movie movie = (Movie) item;
-            if (movie.getBackdropPath() != null) {
-                glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + movie.getBackdropPath());
-            } else {
-                glideBackgroundManager.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.material_bg));
-            }
+            path = ((Movie) item).getBackdropPath();
         } else if (item instanceof TvShow) {
-            TvShow show = (TvShow) item;
-            if (show.getBackdropPath() != null) {
-                glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + show.getBackdropPath());
-            } else {
-                glideBackgroundManager.setBackground(ContextCompat.getDrawable(getActivity(), R.drawable.material_bg));
-            }
+            path = ((TvShow) item).getBackdropPath();
+        }
+
+        if (path != null) {
+            glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + path);
+        } else {
+            glideBackgroundManager.setBackground(
+                    ContextCompat.getDrawable(requireActivity(), R.drawable.material_bg));
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateBackground(selectedItem);
+        if (selectedItem != null) {
+            updateBackground(selectedItem);
+        }
     }
 
     @Override
-    public void onItemSelected(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+    public void onDestroyView() {
+        disposables.clear();
+        super.onDestroyView();
+    }
+
+    // ── Listener callbacks ───────────────────────────────────────────────────
+
+    @Override
+    public void onItemSelected(Presenter.ViewHolder itemVH, Object item,
+                               RowPresenter.ViewHolder rowVH, Row row) {
         selectedItem = item;
         updateBackground(item);
     }
 
     @Override
-    public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item, RowPresenter.ViewHolder rowViewHolder, Row row) {
+    public void onItemClicked(Presenter.ViewHolder itemVH, Object item,
+                              RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            // Pass the movie to the activity
+            Intent intent = new Intent(requireActivity(), DetailActivity.class);
             intent.putExtra(Movie.class.getSimpleName(), movie);
 
-            if (itemViewHolder.view instanceof MovieCardView) {
-                // Pass the ImageView to allow a nice transition
+            if (itemVH.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((MovieCardView) itemViewHolder.view).getPosterIV(),
+                        requireActivity(),
+                        ((MovieCardView) itemVH.view).getPosterIV(),
                         DetailFragment.TRANSITION_NAME).toBundle();
-                getActivity().startActivity(intent, bundle);
+                requireActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);
             }
+
         } else if (item instanceof TvShow) {
             TvShow tvShow = (TvShow) item;
-            Intent intent = new Intent(getActivity(), TvDetailActivity.class);
+            Intent intent = new Intent(requireActivity(), TvDetailActivity.class);
             intent.putExtra(TvShow.class.getSimpleName(), tvShow);
 
-            if (itemViewHolder.view instanceof TvShowCardView) {
+            if (itemVH.view instanceof TvShowCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        getActivity(),
-                        ((TvShowCardView) itemViewHolder.view).getPosterIV(),
+                        requireActivity(),
+                        ((TvShowCardView) itemVH.view).getPosterIV(),
                         TvDetailFragment.TRANSITION_NAME).toBundle();
-                getActivity().startActivity(intent, bundle);
+                requireActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);
             }
