@@ -19,6 +19,6 @@ public class TvShowPresenter extends Presenter {
 
     @Override
     public void onUnbindViewHolder(ViewHolder viewHolder) {
-        // no-op
+        ((TvShowCardView) viewHolder.view).unbind();
     }
 }

@@ -14,13 +14,13 @@ import com.halil.ozel.movieparadise.ui.base.BindableCardView;
 /** Card view used for TV show items. */
 public class TvShowCardView extends BindableCardView<TvShow> {
 
-    ImageView mPosterIV;
-    TextView title_tv;
+    private final ImageView posterImageView;
+    private final TextView titleTextView;
 
     public TvShowCardView(Context context) {
         super(context);
-        mPosterIV = findViewById(R.id.poster_iv);
-        title_tv = findViewById(R.id.title_tv);
+        posterImageView = findViewById(R.id.poster_iv);
+        titleTextView = findViewById(R.id.title_tv);
     }
 
     @Override
@@ -29,19 +29,26 @@ public class TvShowCardView extends BindableCardView<TvShow> {
         if (posterPath == null || posterPath.isEmpty()) {
             Glide.with(getContext())
                     .load(R.drawable.popcorn)
-                    .into(mPosterIV);
+                    .into(posterImageView);
         } else {
             Glide.with(getContext())
                     .load(HttpClientModule.POSTER_URL + posterPath)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.popcorn)
-                    .into(mPosterIV);
+                    .error(R.drawable.popcorn)
+                    .into(posterImageView);
         }
-        title_tv.setText(show.getName());
+        titleTextView.setText(show.getName());
+    }
+
+    void unbind() {
+        Glide.with(getContext()).clear(posterImageView);
+        posterImageView.setImageDrawable(null);
+        titleTextView.setText(null);
     }
 
     public ImageView getPosterIV() {
-        return mPosterIV;
+        return posterImageView;
     }
 
     @Override

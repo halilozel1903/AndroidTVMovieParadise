@@ -3,7 +3,7 @@ package com.halil.ozel.movieparadise.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -15,34 +15,34 @@ public class TvShow implements Parcelable {
 
     private String id;
 
-    @Json(name = "poster_path")
+    @SerializedName("poster_path")
     private String posterPath;
 
     private String overview;
 
-    @Json(name = "first_air_date")
+    @SerializedName("first_air_date")
     private String firstAirDate;
 
-    @Json(name = "genre_ids")
+    @SerializedName("genre_ids")
     private List<String> genreIds;
 
-    @Json(name = "original_name")
+    @SerializedName("original_name")
     private String originalName;
 
-    @Json(name = "original_language")
+    @SerializedName("original_language")
     private String originalLanguage;
 
     /** Name of the TV show. */
-    @Json(name = "name")
+    @SerializedName("name")
     private String name;
 
-    @Json(name = "backdrop_path")
+    @SerializedName("backdrop_path")
     private String backdropPath;
 
-    @Json(name = "vote_count")
+    @SerializedName("vote_count")
     private int voteCount;
 
-    @Json(name = "vote_average")
+    @SerializedName("vote_average")
     private float voteAverage;
 
     public TvShow() {
