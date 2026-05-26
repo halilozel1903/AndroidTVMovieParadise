@@ -3,7 +3,7 @@ package com.halil.ozel.movieparadise.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by <a href="mailto:marcus@gabilheri.com">Marcus Gabilheri</a>
@@ -25,10 +25,10 @@ public class Person implements Parcelable {
     private float popularity;
     private boolean adult;
 
-    @Json(name = "profile_path")
+    @SerializedName("profile_path")
     private String profilePath;
 
-    @Json(name = "place_of_birth")
+    @SerializedName("place_of_birth")
     private String placeOfBirth;
 
     public Person() {

@@ -21,5 +21,7 @@ public class MoviePresenter extends Presenter {
     }
 
     @Override
-    public void onUnbindViewHolder(ViewHolder viewHolder) {}
+    public void onUnbindViewHolder(ViewHolder viewHolder) {
+        ((MovieCardView) viewHolder.view).unbind();
+    }
 }

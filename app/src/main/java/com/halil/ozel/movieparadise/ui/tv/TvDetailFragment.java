@@ -16,6 +16,7 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.DetailsOverviewRow;
+import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
@@ -82,7 +83,7 @@ public class TvDetailFragment extends DetailsSupportFragment {
 
         ClassPresenterSelector selector = new ClassPresenterSelector();
         selector.addClassPresenter(DetailsOverviewRow.class, customDetailPresenter);
-        selector.addClassPresenter(ListRow.class, new ListRowPresenter());
+        selector.addClassPresenter(ListRow.class, new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
         arrayObjectAdapter = new ArrayObjectAdapter(selector);
         setAdapter(arrayObjectAdapter);
     }

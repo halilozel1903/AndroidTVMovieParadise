@@ -1,6 +1,6 @@
 package com.halil.ozel.movieparadise.data.models;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -19,28 +19,28 @@ public class MovieDetails {
     private String tagline;
     private String status;
 
-    @Json(name = "release_date")
+    @SerializedName("release_date")
     private String releaseDate;
 
-    @Json(name = "poster_path")
+    @SerializedName("poster_path")
     private String posterPath;
 
-    @Json(name = "original_title")
+    @SerializedName("original_title")
     private String originalTitle;
 
-    @Json(name = "original_language")
+    @SerializedName("original_language")
     private String originalLanguage;
 
-    @Json(name = "backdrop_path")
+    @SerializedName("backdrop_path")
     private String backdropPath;
 
-    @Json(name = "vote_count")
+    @SerializedName("vote_count")
     private int voteCount;
 
-    @Json(name = "vote_average")
+    @SerializedName("vote_average")
     private float voteAverage;
 
-    @Json(name = "imdb_id")
+    @SerializedName("imdb_id")
     private String imdbId;
 
     private PaletteColors paletteColors;

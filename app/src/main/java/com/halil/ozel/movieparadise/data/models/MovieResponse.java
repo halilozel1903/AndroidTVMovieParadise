@@ -3,7 +3,7 @@ package com.halil.ozel.movieparadise.data.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -13,10 +13,10 @@ public class MovieResponse implements Parcelable {
     private int page;
     private List<Movie> results;
 
-    @Json(name = "total_pages")
+    @SerializedName("total_pages")
     private int totalPages;
 
-    @Json(name = "total_results")
+    @SerializedName("total_results")
     private int totalResults;
 
     public int getPage() {

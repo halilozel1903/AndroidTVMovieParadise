@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
-import com.squareup.moshi.Json;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -14,37 +14,37 @@ public class Movie implements Parcelable {
 
     private String id;
 
-    @Json(name = "poster_path")
+    @SerializedName("poster_path")
     private String posterPath;
 
     private boolean adult;
     private String overview;
 
-    @Json(name = "release_date")
+    @SerializedName("release_date")
     private String releaseDate;
 
-    @Json(name = "genre_ids")
+    @SerializedName("genre_ids")
     private List<String> genreIds;
 
-    @Json(name = "original_title")
+    @SerializedName("original_title")
     private String originalTitle;
 
-    @Json(name = "original_language")
+    @SerializedName("original_language")
     private String originalLanguage;
 
     private String title;
 
-    @Json(name = "backdrop_path")
+    @SerializedName("backdrop_path")
     private String backdropPath;
 
     private float popularity;
 
-    @Json(name = "vote_count")
+    @SerializedName("vote_count")
     private int voteCount;
 
     private boolean video;
 
-    @Json(name = "vote_average")
+    @SerializedName("vote_average")
     private float voteAverage;
 
     public Movie() {
