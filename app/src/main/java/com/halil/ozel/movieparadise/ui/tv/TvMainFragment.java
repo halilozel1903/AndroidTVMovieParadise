@@ -23,39 +23,28 @@ import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.TvShow;
-import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.main.MovieRow;
 
-import javax.inject.Inject;
+import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
+import javax.inject.Inject;
 
 /** Fragment that lists TV series categories. */
 public class TvMainFragment extends BrowseSupportFragment
-        implements OnItemViewSelectedListener, OnItemViewClickedListener {
+        implements OnItemViewSelectedListener, OnItemViewClickedListener, TvMainContract.View {
 
     private static final String TAG = "TvMainFragment";
 
-    private static final int ON_THE_AIR  = 0;
-    private static final int AIRING_TODAY= 1;
-    private static final int POPULAR     = 2;
-    private static final int TOP_RATED   = 3;
-
     @Inject
-    TheMovieDbAPI theMovieDbAPI;
+    TvMainPresenter presenter;
 
     private GlideBackgroundManager glideBackgroundManager;
     private TvShow selectedShow;
     private SparseArray<MovieRow> tvRowSparseArray;
-    private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static TvMainFragment newInstance() {
         TvMainFragment fragment = new TvMainFragment();
@@ -67,6 +56,7 @@ public class TvMainFragment extends BrowseSupportFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         App.instance().appComponent().inject(this);
+        presenter.attachView(this);
 
         glideBackgroundManager = new GlideBackgroundManager(requireActivity());
 
@@ -77,20 +67,20 @@ public class TvMainFragment extends BrowseSupportFragment
         createDataRows();
         createRows();
         prepareEntranceTransition();
-        fetchOnTheAir();
-        fetchAiringToday();
-        fetchPopular();
-        fetchTopRated();
+        presenter.loadSections(rowId -> {
+            MovieRow rowData = tvRowSparseArray.get(rowId);
+            return rowData == null ? 1 : rowData.getPage();
+        });
     }
 
     private void createDataRows() {
         tvRowSparseArray = new SparseArray<>();
         TvShowPresenter presenter = new TvShowPresenter();
 
-        tvRowSparseArray.put(ON_THE_AIR,   newRow(ON_THE_AIR,   "On The Air",   presenter));
-        tvRowSparseArray.put(AIRING_TODAY, newRow(AIRING_TODAY, "Airing Today", presenter));
-        tvRowSparseArray.put(POPULAR,      newRow(POPULAR,      "Popular TV",   presenter));
-        tvRowSparseArray.put(TOP_RATED,    newRow(TOP_RATED,    "Top Rated TV", presenter));
+        tvRowSparseArray.put(TvMainContract.ON_THE_AIR,   newRow(TvMainContract.ON_THE_AIR,   "On The Air",   presenter));
+        tvRowSparseArray.put(TvMainContract.AIRING_TODAY, newRow(TvMainContract.AIRING_TODAY, "Airing Today", presenter));
+        tvRowSparseArray.put(TvMainContract.POPULAR,      newRow(TvMainContract.POPULAR,      "Popular TV",   presenter));
+        tvRowSparseArray.put(TvMainContract.TOP_RATED,    newRow(TvMainContract.TOP_RATED,    "Top Rated TV", presenter));
     }
 
     private MovieRow newRow(int id, String title, Presenter presenter) {
@@ -112,48 +102,28 @@ public class TvMainFragment extends BrowseSupportFragment
         setOnItemViewClickedListener(this);
     }
 
-    // ── Fetch helpers ────────────────────────────────────────────────────────
-
-    private void fetchOnTheAir() {
-        disposables.add(theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, tvRowSparseArray.get(ON_THE_AIR).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, ON_THE_AIR); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchOnTheAir error", e)));
-    }
-
-    private void fetchAiringToday() {
-        disposables.add(theMovieDbAPI.getAiringToday(Config.API_KEY_URL, tvRowSparseArray.get(AIRING_TODAY).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, AIRING_TODAY); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchAiringToday error", e)));
-    }
-
-    private void fetchPopular() {
-        disposables.add(theMovieDbAPI.getPopularTv(Config.API_KEY_URL, tvRowSparseArray.get(POPULAR).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, POPULAR); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchPopular error", e)));
-    }
-
-    private void fetchTopRated() {
-        disposables.add(theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, tvRowSparseArray.get(TOP_RATED).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TOP_RATED); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchTopRated error", e)));
-    }
-
-    private void bindTvResponse(TvShowResponse response, int rowId) {
+    private void addTvShowsToRow(int rowId, List<TvShow> shows) {
         MovieRow row = tvRowSparseArray.get(rowId);
+        if (row == null || shows == null || shows.isEmpty()) {
+            return;
+        }
         row.setPage(row.getPage() + 1);
-        for (TvShow show : response.getResults()) {
+        for (TvShow show : shows) {
             if (show.getPosterPath() != null) {
                 row.getAdapter().add(show);
             }
         }
+    }
+
+    @Override
+    public void showTvResults(int rowId, List<TvShow> shows) {
+        addTvShowsToRow(rowId, shows);
+        startEntranceTransition();
+    }
+
+    @Override
+    public void showLoadError(String source, Throwable throwable) {
+        Log.e(TAG, "load " + source + " error", throwable);
     }
 
     // ── Background ───────────────────────────────────────────────────────────
@@ -176,7 +146,7 @@ public class TvMainFragment extends BrowseSupportFragment
 
     @Override
     public void onDestroyView() {
-        disposables.clear();
+        presenter.detachView();
         super.onDestroyView();
     }
 

@@ -16,24 +16,19 @@ import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Genre;
 import com.halil.ozel.movieparadise.data.models.Movie;
-import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 public class GenreMoviesFragment extends VerticalGridSupportFragment
-        implements OnItemViewClickedListener, OnItemViewSelectedListener {
+        implements OnItemViewClickedListener, OnItemViewSelectedListener, GenreMoviesContract.View {
 
     private static final String TAG = "GenreMoviesFragment";
     private static final String ARG_GENRE = "arg_genre";
@@ -41,14 +36,10 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     private static final int LOAD_MORE_THRESHOLD = 8;
 
     @Inject
-    TheMovieDbAPI theMovieDbAPI;
+    GenreMoviesPresenter presenter;
 
     private Genre genre;
     private ArrayObjectAdapter moviesAdapter;
-    private final CompositeDisposable disposables = new CompositeDisposable();
-    private int page = 1;
-    private int totalPages = 1;
-    private boolean loading;
 
     public static GenreMoviesFragment newInstance(Genre genre) {
         Bundle args = new Bundle();
@@ -62,6 +53,7 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
+        presenter.attachView(this);
 
         if (getArguments() == null || !getArguments().containsKey(ARG_GENRE)) {
             throw new RuntimeException("A genre is necessary for GenreMoviesFragment");
@@ -70,7 +62,7 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
 
         setTitle(genre.getName());
         setupGrid();
-        fetchMoviesByGenre();
+        presenter.loadMoviesByGenre(genre.getId());
     }
 
     private void setupGrid() {
@@ -84,35 +76,12 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
         setOnItemViewSelectedListener(this);
     }
 
-    private void fetchMoviesByGenre() {
-        if (loading || page > totalPages) {
+    @Override
+    public void showMovies(List<Movie> movies) {
+        if (movies == null || movies.isEmpty()) {
             return;
         }
-
-        loading = true;
-        disposables.add(theMovieDbAPI.getMoviesByGenre(
-                        genre.getId(),
-                        "popularity.desc",
-                        false,
-                        page,
-                        Config.API_KEY_URL)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindMovieResponse, e -> {
-                    loading = false;
-                    Log.e(TAG, "fetchMoviesByGenre error", e);
-                }));
-    }
-
-    private void bindMovieResponse(MovieResponse response) {
-        loading = false;
-        if (response == null || response.getResults() == null) {
-            return;
-        }
-
-        totalPages = Math.max(1, response.getTotalPages());
-        page = response.getPage() + 1;
-        for (Movie movie : response.getResults()) {
+        for (Movie movie : movies) {
             if (movie.getPosterPath() != null) {
                 moviesAdapter.add(movie);
             }
@@ -120,11 +89,17 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     }
 
     @Override
+    public void showLoadError(Throwable throwable) {
+        Log.e(TAG, "fetchMoviesByGenre error", throwable);
+    }
+
+    @Override
     public void onItemSelected(Presenter.ViewHolder itemVH, Object item,
                                RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie
-                && moviesAdapter.indexOf(item) >= moviesAdapter.size() - LOAD_MORE_THRESHOLD) {
-            fetchMoviesByGenre();
+                && moviesAdapter.indexOf(item) >= moviesAdapter.size() - LOAD_MORE_THRESHOLD
+                && presenter.canLoadMore()) {
+            presenter.loadMoviesByGenre(genre.getId());
         }
     }
 
@@ -150,7 +125,7 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
 
     @Override
     public void onDestroy() {
-        disposables.clear();
+        presenter.detachView();
         super.onDestroy();
     }
 }
