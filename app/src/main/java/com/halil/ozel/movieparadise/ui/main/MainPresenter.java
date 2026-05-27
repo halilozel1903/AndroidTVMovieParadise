@@ -6,6 +6,8 @@ import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
+import javax.inject.Inject;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -15,6 +17,7 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
     private final TheMovieDbAPI theMovieDbAPI;
     private MainContract.View view;
 
+    @Inject
     public MainPresenter(TheMovieDbAPI theMovieDbAPI) {
         this.theMovieDbAPI = theMovieDbAPI;
     }

@@ -17,7 +17,6 @@ import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
@@ -36,11 +35,10 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
     private static final String TAG = "SearchFragment";
 
     @Inject
-    TheMovieDbAPI theMovieDbAPI;
+    SearchPresenter presenter;
 
     private ArrayObjectAdapter rowsAdapter;
     private final ArrayObjectAdapter resultsAdapter = new ArrayObjectAdapter(new MoviePresenter());
-    private SearchContract.Presenter presenter;
 
     public static SearchFragment newInstance() {
         SearchFragment fragment = new SearchFragment();
@@ -52,7 +50,6 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
-        presenter = new SearchPresenter(theMovieDbAPI);
         presenter.attachView(this);
 
         rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));

@@ -6,6 +6,8 @@ import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
+import javax.inject.Inject;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -19,6 +21,7 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
     private Disposable searchDisposable;
     private String lastQuery = "";
 
+    @Inject
     public SearchPresenter(TheMovieDbAPI theMovieDbAPI) {
         this.theMovieDbAPI = theMovieDbAPI;
     }

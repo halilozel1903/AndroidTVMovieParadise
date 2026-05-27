@@ -16,7 +16,6 @@ import androidx.leanback.widget.RowPresenter;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Genre;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
@@ -37,11 +36,10 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     private static final int LOAD_MORE_THRESHOLD = 8;
 
     @Inject
-    TheMovieDbAPI theMovieDbAPI;
+    GenreMoviesPresenter presenter;
 
     private Genre genre;
     private ArrayObjectAdapter moviesAdapter;
-    private GenreMoviesContract.Presenter presenter;
 
     public static GenreMoviesFragment newInstance(Genre genre) {
         Bundle args = new Bundle();
@@ -55,7 +53,6 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         App.instance().appComponent().inject(this);
-        presenter = new GenreMoviesPresenter(theMovieDbAPI);
         presenter.attachView(this);
 
         if (getArguments() == null || !getArguments().containsKey(ARG_GENRE)) {

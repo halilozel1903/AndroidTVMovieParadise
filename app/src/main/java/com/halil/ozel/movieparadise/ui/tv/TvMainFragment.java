@@ -25,7 +25,6 @@ import androidx.leanback.widget.RowPresenter;
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.main.MovieRow;
@@ -41,12 +40,11 @@ public class TvMainFragment extends BrowseSupportFragment
     private static final String TAG = "TvMainFragment";
 
     @Inject
-    TheMovieDbAPI theMovieDbAPI;
+    TvMainPresenter presenter;
 
     private GlideBackgroundManager glideBackgroundManager;
     private TvShow selectedShow;
     private SparseArray<MovieRow> tvRowSparseArray;
-    private TvMainContract.Presenter presenter;
 
     public static TvMainFragment newInstance() {
         TvMainFragment fragment = new TvMainFragment();
@@ -58,7 +56,6 @@ public class TvMainFragment extends BrowseSupportFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         App.instance().appComponent().inject(this);
-        presenter = new TvMainPresenter(theMovieDbAPI);
         presenter.attachView(this);
 
         glideBackgroundManager = new GlideBackgroundManager(requireActivity());
