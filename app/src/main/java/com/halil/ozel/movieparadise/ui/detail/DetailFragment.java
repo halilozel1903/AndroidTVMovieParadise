@@ -82,6 +82,7 @@ public class DetailFragment extends DetailsSupportFragment
     private DetailsOverviewRow detailsOverviewRow;
     private final ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(new PersonPresenter());
     private final ArrayObjectAdapter mRecommendationsAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    private ListRow castRow;
     private ListRow mRecommendationsRow;
     private String youtubeID;
     private final CompositeDisposable disposables = new CompositeDisposable();
@@ -100,9 +101,22 @@ public class DetailFragment extends DetailsSupportFragment
         App.instance().appComponent().inject(this);
 
         if (getArguments() == null || !getArguments().containsKey(Movie.class.getSimpleName())) {
-            throw new RuntimeException("A movie is necessary for DetailFragment");
+            Log.e(TAG, "DetailFragment launched without required Movie argument");
+            if (getActivity() != null) {
+                // Close the host activity gracefully instead of crashing
+                getActivity().finish();
+            }
+            return;
         }
         movie = getArguments().getParcelable(Movie.class.getSimpleName());
+
+        if (movie == null) {
+            Log.e(TAG, "Movie parcelable is null in DetailFragment");
+            if (getActivity() != null) getActivity().finish();
+            return;
+        }
+
+        Log.d(TAG, "DetailFragment received movie: id=" + movie.getId() + " title=" + movie.getTitle());
 
         setUpAdapter();
         setUpDetailsOverviewRow();
@@ -136,13 +150,23 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void setUpDetailsOverviewRow() {
-        detailsOverviewRow = new DetailsOverviewRow(new MovieDetails());
+        // Show basic movie info immediately by creating MovieDetails from the passed Movie.
+        movieDetails = new MovieDetails(movie);
+        detailsOverviewRow = new DetailsOverviewRow(movieDetails);
         arrayObjectAdapter.add(detailsOverviewRow);
         loadImage(HttpClientModule.POSTER_URL + movie.getPosterPath());
         fetchMovieDetails();
+        fetchVideos();
     }
 
     private void fetchMovieDetails() {
+        if (movie == null) {
+            Log.w(TAG, "fetchMovieDetails skipped: movie is null");
+            return;
+        }
+
+        Log.d(TAG, "Fetching movie details for id=" + movie.getId());
+
         disposables.add(theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -157,13 +181,24 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void setUpCastMembers() {
-        arrayObjectAdapter.add(new ListRow(new HeaderItem(0, getString(R.string.cast_label)), castAdapter));
+        castRow = new ListRow(new HeaderItem(0, getString(R.string.cast_label)), castAdapter);
         fetchCastMembers();
     }
 
     private void bindCastMembers(CreditsResponse response) {
+        if (response == null || response.getCast() == null) {
+            return;
+        }
+        if (response.getCast().isEmpty()) {
+            removeRow(castRow);
+            return;
+        }
         castAdapter.addAll(0, response.getCast());
+        addRowIfMissing(castRow, 1);
         // Find director from crew list
+        if (response.getCrew() == null) {
+            return;
+        }
         response.getCrew().stream()
                 .filter(c -> "Director".equals(c.getJob()))
                 .findFirst()
@@ -176,15 +211,27 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void bindMovieDetails(MovieDetails details) {
+        Log.d(TAG, "bindMovieDetails: details=" + (details == null ? "null" : details.getTitle()));
+        if (details == null) {
+            return;
+        }
+        PaletteColors paletteColors = movieDetails == null ? null : movieDetails.getPaletteColors();
+        String director = movieDetails == null ? null : movieDetails.getDirector();
         this.movieDetails = details;
+        if (paletteColors != null) {
+            this.movieDetails.setPaletteColors(paletteColors);
+        }
+        if (director != null) {
+            this.movieDetails.setDirector(director);
+        }
         detailsOverviewRow.setItem(this.movieDetails);
-        fetchVideos();
+        // Ensure UI is refreshed for the details overview row
+        notifyDetailsChanged();
     }
 
     private void setupRecommendationsRow() {
         mRecommendationsRow = new ListRow(
                 new HeaderItem(2, getString(R.string.recommendations_label)), mRecommendationsAdapter);
-        arrayObjectAdapter.add(mRecommendationsRow);
         fetchRecommendations();
     }
 
@@ -203,6 +250,9 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void handleVideoResponse(VideoResponse response) {
+        if (response == null || response.getResults() == null || response.getResults().isEmpty()) {
+            return;
+        }
         // Priority: official trailer → name contains "trailer" → type "Trailer"
         youtubeID = findVideoKey(response.getResults(), "official");
         if (youtubeID == null) youtubeID = findVideoKey(response.getResults(), "trailer");
@@ -218,7 +268,9 @@ public class DetailFragment extends DetailsSupportFragment
 
     private String findVideoKey(List<Video> videos, String keyword) {
         return videos.stream()
-                .filter(v -> v.getName().toLowerCase().contains(keyword))
+                .filter(v -> isYoutubeVideo(v)
+                        && v.getName() != null
+                        && v.getName().toLowerCase().contains(keyword))
                 .map(Video::getKey)
                 .findFirst()
                 .orElse(null);
@@ -226,15 +278,24 @@ public class DetailFragment extends DetailsSupportFragment
 
     private String findVideoKeyByType(List<Video> videos, String keyword) {
         return videos.stream()
-                .filter(v -> v.getType().toLowerCase().contains(keyword))
+                .filter(v -> isYoutubeVideo(v)
+                        && v.getType() != null
+                        && v.getType().toLowerCase().contains(keyword))
                 .map(Video::getKey)
                 .findFirst()
                 .orElse(null);
     }
 
+    private boolean isYoutubeVideo(Video video) {
+        return video != null
+                && video.getKey() != null
+                && video.getSite() != null
+                && "youtube".equalsIgnoreCase(video.getSite());
+    }
+
     private void bindRecommendations(MovieResponse response) {
-        if (response.getResults() == null || response.getResults().isEmpty()) {
-            arrayObjectAdapter.remove(mRecommendationsRow);
+        if (response == null || response.getResults() == null || response.getResults().isEmpty()) {
+            removeRow(mRecommendationsRow);
         } else {
             for (Movie recommendation : response.getResults()) {
                 if (recommendation.getPosterPath() != null) {
@@ -242,8 +303,25 @@ public class DetailFragment extends DetailsSupportFragment
                 }
             }
             if (mRecommendationsAdapter.size() == 0) {
-                arrayObjectAdapter.remove(mRecommendationsRow);
+                removeRow(mRecommendationsRow);
+            } else {
+                int castIndex = arrayObjectAdapter.indexOf(castRow);
+                addRowIfMissing(mRecommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
             }
+        }
+    }
+
+    private void addRowIfMissing(ListRow row, int index) {
+        if (row == null || arrayObjectAdapter.indexOf(row) >= 0) {
+            return;
+        }
+        int safeIndex = Math.max(0, Math.min(index, arrayObjectAdapter.size()));
+        arrayObjectAdapter.add(safeIndex, row);
+    }
+
+    private void removeRow(ListRow row) {
+        if (row != null && arrayObjectAdapter.indexOf(row) >= 0) {
+            arrayObjectAdapter.remove(row);
         }
     }
 
@@ -305,9 +383,19 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void notifyDetailsChanged() {
+        if (movieDetails == null) {
+            Object item = detailsOverviewRow.getItem();
+            if (item instanceof MovieDetails) {
+                movieDetails = (MovieDetails) item;
+            } else {
+                return;
+            }
+        }
         detailsOverviewRow.setItem(this.movieDetails);
         int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
-        arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        if (index >= 0) {
+            arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        }
     }
 
     private void openGenreMovies(Genre genre) {
@@ -323,8 +411,7 @@ public class DetailFragment extends DetailsSupportFragment
                               RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie) {
             Movie clicked = (Movie) item;
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(Movie.class.getSimpleName(), clicked);
+            Intent intent = MediaDetailActivity.newMovieIntent(requireActivity(), clicked);
 
             if (itemVH.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(

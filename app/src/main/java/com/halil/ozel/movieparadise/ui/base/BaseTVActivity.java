@@ -1,11 +1,8 @@
 package com.halil.ozel.movieparadise.ui.base;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -18,8 +15,6 @@ import com.halil.ozel.movieparadise.ui.main.MainActivity;
  * Hosts a single fragment inside R.id.tv_frame_content.
  */
 public class BaseTVActivity extends FragmentActivity {
-
-    private boolean routeBackToMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,40 +34,9 @@ public class BaseTVActivity extends FragmentActivity {
         }
     }
 
-    protected void finishOrReturnToMain() {
+    protected void returnToMain() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
-        finish();
-    }
-
-    protected void registerMainBackFallback() {
-        routeBackToMain = true;
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                finishOrReturnToMain();
-            }
-        });
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (routeBackToMain
-                && keyCode == KeyEvent.KEYCODE_BACK) {
-            finishOrReturnToMain();
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @SuppressLint({"MissingSuperCall", "GestureBackNavigation"})
-    @Override
-    public void onBackPressed() {
-        if (routeBackToMain) {
-            finishOrReturnToMain();
-        } else {
-            super.onBackPressed();
-        }
     }
 }
