@@ -78,100 +78,46 @@ public class TvShow implements Parcelable {
         return id;
     }
 
-    public TvShow setId(String id) {
-        this.id = id;
-        return this;
-    }
-
     public String getPosterPath() {
         return posterPath;
-    }
-
-    public TvShow setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-        return this;
     }
 
     public String getOverview() {
         return overview;
     }
 
-    public TvShow setOverview(String overview) {
-        this.overview = overview;
-        return this;
-    }
-
     public String getFirstAirDate() {
         return firstAirDate;
-    }
-
-    public TvShow setFirstAirDate(String firstAirDate) {
-        this.firstAirDate = firstAirDate;
-        return this;
     }
 
     public List<String> getGenreIds() {
         return genreIds;
     }
 
-    public TvShow setGenreIds(List<String> genreIds) {
-        this.genreIds = genreIds;
-        return this;
-    }
-
     public String getOriginalName() {
         return originalName;
-    }
-
-    public TvShow setOriginalName(String originalName) {
-        this.originalName = originalName;
-        return this;
     }
 
     public String getOriginalLanguage() {
         return originalLanguage;
     }
 
-    public TvShow setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-        return this;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public TvShow setName(String name) {
-        this.name = name;
-        return this;
     }
 
     public String getBackdropPath() {
         return backdropPath;
     }
 
-    public TvShow setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-        return this;
-    }
-
     public int getVoteCount() {
         return voteCount;
-    }
-
-    public TvShow setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-        return this;
     }
 
     public float getVoteAverage() {
         return voteAverage;
     }
 
-    public TvShow setVoteAverage(float voteAverage) {
-        this.voteAverage = voteAverage;
-        return this;
-    }
 
     @Override
     public int describeContents() {

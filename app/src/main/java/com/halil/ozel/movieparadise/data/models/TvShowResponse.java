@@ -34,28 +34,14 @@ public class TvShowResponse implements Parcelable {
         return results;
     }
 
-    public TvShowResponse setResults(List<TvShow> results) {
-        this.results = results;
-        return this;
-    }
-
     public int getTotalPages() {
         return totalPages;
-    }
-
-    public TvShowResponse setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-        return this;
     }
 
     public int getTotalResults() {
         return totalResults;
     }
 
-    public TvShowResponse setTotalResults(int totalResults) {
-        this.totalResults = totalResults;
-        return this;
-    }
 
     @Override
     public int describeContents() {
