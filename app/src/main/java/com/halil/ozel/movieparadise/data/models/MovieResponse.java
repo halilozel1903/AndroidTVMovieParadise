@@ -32,28 +32,14 @@ public class MovieResponse implements Parcelable {
         return results;
     }
 
-    public MovieResponse setResults(List<Movie> results) {
-        this.results = results;
-        return this;
-    }
-
     public int getTotalPages() {
         return totalPages;
-    }
-
-    public MovieResponse setTotalPages(int totalPages) {
-        this.totalPages = totalPages;
-        return this;
     }
 
     public int getTotalResults() {
         return totalResults;
     }
 
-    public MovieResponse setTotalResults(int totalResults) {
-        this.totalResults = totalResults;
-        return this;
-    }
 
     @Override
     public int describeContents() {
