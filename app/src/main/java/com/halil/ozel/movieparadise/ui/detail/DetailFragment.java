@@ -193,8 +193,17 @@ public class DetailFragment extends DetailsSupportFragment
             removeRow(castRow);
             return;
         }
-        castAdapter.addAll(0, response.getCast());
-        addRowIfMissing(castRow, 1);
+        castAdapter.clear();
+        for (CastMember castMember : response.getCast()) {
+            if (castMember.getName() != null) {
+                castAdapter.add(castMember);
+            }
+        }
+        if (castAdapter.size() > 0) {
+            addRowIfMissing(castRow, 1);
+        } else {
+            removeRow(castRow);
+        }
         // Find director from crew list
         if (response.getCrew() == null) {
             return;
@@ -297,6 +306,7 @@ public class DetailFragment extends DetailsSupportFragment
         if (response == null || response.getResults() == null || response.getResults().isEmpty()) {
             removeRow(mRecommendationsRow);
         } else {
+            mRecommendationsAdapter.clear();
             for (Movie recommendation : response.getResults()) {
                 if (recommendation.getPosterPath() != null) {
                     mRecommendationsAdapter.add(recommendation);

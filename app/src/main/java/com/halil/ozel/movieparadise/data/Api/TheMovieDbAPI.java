@@ -46,6 +46,12 @@ public interface TheMovieDbAPI {
             @Path("id") String tvShowId,
             @Query("api_key") String apiKey);
 
+    @GET(HttpClientModule.TV + "{id}/credits")
+    Observable<CreditsResponse> getTvCredits(@Path("id") String tvShowId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.TV + "{id}/recommendations")
+    Observable<TvShowResponse> getTvRecommendations(@Path("id") String tvShowId, @Query("api_key") String apiKey);
+
     @GET(HttpClientModule.MOVIE + "{id}/recommendations")
     Observable<MovieResponse> getRecommendations(@Path("id") String movieId, @Query("api_key") String apiKey);
 
@@ -59,7 +65,7 @@ public interface TheMovieDbAPI {
     Observable<VideoResponse> getMovieVideos(@Path("id") String movieId, @Query("api_key") String apiKey);
 
     @GET(HttpClientModule.SEARCH_MOVIE)
-    Observable<MovieResponse> getSearchMovies(@Query("query") String query,@Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
+    Observable<MovieResponse> getSearchMovies(@Query("query") String query, @Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
 
     @GET(HttpClientModule.DISCOVER_MOVIE)
     Observable<MovieResponse> getMoviesByGenre(@Query("with_genres") int genreId,

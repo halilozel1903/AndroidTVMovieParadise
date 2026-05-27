@@ -154,10 +154,11 @@ public class DetailViewHolder extends Presenter.ViewHolder {
     }
 
     private void applyExpandedState(boolean expanded, boolean hasExtraInfo) {
-        movieOverview.setMaxLines(expanded ? Integer.MAX_VALUE : 5);
+        movieOverview.setMaxLines(expanded ? 8 : 4);
         movieOverview.setEllipsize(expanded ? null : android.text.TextUtils.TruncateAt.END);
         mExtraInfoLayout.setVisibility(expanded && hasExtraInfo ? View.VISIBLE : View.GONE);
         mMoreDetailsTV.setText(expanded ? R.string.less_details : R.string.more_details);
+        itemView.requestLayout();
     }
 
     private void addExtraInfo(String label, String value) {

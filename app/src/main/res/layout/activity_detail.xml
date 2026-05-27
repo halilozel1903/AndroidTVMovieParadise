@@ -134,34 +134,6 @@
             android:maxLines="6"
             android:ellipsize="end" />
 
-        <LinearLayout
-            android:id="@+id/extra_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/more_details"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/card_title_background"
-            android:clickable="true"
-            android:ellipsize="end"
-            android:focusable="true"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:minWidth="128dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:singleLine="true"
-            android:text="@string/more_details"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:visibility="gone" />
-
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
