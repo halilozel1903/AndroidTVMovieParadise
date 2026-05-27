@@ -45,8 +45,29 @@ public class MovieDetails {
 
     private PaletteColors paletteColors;
     private String director;
+    private boolean detailsExpanded;
 
     public MovieDetails() {
+    }
+
+    /**
+     * Create a lightweight MovieDetails from a Movie instance so the UI can show
+     * basic information immediately while full details are being fetched.
+     */
+    public MovieDetails(com.halil.ozel.movieparadise.data.models.Movie movie) {
+        if (movie == null) return;
+        this.title = movie.getTitle();
+        this.overview = movie.getOverview();
+        this.posterPath = movie.getPosterPath();
+        this.backdropPath = movie.getBackdropPath();
+        this.releaseDate = movie.getReleaseDate();
+        this.originalTitle = movie.getOriginalTitle();
+        this.originalLanguage = movie.getOriginalLanguage();
+        this.adult = movie.isAdult();
+        this.video = movie.isVideo();
+        this.popularity = movie.getPopularity();
+        this.voteCount = movie.getVoteCount();
+        this.voteAverage = movie.getVoteAverage();
     }
 
     public boolean isAdult() {
@@ -143,6 +164,14 @@ public class MovieDetails {
         return this;
     }
 
+    public boolean isDetailsExpanded() {
+        return detailsExpanded;
+    }
+
+    public MovieDetails setDetailsExpanded(boolean detailsExpanded) {
+        this.detailsExpanded = detailsExpanded;
+        return this;
+    }
 
 
 }

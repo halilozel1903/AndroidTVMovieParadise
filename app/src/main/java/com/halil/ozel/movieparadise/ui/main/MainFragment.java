@@ -28,12 +28,11 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
-import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
+import com.halil.ozel.movieparadise.ui.detail.MediaDetailActivity;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 import com.halil.ozel.movieparadise.ui.search.SearchActivity;
-import com.halil.ozel.movieparadise.ui.tv.TvDetailActivity;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.tv.TvShowCardView;
 import com.halil.ozel.movieparadise.ui.tv.TvShowPresenter;
@@ -212,8 +211,7 @@ public class MainFragment extends BrowseSupportFragment
                               RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
-            Intent intent = new Intent(requireActivity(), DetailActivity.class);
-            intent.putExtra(Movie.class.getSimpleName(), movie);
+            Intent intent = MediaDetailActivity.newMovieIntent(requireActivity(), movie);
 
             if (itemVH.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -227,8 +225,7 @@ public class MainFragment extends BrowseSupportFragment
 
         } else if (item instanceof TvShow) {
             TvShow tvShow = (TvShow) item;
-            Intent intent = new Intent(requireActivity(), TvDetailActivity.class);
-            intent.putExtra(TvShow.class.getSimpleName(), tvShow);
+            Intent intent = MediaDetailActivity.newTvIntent(requireActivity(), tvShow);
 
             if (itemVH.view instanceof TvShowCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
