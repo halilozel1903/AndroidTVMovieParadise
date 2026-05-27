@@ -7,8 +7,6 @@
     <string name="recommendations_label">Recommendations</string>
     <string name="movies_label">Movies</string>
     <string name="watch_trailer">WATCH TRAILER</string>
-    <string name="more_details">Daha Fazlası</string>
-    <string name="less_details">Daha Az</string>
     <string name="minutes_format">%d min</string>
     <string name="rating_format">⭐ %.1f / 10</string>
     <string name="year_format">(%s)</string>
