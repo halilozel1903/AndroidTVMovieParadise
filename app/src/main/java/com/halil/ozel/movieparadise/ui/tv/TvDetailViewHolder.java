@@ -145,10 +145,11 @@ public class TvDetailViewHolder extends Presenter.ViewHolder {
     }
 
     private void applyExpandedState(boolean expanded) {
-        overviewTv.setMaxLines(expanded ? Integer.MAX_VALUE : 5);
+        overviewTv.setMaxLines(expanded ? 8 : 4);
         overviewTv.setEllipsize(expanded ? null : TextUtils.TruncateAt.END);
         extraInfoLayout.setVisibility(expanded && boundHasExtraInfo ? View.VISIBLE : View.GONE);
         moreDetailsTv.setText(expanded ? R.string.less_details : R.string.more_details);
+        itemView.requestLayout();
     }
 
     private void addExtraInfo(String label, String value) {

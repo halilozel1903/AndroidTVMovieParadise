@@ -46,6 +46,8 @@ public class TvMainFragment extends BrowseSupportFragment
     private GlideBackgroundManager glideBackgroundManager;
     private TvShow selectedShow;
     private SparseArray<MovieRow> tvRowSparseArray;
+    private SparseArray<ListRow> visibleRows;
+    private ArrayObjectAdapter rowsAdapter;
 
     public static TvMainFragment newInstance() {
         TvMainFragment fragment = new TvMainFragment();
@@ -66,7 +68,7 @@ public class TvMainFragment extends BrowseSupportFragment
         setHeadersTransitionOnBackEnabled(true);
 
         createDataRows();
-        createRows();
+        setupRowsAdapter();
         prepareEntranceTransition();
         presenter.loadSections(rowId -> {
             MovieRow rowData = tvRowSparseArray.get(rowId);
@@ -76,6 +78,7 @@ public class TvMainFragment extends BrowseSupportFragment
 
     private void createDataRows() {
         tvRowSparseArray = new SparseArray<>();
+        visibleRows = new SparseArray<>();
         TvShowPresenter presenter = new TvShowPresenter();
 
         tvRowSparseArray.put(TvMainContract.ON_THE_AIR,   newRow(TvMainContract.ON_THE_AIR,   "On The Air",   presenter));
@@ -92,12 +95,8 @@ public class TvMainFragment extends BrowseSupportFragment
                 .setPage(1);
     }
 
-    private void createRows() {
-        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
-        for (int i = 0; i < tvRowSparseArray.size(); i++) {
-            MovieRow row = tvRowSparseArray.get(i);
-            rowsAdapter.add(new ListRow(new HeaderItem(row.getId(), row.getTitle()), row.getAdapter()));
-        }
+    private void setupRowsAdapter() {
+        rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
         setAdapter(rowsAdapter);
         setOnItemViewSelectedListener(this);
         setOnItemViewClickedListener(this);
@@ -108,12 +107,25 @@ public class TvMainFragment extends BrowseSupportFragment
         if (row == null || shows == null || shows.isEmpty()) {
             return;
         }
-        row.setPage(row.getPage() + 1);
+        int oldSize = row.getAdapter().size();
         for (TvShow show : shows) {
             if (show.getPosterPath() != null) {
                 row.getAdapter().add(show);
             }
         }
+        if (row.getAdapter().size() > oldSize) {
+            row.setPage(row.getPage() + 1);
+            addVisibleRowIfNeeded(row);
+        }
+    }
+
+    private void addVisibleRowIfNeeded(MovieRow row) {
+        if (visibleRows.get(row.getId()) != null) {
+            return;
+        }
+        ListRow listRow = new ListRow(new HeaderItem(row.getId(), row.getTitle()), row.getAdapter());
+        visibleRows.put(row.getId(), listRow);
+        rowsAdapter.add(listRow);
     }
 
     @Override
