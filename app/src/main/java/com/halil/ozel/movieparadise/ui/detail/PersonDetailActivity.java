@@ -2,6 +2,7 @@ package com.halil.ozel.movieparadise.ui.detail;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.core.content.ContextCompat;
 import androidx.core.os.BundleCompat;
 
@@ -19,6 +20,13 @@ public class PersonDetailActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishAfterTransition();
+            }
+        });
 
         // API-33 safe parcelable extraction
         Bundle extras = getIntent().getExtras();

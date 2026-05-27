@@ -170,8 +170,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
                               RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie) {
             Movie movie = (Movie) item;
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(Movie.class.getSimpleName(), movie);
+            Intent intent = MediaDetailActivity.newMovieIntent(requireActivity(), movie);
 
             if (itemVH.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(

@@ -18,8 +18,8 @@ import androidx.leanback.widget.RowPresenter;
 
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.data.models.Movie;
-import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
+import com.halil.ozel.movieparadise.ui.detail.MediaDetailActivity;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
 
@@ -103,8 +103,7 @@ public class SearchFragment extends androidx.leanback.app.SearchSupportFragment
     public void onItemClicked(Presenter.ViewHolder viewHolder, Object item,
                               RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie movie) {
-            Intent intent = new Intent(getActivity(), DetailActivity.class);
-            intent.putExtra(Movie.class.getSimpleName(), movie);
+            Intent intent = MediaDetailActivity.newMovieIntent(requireActivity(), movie);
 
             if (viewHolder.view instanceof MovieCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
