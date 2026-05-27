@@ -66,7 +66,6 @@ public class TvShow implements Parcelable {
     private String status;
     private String tagline;
     private String type;
-    private boolean detailsExpanded;
 
     public TvShow() {
     }
@@ -179,15 +178,6 @@ public class TvShow implements Parcelable {
 
     public String getType() {
         return type;
-    }
-
-    public boolean isDetailsExpanded() {
-        return detailsExpanded;
-    }
-
-    public TvShow setDetailsExpanded(boolean detailsExpanded) {
-        this.detailsExpanded = detailsExpanded;
-        return this;
     }
 
     @Override

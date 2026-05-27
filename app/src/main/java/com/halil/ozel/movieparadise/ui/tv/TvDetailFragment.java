@@ -36,6 +36,7 @@ import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.detail.CustomDetailPresenter;
+import com.halil.ozel.movieparadise.ui.detail.DetailDescriptionPresenter;
 import com.halil.ozel.movieparadise.ui.detail.MediaDetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.PersonDetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.PersonPresenter;
@@ -99,7 +100,8 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
     }
 
     private void setUpAdapter() {
-        customDetailPresenter = new CustomDetailPresenter(new TvDetailDescriptionPresenter(), new DetailsOverviewLogoPresenter());
+        customDetailPresenter = new CustomDetailPresenter(
+                new DetailDescriptionPresenter(null), new DetailsOverviewLogoPresenter());
         FullWidthDetailsOverviewSharedElementHelper helper = new FullWidthDetailsOverviewSharedElementHelper();
         helper.setSharedElementEnterTransition(getActivity(), TRANSITION_NAME);
         customDetailPresenter.setListener(helper);
@@ -198,9 +200,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (details == null) {
             return;
         }
-        boolean expanded = tvShow != null && tvShow.isDetailsExpanded();
         tvShow = details;
-        tvShow.setDetailsExpanded(expanded);
         detailsOverviewRow.setItem(tvShow);
         int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
         if (index >= 0) {

@@ -125,7 +125,17 @@ public class TvMainFragment extends BrowseSupportFragment
         }
         ListRow listRow = new ListRow(new HeaderItem(row.getId(), row.getTitle()), row.getAdapter());
         visibleRows.put(row.getId(), listRow);
-        rowsAdapter.add(listRow);
+        rowsAdapter.add(visibleRowIndex(row.getId()), listRow);
+    }
+
+    private int visibleRowIndex(int rowId) {
+        int index = 0;
+        for (int i = 0; i < visibleRows.size(); i++) {
+            if (visibleRows.keyAt(i) < rowId) {
+                index++;
+            }
+        }
+        return index;
     }
 
     @Override
