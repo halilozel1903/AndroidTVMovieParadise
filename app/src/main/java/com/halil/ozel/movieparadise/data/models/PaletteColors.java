@@ -48,6 +48,7 @@ public class PaletteColors implements Parcelable {
         return this;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
