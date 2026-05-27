@@ -129,8 +129,18 @@ public class MovieDetails {
         return paletteColors;
     }
 
+    public MovieDetails setPaletteColors(PaletteColors paletteColors) {
+        this.paletteColors = paletteColors;
+        return this;
+    }
+
     public String getDirector() {
         return director;
+    }
+
+    public MovieDetails setDirector(String director) {
+        this.director = director;
+        return this;
     }
 
 
