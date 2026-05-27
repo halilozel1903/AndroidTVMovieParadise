@@ -38,100 +38,46 @@ public class Person implements Parcelable {
         return id;
     }
 
-    public Person setId(int id) {
-        this.id = id;
-        return this;
-    }
-
     public String getBiography() {
         return biography;
-    }
-
-    public Person setBiography(String biography) {
-        this.biography = biography;
-        return this;
     }
 
     public String getBirthday() {
         return birthday;
     }
 
-    public Person setBirthday(String birthday) {
-        this.birthday = birthday;
-        return this;
-    }
-
     public String getDeathday() {
         return deathday;
-    }
-
-    public Person setDeathday(String deathday) {
-        this.deathday = deathday;
-        return this;
     }
 
     public int getGender() {
         return gender;
     }
 
-    public Person setGender(int gender) {
-        this.gender = gender;
-        return this;
-    }
-
     public String getHomepage() {
         return homepage;
-    }
-
-    public Person setHomepage(String homepage) {
-        this.homepage = homepage;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public Person setName(String name) {
-        this.name = name;
-        return this;
-    }
-
     public float getPopularity() {
         return popularity;
-    }
-
-    public Person setPopularity(float popularity) {
-        this.popularity = popularity;
-        return this;
     }
 
     public boolean isAdult() {
         return adult;
     }
 
-    public Person setAdult(boolean adult) {
-        this.adult = adult;
-        return this;
-    }
-
     public String getProfilePath() {
         return profilePath;
-    }
-
-    public Person setProfilePath(String profilePath) {
-        this.profilePath = profilePath;
-        return this;
     }
 
     public String getPlaceOfBirth() {
         return placeOfBirth;
     }
 
-    public Person setPlaceOfBirth(String placeOfBirth) {
-        this.placeOfBirth = placeOfBirth;
-        return this;
-    }
 
     @Override
     public int describeContents() {
