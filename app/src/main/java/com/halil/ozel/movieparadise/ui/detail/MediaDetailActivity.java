@@ -47,32 +47,16 @@ public class MediaDetailActivity extends BaseTVActivity {
         super.onCreate(savedInstanceState);
 
         Bundle extras = getIntent().getExtras();
-        if (extras == null) {
-            Log.e(TAG, "MediaDetailActivity launched without extras");
-            returnToMain();
-            return;
-        }
 
         String mediaType = extras.getString(EXTRA_MEDIA_TYPE);
         if (MEDIA_TYPE_MOVIE.equals(mediaType) || extras.containsKey(Movie.class.getSimpleName())) {
             movie = BundleCompat.getParcelable(extras, Movie.class.getSimpleName(), Movie.class);
-            if (movie == null) {
-                Log.e(TAG, "Missing Movie parcelable");
-                returnToMain();
-                return;
-            }
             addFragment(DetailFragment.newInstance(movie));
         } else if (MEDIA_TYPE_TV.equals(mediaType) || extras.containsKey(TvShow.class.getSimpleName())) {
             tvShow = BundleCompat.getParcelable(extras, TvShow.class.getSimpleName(), TvShow.class);
-            if (tvShow == null) {
-                Log.e(TAG, "Missing TvShow parcelable");
-                returnToMain();
-                return;
-            }
             addFragment(TvDetailFragment.newInstance(tvShow));
         } else {
             Log.e(TAG, "Unknown media type: " + mediaType);
-            returnToMain();
             return;
         }
 
