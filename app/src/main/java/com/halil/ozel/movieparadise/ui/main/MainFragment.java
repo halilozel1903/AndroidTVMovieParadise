@@ -52,6 +52,8 @@ public class MainFragment extends BrowseSupportFragment
     private GlideBackgroundManager glideBackgroundManager;
     private Object selectedItem;
     private SparseArray<MovieRow> movieRowSparseArray;
+    private SparseArray<ListRow> visibleRows;
+    private ArrayObjectAdapter rowsAdapter;
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -88,6 +90,7 @@ public class MainFragment extends BrowseSupportFragment
 
     private void createDataRows() {
         movieRowSparseArray = new SparseArray<>();
+        visibleRows = new SparseArray<>();
 
         MoviePresenter moviePresenter = new MoviePresenter();
         TvShowPresenter tvPresenter   = new TvShowPresenter();
@@ -111,12 +114,7 @@ public class MainFragment extends BrowseSupportFragment
     }
 
     private void createRows() {
-        ArrayObjectAdapter rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
-        for (int i = 0; i < movieRowSparseArray.size(); i++) {
-            MovieRow row = movieRowSparseArray.get(i);
-            HeaderItem header  = new HeaderItem(row.getId(), row.getTitle());
-            rowsAdapter.add(new ListRow(header, row.getAdapter()));
-        }
+        rowsAdapter = new ArrayObjectAdapter(new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
         setAdapter(rowsAdapter);
         setOnItemViewSelectedListener(this);
         setOnItemViewClickedListener(this);
@@ -127,11 +125,15 @@ public class MainFragment extends BrowseSupportFragment
         if (row == null || movies == null || movies.isEmpty()) {
             return;
         }
-        row.setPage(row.getPage() + 1);
+        int oldSize = row.getAdapter().size();
         for (Movie movie : movies) {
             if (movie.getPosterPath() != null) {
                 row.getAdapter().add(movie);
             }
+        }
+        if (row.getAdapter().size() > oldSize) {
+            row.setPage(row.getPage() + 1);
+            addVisibleRowIfNeeded(row);
         }
     }
 
@@ -140,12 +142,35 @@ public class MainFragment extends BrowseSupportFragment
         if (row == null || shows == null || shows.isEmpty()) {
             return;
         }
-        row.setPage(row.getPage() + 1);
+        int oldSize = row.getAdapter().size();
         for (TvShow show : shows) {
             if (show.getPosterPath() != null) {
                 row.getAdapter().add(show);
             }
         }
+        if (row.getAdapter().size() > oldSize) {
+            row.setPage(row.getPage() + 1);
+            addVisibleRowIfNeeded(row);
+        }
+    }
+
+    private void addVisibleRowIfNeeded(MovieRow row) {
+        if (visibleRows.get(row.getId()) != null) {
+            return;
+        }
+        ListRow listRow = new ListRow(new HeaderItem(row.getId(), row.getTitle()), row.getAdapter());
+        visibleRows.put(row.getId(), listRow);
+        rowsAdapter.add(visibleRowIndex(row.getId()), listRow);
+    }
+
+    private int visibleRowIndex(int rowId) {
+        int index = 0;
+        for (int i = 0; i < visibleRows.size(); i++) {
+            if (visibleRows.keyAt(i) < rowId) {
+                index++;
+            }
+        }
+        return index;
     }
 
     @Override

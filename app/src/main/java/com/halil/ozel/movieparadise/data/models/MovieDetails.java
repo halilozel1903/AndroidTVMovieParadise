@@ -45,7 +45,6 @@ public class MovieDetails {
 
     private PaletteColors paletteColors;
     private String director;
-    private boolean detailsExpanded;
 
     public MovieDetails() {
     }
@@ -163,15 +162,5 @@ public class MovieDetails {
         this.director = director;
         return this;
     }
-
-    public boolean isDetailsExpanded() {
-        return detailsExpanded;
-    }
-
-    public MovieDetails setDetailsExpanded(boolean detailsExpanded) {
-        this.detailsExpanded = detailsExpanded;
-        return this;
-    }
-
 
 }

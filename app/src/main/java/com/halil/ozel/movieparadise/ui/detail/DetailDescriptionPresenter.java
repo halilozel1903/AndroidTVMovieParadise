@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.data.models.Genre;
-import com.halil.ozel.movieparadise.data.models.MovieDetails;
 
 
 public class DetailDescriptionPresenter extends Presenter {
@@ -32,9 +31,8 @@ public class DetailDescriptionPresenter extends Presenter {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, Object item) {
-        MovieDetails movieDetails = (MovieDetails) item;
         DetailViewHolder holder = (DetailViewHolder) viewHolder;
-        holder.bind(movieDetails);
+        holder.bind(item);
     }
 
     @Override
