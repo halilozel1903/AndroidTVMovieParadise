@@ -23,14 +23,11 @@ import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.Movie;
-import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.TvShow;
-import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 import com.halil.ozel.movieparadise.ui.detail.DetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
@@ -42,26 +39,14 @@ import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.tv.TvShowCardView;
 import com.halil.ozel.movieparadise.ui.tv.TvShowPresenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.schedulers.Schedulers;
-
 public class MainFragment extends BrowseSupportFragment
-        implements OnItemViewSelectedListener, OnItemViewClickedListener {
+        implements OnItemViewSelectedListener, OnItemViewClickedListener, MainContract.View {
 
     private static final String TAG = "MainFragment";
-
-    // Row index constants
-    private static final int NOW_PLAYING    = 0;
-    private static final int TOP_RATED      = 1;
-    private static final int POPULAR        = 2;
-    private static final int UPCOMING       = 3;
-    private static final int TV_ON_THE_AIR  = 4;
-    private static final int TV_AIRING_TODAY= 5;
-    private static final int TV_POPULAR     = 6;
-    private static final int TV_TOP_RATED   = 7;
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
@@ -69,7 +54,7 @@ public class MainFragment extends BrowseSupportFragment
     private GlideBackgroundManager glideBackgroundManager;
     private Object selectedItem;
     private SparseArray<MovieRow> movieRowSparseArray;
-    private final CompositeDisposable disposables = new CompositeDisposable();
+    private MainContract.Presenter presenter;
 
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
@@ -81,6 +66,8 @@ public class MainFragment extends BrowseSupportFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         App.instance().appComponent().inject(this);
+        presenter = new MainPresenter(theMovieDbAPI);
+        presenter.attachView(this);
 
         glideBackgroundManager = new GlideBackgroundManager(requireActivity());
 
@@ -97,14 +84,10 @@ public class MainFragment extends BrowseSupportFragment
         createRows();
         prepareEntranceTransition();
 
-        fetchNowPlayingMovies();
-        fetchTopRatedMovies();
-        fetchPopularMovies();
-        fetchUpcomingMovies();
-        fetchOnTheAir();
-        fetchAiringToday();
-        fetchPopularTv();
-        fetchTopRatedTv();
+        presenter.loadHomeSections(rowId -> {
+            MovieRow rowData = movieRowSparseArray.get(rowId);
+            return rowData == null ? 1 : rowData.getPage();
+        });
     }
 
     private void createDataRows() {
@@ -113,14 +96,14 @@ public class MainFragment extends BrowseSupportFragment
         MoviePresenter moviePresenter = new MoviePresenter();
         TvShowPresenter tvPresenter   = new TvShowPresenter();
 
-        movieRowSparseArray.put(NOW_PLAYING,     newMovieRow(NOW_PLAYING,     "Now Playing",   moviePresenter));
-        movieRowSparseArray.put(TOP_RATED,       newMovieRow(TOP_RATED,       "Top Rated",     moviePresenter));
-        movieRowSparseArray.put(POPULAR,         newMovieRow(POPULAR,         "Popular",       moviePresenter));
-        movieRowSparseArray.put(UPCOMING,        newMovieRow(UPCOMING,        "Upcoming",      moviePresenter));
-        movieRowSparseArray.put(TV_ON_THE_AIR,   newMovieRow(TV_ON_THE_AIR,   "On The Air",    tvPresenter));
-        movieRowSparseArray.put(TV_AIRING_TODAY, newMovieRow(TV_AIRING_TODAY, "Airing Today",  tvPresenter));
-        movieRowSparseArray.put(TV_POPULAR,      newMovieRow(TV_POPULAR,      "Popular TV",    tvPresenter));
-        movieRowSparseArray.put(TV_TOP_RATED,    newMovieRow(TV_TOP_RATED,    "Top Rated TV",  tvPresenter));
+        movieRowSparseArray.put(MainContract.NOW_PLAYING,     newMovieRow(MainContract.NOW_PLAYING,     "Now Playing",   moviePresenter));
+        movieRowSparseArray.put(MainContract.TOP_RATED,       newMovieRow(MainContract.TOP_RATED,       "Top Rated",     moviePresenter));
+        movieRowSparseArray.put(MainContract.POPULAR,         newMovieRow(MainContract.POPULAR,         "Popular",       moviePresenter));
+        movieRowSparseArray.put(MainContract.UPCOMING,        newMovieRow(MainContract.UPCOMING,        "Upcoming",      moviePresenter));
+        movieRowSparseArray.put(MainContract.TV_ON_THE_AIR,   newMovieRow(MainContract.TV_ON_THE_AIR,   "On The Air",    tvPresenter));
+        movieRowSparseArray.put(MainContract.TV_AIRING_TODAY, newMovieRow(MainContract.TV_AIRING_TODAY, "Airing Today",  tvPresenter));
+        movieRowSparseArray.put(MainContract.TV_POPULAR,      newMovieRow(MainContract.TV_POPULAR,      "Popular TV",    tvPresenter));
+        movieRowSparseArray.put(MainContract.TV_TOP_RATED,    newMovieRow(MainContract.TV_TOP_RATED,    "Top Rated TV",  tvPresenter));
     }
 
     private MovieRow newMovieRow(int id, String title, Presenter presenter) {
@@ -143,92 +126,47 @@ public class MainFragment extends BrowseSupportFragment
         setOnItemViewClickedListener(this);
     }
 
-    // ── Fetch helpers ────────────────────────────────────────────────────────
-
-    private void fetchNowPlayingMovies() {
-        disposables.add(theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, movieRowSparseArray.get(NOW_PLAYING).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindMovieResponse(r, NOW_PLAYING); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchNowPlaying error", e)));
-    }
-
-    private void fetchTopRatedMovies() {
-        disposables.add(theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, movieRowSparseArray.get(TOP_RATED).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindMovieResponse(r, TOP_RATED); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchTopRated error", e)));
-    }
-
-    private void fetchPopularMovies() {
-        disposables.add(theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, movieRowSparseArray.get(POPULAR).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindMovieResponse(r, POPULAR); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchPopular error", e)));
-    }
-
-    private void fetchUpcomingMovies() {
-        disposables.add(theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, movieRowSparseArray.get(UPCOMING).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindMovieResponse(r, UPCOMING); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchUpcoming error", e)));
-    }
-
-    private void fetchOnTheAir() {
-        disposables.add(theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, movieRowSparseArray.get(TV_ON_THE_AIR).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_ON_THE_AIR); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchOnTheAir error", e)));
-    }
-
-    private void fetchAiringToday() {
-        disposables.add(theMovieDbAPI.getAiringToday(Config.API_KEY_URL, movieRowSparseArray.get(TV_AIRING_TODAY).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_AIRING_TODAY); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchAiringToday error", e)));
-    }
-
-    private void fetchPopularTv() {
-        disposables.add(theMovieDbAPI.getPopularTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_POPULAR).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_POPULAR); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchPopularTv error", e)));
-    }
-
-    private void fetchTopRatedTv() {
-        disposables.add(theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, movieRowSparseArray.get(TV_TOP_RATED).getPage())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> { bindTvResponse(r, TV_TOP_RATED); startEntranceTransition(); },
-                           e -> Log.e(TAG, "fetchTopRatedTv error", e)));
-    }
-
-    // ── Bind helpers ─────────────────────────────────────────────────────────
-
-    private void bindMovieResponse(MovieResponse response, int rowId) {
+    private void addMoviesToRow(int rowId, List<Movie> movies) {
         MovieRow row = movieRowSparseArray.get(rowId);
+        if (row == null || movies == null || movies.isEmpty()) {
+            return;
+        }
         row.setPage(row.getPage() + 1);
-        for (Movie movie : response.getResults()) {
+        for (Movie movie : movies) {
             if (movie.getPosterPath() != null) {
                 row.getAdapter().add(movie);
             }
         }
     }
 
-    private void bindTvResponse(TvShowResponse response, int rowId) {
+    private void addTvShowsToRow(int rowId, List<TvShow> shows) {
         MovieRow row = movieRowSparseArray.get(rowId);
+        if (row == null || shows == null || shows.isEmpty()) {
+            return;
+        }
         row.setPage(row.getPage() + 1);
-        for (TvShow show : response.getResults()) {
+        for (TvShow show : shows) {
             if (show.getPosterPath() != null) {
                 row.getAdapter().add(show);
             }
         }
+    }
+
+    @Override
+    public void showMovieResults(int rowId, List<Movie> movies) {
+        addMoviesToRow(rowId, movies);
+        startEntranceTransition();
+    }
+
+    @Override
+    public void showTvResults(int rowId, List<TvShow> shows) {
+        addTvShowsToRow(rowId, shows);
+        startEntranceTransition();
+    }
+
+    @Override
+    public void showLoadError(String source, Throwable throwable) {
+        Log.e(TAG, "load " + source + " error", throwable);
     }
 
     // ── Background ───────────────────────────────────────────────────────────
@@ -259,7 +197,7 @@ public class MainFragment extends BrowseSupportFragment
 
     @Override
     public void onDestroyView() {
-        disposables.clear();
+        presenter.detachView();
         super.onDestroyView();
     }
 
