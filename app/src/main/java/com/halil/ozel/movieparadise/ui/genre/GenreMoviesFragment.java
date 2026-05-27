@@ -100,7 +100,8 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
     public void onItemSelected(Presenter.ViewHolder itemVH, Object item,
                                RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof Movie
-                && moviesAdapter.indexOf(item) >= moviesAdapter.size() - LOAD_MORE_THRESHOLD) {
+                && moviesAdapter.indexOf(item) >= moviesAdapter.size() - LOAD_MORE_THRESHOLD
+                && presenter.canLoadMore()) {
             presenter.loadMoviesByGenre(genre.getId());
         }
     }
