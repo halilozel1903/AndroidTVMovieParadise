@@ -27,6 +27,7 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
+import com.halil.ozel.movieparadise.ui.detail.MediaDetailActivity;
 import com.halil.ozel.movieparadise.ui.main.MovieRow;
 
 import java.util.List;
@@ -166,8 +167,7 @@ public class TvMainFragment extends BrowseSupportFragment
                               RowPresenter.ViewHolder rowVH, Row row) {
         if (item instanceof TvShow) {
             TvShow tvShow = (TvShow) item;
-            Intent intent = new Intent(requireActivity(), TvDetailActivity.class);
-            intent.putExtra(TvShow.class.getSimpleName(), tvShow);
+            Intent intent = MediaDetailActivity.newTvIntent(requireActivity(), tvShow);
 
             if (itemVH.view instanceof TvShowCardView) {
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(

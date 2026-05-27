@@ -4,6 +4,7 @@ import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
+import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.data.models.Person;
@@ -39,6 +40,11 @@ public interface TheMovieDbAPI {
 
     @GET(HttpClientModule.TV_TOP_RATED)
     Observable<TvShowResponse> getTopRatedTv(@Query("api_key") String apiKey, @Query("page") int page);
+
+    @GET(HttpClientModule.TV + "{id}")
+    Observable<TvShow> getTvShowDetails(
+            @Path("id") String tvShowId,
+            @Query("api_key") String apiKey);
 
     @GET(HttpClientModule.MOVIE + "{id}/recommendations")
     Observable<MovieResponse> getRecommendations(@Path("id") String movieId, @Query("api_key") String apiKey);

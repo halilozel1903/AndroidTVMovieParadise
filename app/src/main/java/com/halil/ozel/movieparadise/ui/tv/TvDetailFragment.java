@@ -28,21 +28,34 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.halil.ozel.movieparadise.App;
+import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
+import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.TvShow;
 import com.halil.ozel.movieparadise.ui.detail.CustomDetailPresenter;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailDescriptionPresenter;
+
+import javax.inject.Inject;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /** Very lightweight detail fragment for TV shows. */
 public class TvDetailFragment extends DetailsSupportFragment {
 
     public static String TRANSITION_NAME = "poster_transition";
 
+    @Inject
+    TheMovieDbAPI theMovieDbAPI;
+
     private TvShow tvShow;
     private ArrayObjectAdapter arrayObjectAdapter;
     private CustomDetailPresenter customDetailPresenter;
     private DetailsOverviewRow detailsOverviewRow;
+    private final CompositeDisposable disposables = new CompositeDisposable();
     private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
         @Override
         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
@@ -66,6 +79,7 @@ public class TvDetailFragment extends DetailsSupportFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        App.instance().appComponent().inject(this);
         if (getArguments() == null || !getArguments().containsKey(TvShow.class.getSimpleName())) {
             throw new RuntimeException("A tv show is necessary for TvDetailFragment");
         }
@@ -92,6 +106,32 @@ public class TvDetailFragment extends DetailsSupportFragment {
         detailsOverviewRow = new DetailsOverviewRow(tvShow);
         arrayObjectAdapter.add(detailsOverviewRow);
         loadImage(HttpClientModule.POSTER_URL + tvShow.getPosterPath());
+        fetchTvShowDetails();
+    }
+
+    private void fetchTvShowDetails() {
+        if (tvShow == null || tvShow.getId() == null) {
+            return;
+        }
+        disposables.add(theMovieDbAPI.getTvShowDetails(tvShow.getId(), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::bindTvShowDetails, ignored -> {
+                }));
+    }
+
+    private void bindTvShowDetails(TvShow details) {
+        if (details == null) {
+            return;
+        }
+        boolean expanded = tvShow != null && tvShow.isDetailsExpanded();
+        tvShow = details;
+        tvShow.setDetailsExpanded(expanded);
+        detailsOverviewRow.setItem(tvShow);
+        int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
+        if (index >= 0) {
+            arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        }
     }
 
     private void loadImage(String url) {
@@ -106,5 +146,11 @@ public class TvDetailFragment extends DetailsSupportFragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.popcorn)
                 .into(mGlideDrawableSimpleTarget);
+    }
+
+    @Override
+    public void onDestroy() {
+        disposables.clear();
+        super.onDestroy();
     }
 }

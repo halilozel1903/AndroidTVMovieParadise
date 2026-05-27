@@ -45,6 +45,29 @@ public class TvShow implements Parcelable {
     @SerializedName("vote_average")
     private float voteAverage;
 
+    private List<Genre> genres;
+
+    @SerializedName("episode_run_time")
+    private List<Integer> episodeRunTime;
+
+    @SerializedName("last_air_date")
+    private String lastAirDate;
+
+    @SerializedName("number_of_episodes")
+    private int numberOfEpisodes;
+
+    @SerializedName("number_of_seasons")
+    private int numberOfSeasons;
+
+    @SerializedName("origin_country")
+    private List<String> originCountry;
+
+    private float popularity;
+    private String status;
+    private String tagline;
+    private String type;
+    private boolean detailsExpanded;
+
     public TvShow() {
     }
 
@@ -118,6 +141,54 @@ public class TvShow implements Parcelable {
         return voteAverage;
     }
 
+    public List<Genre> getGenres() {
+        return genres;
+    }
+
+    public List<Integer> getEpisodeRunTime() {
+        return episodeRunTime;
+    }
+
+    public String getLastAirDate() {
+        return lastAirDate;
+    }
+
+    public int getNumberOfEpisodes() {
+        return numberOfEpisodes;
+    }
+
+    public int getNumberOfSeasons() {
+        return numberOfSeasons;
+    }
+
+    public List<String> getOriginCountry() {
+        return originCountry;
+    }
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isDetailsExpanded() {
+        return detailsExpanded;
+    }
+
+    public TvShow setDetailsExpanded(boolean detailsExpanded) {
+        this.detailsExpanded = detailsExpanded;
+        return this;
+    }
 
     @Override
     public int describeContents() {
