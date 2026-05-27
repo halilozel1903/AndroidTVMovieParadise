@@ -58,6 +58,7 @@
                 tools:text="⭐ 8.4 / 10" />
 
             <TextView
+                android:id="@+id/rating_runtime_separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -75,6 +76,7 @@
                 tools:text="132 min" />
 
             <TextView
+                android:id="@+id/runtime_year_separator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -125,13 +127,40 @@
             android:id="@+id/overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="6dp"
             android:textSize="13sp"
             android:textColor="@color/text_secondary"
             android:lineSpacingMultiplier="1.35"
             android:maxLines="6"
             android:ellipsize="end" />
+
+        <LinearLayout
+            android:id="@+id/extra_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/more_details"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/card_title_background"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:focusable="true"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:minWidth="128dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:singleLine="true"
+            android:text="@string/more_details"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

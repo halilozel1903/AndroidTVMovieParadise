@@ -22,17 +22,11 @@ public class GenreMoviesActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerMainBackFallback();
 
         Bundle extras = getIntent().getExtras();
         Genre genre = extras == null
                 ? null
                 : BundleCompat.getParcelable(extras, EXTRA_GENRE, Genre.class);
-
-        if (genre == null) {
-            finishOrReturnToMain();
-            return;
-        }
 
         addFragment(GenreMoviesFragment.newInstance(genre));
     }
