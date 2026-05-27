@@ -54,127 +54,58 @@ public class Movie implements Parcelable {
         return id;
     }
 
-    public Movie setId(String id) {
-        this.id = id;
-        return this;
-    }
-
     public String getPosterPath() {
         return posterPath;
-    }
-
-    public Movie setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-        return this;
     }
 
     public boolean isAdult() {
         return adult;
     }
 
-    public Movie setAdult(boolean adult) {
-        this.adult = adult;
-        return this;
-    }
-
     public String getOverview() {
         return overview;
-    }
-
-    public Movie setOverview(String overview) {
-        this.overview = overview;
-        return this;
     }
 
     public String getReleaseDate() {
         return releaseDate;
     }
 
-    public Movie setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-        return this;
-    }
-
     public List<String> getGenreIds() {
         return genreIds;
-    }
-
-    public Movie setGenreIds(List<String> genreIds) {
-        this.genreIds = genreIds;
-        return this;
     }
 
     public String getOriginalTitle() {
         return originalTitle;
     }
 
-    public Movie setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-        return this;
-    }
-
     public String getOriginalLanguage() {
         return originalLanguage;
-    }
-
-    public Movie setOriginalLanguage(String originalLanguage) {
-        this.originalLanguage = originalLanguage;
-        return this;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public Movie setTitle(String title) {
-        this.title = title;
-        return this;
-    }
-
     public String getBackdropPath() {
         return backdropPath;
-    }
-
-    public Movie setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-        return this;
     }
 
     public float getPopularity() {
         return popularity;
     }
 
-    public Movie setPopularity(float popularity) {
-        this.popularity = popularity;
-        return this;
-    }
-
     public int getVoteCount() {
         return voteCount;
-    }
-
-    public Movie setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-        return this;
     }
 
     public boolean isVideo() {
         return video;
     }
 
-    public Movie setVideo(boolean video) {
-        this.video = video;
-        return this;
-    }
-
     public float getVoteAverage() {
         return voteAverage;
     }
 
-    public Movie setVoteAverage(float voteAverage) {
-        this.voteAverage = voteAverage;
-        return this;
-    }
 
     @Override
     public int describeContents() {
