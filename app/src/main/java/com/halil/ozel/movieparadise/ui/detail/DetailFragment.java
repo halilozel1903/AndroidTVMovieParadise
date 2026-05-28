@@ -71,6 +71,7 @@ public class DetailFragment extends DetailsSupportFragment
 
     public static final String TRANSITION_NAME = "poster_transition";
     private static final String TAG = "DetailFragment";
+    private static final int ACTION_TRAILER = 0;
 
     @Inject
     TheMovieDbAPI theMovieDbAPI;
@@ -85,6 +86,7 @@ public class DetailFragment extends DetailsSupportFragment
     private ListRow castRow;
     private ListRow mRecommendationsRow;
     private String youtubeID;
+    private int pendingRecommendationRequests;
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     public static DetailFragment newInstance(Movie movie) {
@@ -135,7 +137,8 @@ public class DetailFragment extends DetailsSupportFragment
         customDetailPresenter.setParticipatingEntranceTransition(false);
 
         customDetailPresenter.setOnActionClickedListener(action -> {
-            if ((int) action.getId() == 0 && youtubeID != null) {
+            int actionId = (int) action.getId();
+            if (actionId == ACTION_TRAILER && youtubeID != null) {
                 Intent intent = new Intent(getActivity(), PlayerActivity.class);
                 intent.putExtra("videoId", youtubeID);
                 startActivity(intent);
@@ -160,7 +163,7 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void fetchMovieDetails() {
-        if (movie == null) {
+        if (movie == null || movie.getId() == null) {
             Log.w(TAG, "fetchMovieDetails skipped: movie is null");
             return;
         }
@@ -174,6 +177,10 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void fetchCastMembers() {
+        if (movie == null || movie.getId() == null) {
+            removeRow(castRow);
+            return;
+        }
         disposables.add(theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -245,10 +252,32 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void fetchRecommendations() {
+        if (movie == null || movie.getId() == null) {
+            removeRow(mRecommendationsRow);
+            return;
+        }
+        mRecommendationsAdapter.clear();
+        pendingRecommendationRequests = 2;
+
         disposables.add(theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindRecommendations, e -> Log.e(TAG, "fetchRecommendations error", e)));
+                .subscribe(
+                        this::appendRecommendations,
+                        e -> {
+                            Log.e(TAG, "fetchRecommendations error", e);
+                            finishRecommendationRequest();
+                        }));
+
+        disposables.add(theMovieDbAPI.getSimilarMovies(movie.getId(), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::appendRecommendations,
+                        e -> {
+                            Log.e(TAG, "fetchSimilarMovies error", e);
+                            finishRecommendationRequest();
+                        }));
     }
 
     private void fetchVideos() {
@@ -268,11 +297,18 @@ public class DetailFragment extends DetailsSupportFragment
         if (youtubeID == null) youtubeID = findVideoKeyByType(response.getResults(), "trailer");
 
         if (youtubeID != null) {
-            SparseArrayObjectAdapter adapter = new SparseArrayObjectAdapter();
-            adapter.set(0, new Action(0, getString(R.string.watch_trailer)));
-            detailsOverviewRow.setActionsAdapter(adapter);
-            notifyDetailsChanged();
+            showTrailerAction();
         }
+    }
+
+    private void showTrailerAction() {
+        if (detailsOverviewRow == null || youtubeID == null) {
+            return;
+        }
+        SparseArrayObjectAdapter adapter = new SparseArrayObjectAdapter();
+        adapter.set(ACTION_TRAILER, new Action(ACTION_TRAILER, getString(R.string.watch_trailer)));
+        detailsOverviewRow.setActionsAdapter(adapter);
+        notifyDetailsChanged();
     }
 
     private String findVideoKey(List<Video> videos, String keyword) {
@@ -302,22 +338,45 @@ public class DetailFragment extends DetailsSupportFragment
                 && "youtube".equalsIgnoreCase(video.getSite());
     }
 
-    private void bindRecommendations(MovieResponse response) {
-        if (response == null || response.getResults() == null || response.getResults().isEmpty()) {
-            removeRow(mRecommendationsRow);
-        } else {
-            mRecommendationsAdapter.clear();
+    private void appendRecommendations(MovieResponse response) {
+        if (response != null && response.getResults() != null) {
             for (Movie recommendation : response.getResults()) {
-                if (recommendation.getPosterPath() != null) {
+                if (isValidRecommendation(recommendation) && !hasRecommendation(recommendation)) {
                     mRecommendationsAdapter.add(recommendation);
                 }
             }
-            if (mRecommendationsAdapter.size() == 0) {
-                removeRow(mRecommendationsRow);
-            } else {
-                int castIndex = arrayObjectAdapter.indexOf(castRow);
-                addRowIfMissing(mRecommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
+        }
+        finishRecommendationRequest();
+    }
+
+    private boolean isValidRecommendation(Movie recommendation) {
+        return recommendation != null
+                && recommendation.getId() != null
+                && !recommendation.getId().equals(movie.getId())
+                && recommendation.getPosterPath() != null;
+    }
+
+    private boolean hasRecommendation(Movie recommendation) {
+        for (int i = 0; i < mRecommendationsAdapter.size(); i++) {
+            Object item = mRecommendationsAdapter.get(i);
+            if (item instanceof Movie
+                    && recommendation.getId().equals(((Movie) item).getId())) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    private void finishRecommendationRequest() {
+        pendingRecommendationRequests = Math.max(0, pendingRecommendationRequests - 1);
+        if (pendingRecommendationRequests > 0) {
+            return;
+        }
+        if (mRecommendationsAdapter.size() == 0) {
+            removeRow(mRecommendationsRow);
+        } else {
+            int castIndex = arrayObjectAdapter.indexOf(castRow);
+            addRowIfMissing(mRecommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
         }
     }
 

@@ -5,9 +5,9 @@
 
     <dimen name="genre_corner">12dp</dimen>
     <!-- Default corner radius for card layouts -->
-    <dimen name="card_corner_radius">14dp</dimen>
-    <dimen name="poster_card_width">180dp</dimen>
-    <dimen name="poster_card_height">270dp</dimen>
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="poster_card_width">188dp</dimen>
+    <dimen name="poster_card_height">282dp</dimen>
     <dimen name="half_padding">8dp</dimen>
     <dimen name="full_padding">16dp</dimen>
 

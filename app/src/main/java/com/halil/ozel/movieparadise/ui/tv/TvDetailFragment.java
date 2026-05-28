@@ -63,6 +63,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
     private final ArrayObjectAdapter recommendationsAdapter = new ArrayObjectAdapter(new TvShowPresenter());
     private ListRow castRow;
     private ListRow recommendationsRow;
+    private int pendingRecommendationRequests;
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
         @Override
@@ -155,28 +156,25 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
 
     private void fetchRecommendations() {
         if (tvShow == null || tvShow.getId() == null) {
+            removeRow(recommendationsRow);
             return;
         }
+        recommendationsAdapter.clear();
+        pendingRecommendationRequests = 2;
+
         disposables.add(theMovieDbAPI.getTvRecommendations(tvShow.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                    if (response == null || response.getResults() == null || response.getResults().isEmpty()) {
-                        removeRow(recommendationsRow);
-                        return;
-                    }
-                    for (TvShow recommendation : response.getResults()) {
-                        if (recommendation.getPosterPath() != null) {
-                            recommendationsAdapter.add(recommendation);
-                        }
-                    }
-                    if (recommendationsAdapter.size() > 0) {
-                        int castIndex = arrayObjectAdapter.indexOf(castRow);
-                        addRowIfMissing(recommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
-                    } else {
-                        removeRow(recommendationsRow);
-                    }
-                }, ignored -> removeRow(recommendationsRow)));
+                .subscribe(
+                        this::appendRecommendations,
+                        ignored -> finishRecommendationRequest()));
+
+        disposables.add(theMovieDbAPI.getSimilarTvShows(tvShow.getId(), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        this::appendRecommendations,
+                        ignored -> finishRecommendationRequest()));
     }
 
     private void bindCastMembers(CreditsResponse response) {
@@ -184,6 +182,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
             removeRow(castRow);
             return;
         }
+        castAdapter.clear();
         for (CastMember castMember : response.getCast()) {
             if (castMember.getName() != null) {
                 castAdapter.add(castMember);
@@ -205,6 +204,48 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
         if (index >= 0) {
             arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        }
+    }
+
+    private void appendRecommendations(com.halil.ozel.movieparadise.data.models.TvShowResponse response) {
+        if (response != null && response.getResults() != null) {
+            for (TvShow recommendation : response.getResults()) {
+                if (isValidRecommendation(recommendation) && !hasRecommendation(recommendation)) {
+                    recommendationsAdapter.add(recommendation);
+                }
+            }
+        }
+        finishRecommendationRequest();
+    }
+
+    private boolean isValidRecommendation(TvShow recommendation) {
+        return recommendation != null
+                && recommendation.getId() != null
+                && !recommendation.getId().equals(tvShow.getId())
+                && recommendation.getPosterPath() != null;
+    }
+
+    private boolean hasRecommendation(TvShow recommendation) {
+        for (int i = 0; i < recommendationsAdapter.size(); i++) {
+            Object item = recommendationsAdapter.get(i);
+            if (item instanceof TvShow
+                    && recommendation.getId().equals(((TvShow) item).getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void finishRecommendationRequest() {
+        pendingRecommendationRequests = Math.max(0, pendingRecommendationRequests - 1);
+        if (pendingRecommendationRequests > 0) {
+            return;
+        }
+        if (recommendationsAdapter.size() == 0) {
+            removeRow(recommendationsRow);
+        } else {
+            int castIndex = arrayObjectAdapter.indexOf(castRow);
+            addRowIfMissing(recommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
         }
     }
 

@@ -52,8 +52,14 @@ public interface TheMovieDbAPI {
     @GET(HttpClientModule.TV + "{id}/recommendations")
     Observable<TvShowResponse> getTvRecommendations(@Path("id") String tvShowId, @Query("api_key") String apiKey);
 
+    @GET(HttpClientModule.TV + "{id}/similar")
+    Observable<TvShowResponse> getSimilarTvShows(@Path("id") String tvShowId, @Query("api_key") String apiKey);
+
     @GET(HttpClientModule.MOVIE + "{id}/recommendations")
     Observable<MovieResponse> getRecommendations(@Path("id") String movieId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.MOVIE + "{id}/similar")
+    Observable<MovieResponse> getSimilarMovies(@Path("id") String movieId, @Query("api_key") String apiKey);
 
     @GET(HttpClientModule.MOVIE + "{id}/credits")
     Observable<CreditsResponse> getCredits(@Path("id") String movieId, @Query("api_key") String apiKey);

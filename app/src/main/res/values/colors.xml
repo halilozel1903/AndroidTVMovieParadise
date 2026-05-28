@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#081c24</color>
-    <color name="primary_dark">#05151b</color>
-    <color name="primary_transparent">#BF081c24</color>
-    <color name="primary_dark_transparent">#BF05151b</color>
-    <color name="accent_color">#01d277</color>
+    <color name="primary">#10141F</color>
+    <color name="primary_dark">#080B12</color>
+    <color name="primary_transparent">#CC10141F</color>
+    <color name="primary_dark_transparent">#D9080B12</color>
+    <color name="accent_color">#00E0A4</color>
     <color name="yellow">#ffeb3b</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="card_scrim">#99000000</color>
-    <color name="card_scrim_start">#12000000</color>
-    <color name="card_scrim_end">#F2000000</color>
-    <color name="details_surface">#E61B222B</color>
+    <color name="card_scrim">#B3000000</color>
+    <color name="card_scrim_start">#00000000</color>
+    <color name="card_scrim_end">#F5080B12</color>
+    <color name="details_surface">#EA141A24</color>
     <color name="details_surface_stroke">#33FFFFFF</color>
     <color name="genre_chip_background">#CC111820</color>
     <color name="text_secondary">#CCFFFFFF</color>
