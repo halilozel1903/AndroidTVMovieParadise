@@ -7,7 +7,7 @@
     android:layout_height="@dimen/poster_card_height"
     app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="12dp"
+    app:cardElevation="10dp"
     app:cardPreventCornerOverlap="false">
 
     <FrameLayout
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/cast_label"
-            android:scaleType="fitCenter" />
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,10 +27,10 @@
             android:layout_gravity="bottom"
             android:background="@drawable/card_title_background"
             android:orientation="vertical"
-            android:paddingStart="10dp"
-            android:paddingTop="18dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="10dp">
+            android:paddingStart="12dp"
+            android:paddingTop="22dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/person_title_tv"
@@ -44,7 +44,7 @@
                 android:shadowDy="1"
                 android:shadowRadius="3"
                 android:textColor="@color/white"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="Sienna Miller" />
 

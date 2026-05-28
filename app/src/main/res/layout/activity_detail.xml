@@ -8,7 +8,7 @@
     android:layout_margin="16dp"
     app:cardBackgroundColor="@color/details_surface"
     app:cardCornerRadius="@dimen/card_corner_radius"
-    app:cardElevation="14dp"
+    app:cardElevation="10dp"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -26,7 +26,7 @@
             android:textSize="26sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.01"
+            android:letterSpacing="0"
             android:textColor="@color/white"
             tools:text="Movie Title" />
 

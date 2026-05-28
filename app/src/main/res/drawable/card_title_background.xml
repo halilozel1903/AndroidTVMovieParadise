@@ -4,5 +4,5 @@
         android:angle="270"
         android:endColor="@color/card_scrim_end"
         android:startColor="@color/card_scrim_start" />
-    <corners android:bottomLeftRadius="12dp" android:bottomRightRadius="12dp" />
+    <corners android:bottomLeftRadius="8dp" android:bottomRightRadius="8dp" />
 </shape>
