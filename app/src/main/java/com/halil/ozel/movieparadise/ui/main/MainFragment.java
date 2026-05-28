@@ -82,10 +82,7 @@ public class MainFragment extends BrowseSupportFragment
         createRows();
         prepareEntranceTransition();
 
-        presenter.loadHomeSections(rowId -> {
-            MovieRow rowData = movieRowSparseArray.get(rowId);
-            return rowData == null ? 1 : rowData.getPage();
-        });
+        loadInitialRows();
     }
 
     private void createDataRows() {
@@ -120,6 +117,21 @@ public class MainFragment extends BrowseSupportFragment
         setOnItemViewClickedListener(this);
     }
 
+    private void loadInitialRows() {
+        for (int i = 0; i < movieRowSparseArray.size(); i++) {
+            loadNextPage(movieRowSparseArray.keyAt(i));
+        }
+    }
+
+    private void loadNextPage(int rowId) {
+        MovieRow row = movieRowSparseArray.get(rowId);
+        if (row == null || row.isLoading() || row.isExhausted()) {
+            return;
+        }
+        row.setLoading(true);
+        presenter.loadHomeSection(rowId, row.getPage());
+    }
+
     private void addMoviesToRow(int rowId, List<Movie> movies) {
         MovieRow row = movieRowSparseArray.get(rowId);
         if (row == null || movies == null || movies.isEmpty()) {
@@ -127,13 +139,15 @@ public class MainFragment extends BrowseSupportFragment
         }
         int oldSize = row.getAdapter().size();
         for (Movie movie : movies) {
-            if (movie.getPosterPath() != null) {
+            if (movie.getPosterPath() != null && row.addKeyIfAbsent(movieKey(movie))) {
                 row.getAdapter().add(movie);
             }
         }
         if (row.getAdapter().size() > oldSize) {
             row.setPage(row.getPage() + 1);
             addVisibleRowIfNeeded(row);
+        } else {
+            row.setExhausted(true);
         }
     }
 
@@ -144,14 +158,36 @@ public class MainFragment extends BrowseSupportFragment
         }
         int oldSize = row.getAdapter().size();
         for (TvShow show : shows) {
-            if (show.getPosterPath() != null) {
+            if (show.getPosterPath() != null && row.addKeyIfAbsent(tvShowKey(show))) {
                 row.getAdapter().add(show);
             }
         }
         if (row.getAdapter().size() > oldSize) {
             row.setPage(row.getPage() + 1);
             addVisibleRowIfNeeded(row);
+        } else {
+            row.setExhausted(true);
         }
+    }
+
+    private String movieKey(Movie movie) {
+        if (movie == null) {
+            return null;
+        }
+        if (movie.getId() != null) {
+            return "movie:" + movie.getId();
+        }
+        return "movie:" + movie.getTitle() + ":" + movie.getReleaseDate();
+    }
+
+    private String tvShowKey(TvShow show) {
+        if (show == null) {
+            return null;
+        }
+        if (show.getId() != null) {
+            return "tv:" + show.getId();
+        }
+        return "tv:" + show.getName() + ":" + show.getFirstAirDate();
     }
 
     private void addVisibleRowIfNeeded(MovieRow row) {
@@ -175,18 +211,32 @@ public class MainFragment extends BrowseSupportFragment
 
     @Override
     public void showMovieResults(int rowId, List<Movie> movies) {
+        MovieRow row = movieRowSparseArray.get(rowId);
+        if (row != null) {
+            row.setLoading(false);
+            row.setExhausted(movies == null || movies.isEmpty());
+        }
         addMoviesToRow(rowId, movies);
         startEntranceTransition();
     }
 
     @Override
     public void showTvResults(int rowId, List<TvShow> shows) {
+        MovieRow row = movieRowSparseArray.get(rowId);
+        if (row != null) {
+            row.setLoading(false);
+            row.setExhausted(shows == null || shows.isEmpty());
+        }
         addTvShowsToRow(rowId, shows);
         startEntranceTransition();
     }
 
     @Override
-    public void showLoadError(String source, Throwable throwable) {
+    public void showLoadError(int rowId, String source, Throwable throwable) {
+        MovieRow row = movieRowSparseArray.get(rowId);
+        if (row != null) {
+            row.setLoading(false);
+        }
         Log.e(TAG, "load " + source + " error", throwable);
     }
 
@@ -229,6 +279,23 @@ public class MainFragment extends BrowseSupportFragment
                                RowPresenter.ViewHolder rowVH, Row row) {
         selectedItem = item;
         updateBackground(item);
+        maybeLoadMore(row, item);
+    }
+
+    private void maybeLoadMore(Row row, Object item) {
+        if (!(row instanceof ListRow)) {
+            return;
+        }
+        int rowId = (int) row.getHeaderItem().getId();
+        MovieRow rowData = movieRowSparseArray.get(rowId);
+        if (rowData == null) {
+            return;
+        }
+        int selectedIndex = rowData.getAdapter().indexOf(item);
+        int threshold = Math.max(0, rowData.getAdapter().size() - 6);
+        if (selectedIndex >= threshold) {
+            loadNextPage(rowId);
+        }
     }
 
     @Override

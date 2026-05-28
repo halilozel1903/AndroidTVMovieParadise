@@ -19,13 +19,14 @@ public interface MainContract {
     interface View {
         void showMovieResults(int rowId, List<Movie> movies);
         void showTvResults(int rowId, List<TvShow> shows);
-        void showLoadError(String source, Throwable throwable);
+        void showLoadError(int rowId, String source, Throwable throwable);
     }
 
     interface Presenter {
         void attachView(View view);
         void detachView();
         void loadHomeSections(RowPageProvider rowPageProvider);
+        void loadHomeSection(int rowId, int page);
     }
 
     interface RowPageProvider {

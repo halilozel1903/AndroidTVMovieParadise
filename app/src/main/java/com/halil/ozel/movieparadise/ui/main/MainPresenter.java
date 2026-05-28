@@ -35,39 +35,54 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
 
     @Override
     public void loadHomeSections(MainContract.RowPageProvider rowPageProvider) {
-        loadMovieSection(
-                MainContract.NOW_PLAYING,
-                "now playing",
-                theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.NOW_PLAYING)));
-        loadMovieSection(
-                MainContract.TOP_RATED,
-                "top rated",
-                theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.TOP_RATED)));
-        loadMovieSection(
-                MainContract.POPULAR,
-                "popular",
-                theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.POPULAR)));
-        loadMovieSection(
-                MainContract.UPCOMING,
-                "upcoming",
-                theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.UPCOMING)));
+        loadHomeSection(MainContract.NOW_PLAYING, rowPageProvider.getPage(MainContract.NOW_PLAYING));
+        loadHomeSection(MainContract.TOP_RATED, rowPageProvider.getPage(MainContract.TOP_RATED));
+        loadHomeSection(MainContract.POPULAR, rowPageProvider.getPage(MainContract.POPULAR));
+        loadHomeSection(MainContract.UPCOMING, rowPageProvider.getPage(MainContract.UPCOMING));
+        loadHomeSection(MainContract.TV_ON_THE_AIR, rowPageProvider.getPage(MainContract.TV_ON_THE_AIR));
+        loadHomeSection(MainContract.TV_AIRING_TODAY, rowPageProvider.getPage(MainContract.TV_AIRING_TODAY));
+        loadHomeSection(MainContract.TV_POPULAR, rowPageProvider.getPage(MainContract.TV_POPULAR));
+        loadHomeSection(MainContract.TV_TOP_RATED, rowPageProvider.getPage(MainContract.TV_TOP_RATED));
+    }
 
-        loadTvSection(
-                MainContract.TV_ON_THE_AIR,
-                "on the air",
-                theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.TV_ON_THE_AIR)));
-        loadTvSection(
-                MainContract.TV_AIRING_TODAY,
-                "airing today",
-                theMovieDbAPI.getAiringToday(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.TV_AIRING_TODAY)));
-        loadTvSection(
-                MainContract.TV_POPULAR,
-                "popular tv",
-                theMovieDbAPI.getPopularTv(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.TV_POPULAR)));
-        loadTvSection(
-                MainContract.TV_TOP_RATED,
-                "top rated tv",
-                theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, rowPageProvider.getPage(MainContract.TV_TOP_RATED)));
+    @Override
+    public void loadHomeSection(int rowId, int page) {
+        switch (rowId) {
+            case MainContract.NOW_PLAYING:
+                loadMovieSection(rowId, "now playing",
+                        theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, page));
+                break;
+            case MainContract.TOP_RATED:
+                loadMovieSection(rowId, "top rated",
+                        theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, page));
+                break;
+            case MainContract.POPULAR:
+                loadMovieSection(rowId, "popular",
+                        theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, page));
+                break;
+            case MainContract.UPCOMING:
+                loadMovieSection(rowId, "upcoming",
+                        theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, page));
+                break;
+            case MainContract.TV_ON_THE_AIR:
+                loadTvSection(rowId, "on the air",
+                        theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, page));
+                break;
+            case MainContract.TV_AIRING_TODAY:
+                loadTvSection(rowId, "airing today",
+                        theMovieDbAPI.getAiringToday(Config.API_KEY_URL, page));
+                break;
+            case MainContract.TV_POPULAR:
+                loadTvSection(rowId, "popular tv",
+                        theMovieDbAPI.getPopularTv(Config.API_KEY_URL, page));
+                break;
+            case MainContract.TV_TOP_RATED:
+                loadTvSection(rowId, "top rated tv",
+                        theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, page));
+                break;
+            default:
+                break;
+        }
     }
 
     private void loadMovieSection(int rowId, String source, Observable<MovieResponse> request) {
@@ -80,7 +95,7 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
                     }
                 }, throwable -> {
                     if (view != null) {
-                        view.showLoadError(source, throwable);
+                        view.showLoadError(rowId, source, throwable);
                     }
                 }));
     }
@@ -95,7 +110,7 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
                     }
                 }, throwable -> {
                     if (view != null) {
-                        view.showLoadError(source, throwable);
+                        view.showLoadError(rowId, source, throwable);
                     }
                 }));
     }
