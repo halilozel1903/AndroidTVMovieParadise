@@ -2,13 +2,12 @@ package com.halil.ozel.movieparadise.ui.base;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.LayoutRes;
-
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-
 
 public abstract class BindableCardView<T> extends FrameLayout {
 
@@ -30,6 +29,8 @@ public abstract class BindableCardView<T> extends FrameLayout {
     private void initLayout() {
         setFocusable(true);
         setFocusableInTouchMode(true);
+        setDefaultFocusHighlightEnabled(false);
+        setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         setBackgroundColor(Color.TRANSPARENT);
         LayoutInflater inflater = LayoutInflater.from(getContext());
         inflater.inflate(getLayoutResource(), this);

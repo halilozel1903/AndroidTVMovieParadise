@@ -10,6 +10,7 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.ui.base.BindableCardView;
+import com.halil.ozel.movieparadise.ui.base.GlideUtils;
 
 public class MovieCardView extends BindableCardView<Movie> {
 
@@ -41,8 +42,7 @@ public class MovieCardView extends BindableCardView<Movie> {
     }
 
     void unbind() {
-        Glide.with(getContext()).clear(posterImageView);
-        posterImageView.setImageDrawable(null);
+        GlideUtils.clearImageView(posterImageView);
         titleTextView.setText(null);
     }
 
