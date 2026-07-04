@@ -34,18 +34,6 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
     }
 
     @Override
-    public void loadHomeSections(MainContract.RowPageProvider rowPageProvider) {
-        loadHomeSection(MainContract.NOW_PLAYING, rowPageProvider.getPage(MainContract.NOW_PLAYING));
-        loadHomeSection(MainContract.TOP_RATED, rowPageProvider.getPage(MainContract.TOP_RATED));
-        loadHomeSection(MainContract.POPULAR, rowPageProvider.getPage(MainContract.POPULAR));
-        loadHomeSection(MainContract.UPCOMING, rowPageProvider.getPage(MainContract.UPCOMING));
-        loadHomeSection(MainContract.TV_ON_THE_AIR, rowPageProvider.getPage(MainContract.TV_ON_THE_AIR));
-        loadHomeSection(MainContract.TV_AIRING_TODAY, rowPageProvider.getPage(MainContract.TV_AIRING_TODAY));
-        loadHomeSection(MainContract.TV_POPULAR, rowPageProvider.getPage(MainContract.TV_POPULAR));
-        loadHomeSection(MainContract.TV_TOP_RATED, rowPageProvider.getPage(MainContract.TV_TOP_RATED));
-    }
-
-    @Override
     public void loadHomeSection(int rowId, int page) {
         switch (rowId) {
             case MainContract.NOW_PLAYING:
@@ -90,8 +78,8 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (view != null && response != null && response.getResults() != null) {
-                        view.showMovieResults(rowId, response.getResults());
+                    if (view != null) {
+                        view.showMovieResponse(rowId, response);
                     }
                 }, throwable -> {
                     if (view != null) {
@@ -105,8 +93,8 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (view != null && response != null && response.getResults() != null) {
-                        view.showTvResults(rowId, response.getResults());
+                    if (view != null) {
+                        view.showTvResponse(rowId, response);
                     }
                 }, throwable -> {
                     if (view != null) {

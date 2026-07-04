@@ -7,12 +7,18 @@ import java.util.Set;
 
 
 public class MovieRow {
+    public static final int MAX_EMPTY_PAGE_ATTEMPTS = 5;
+
     private int page;
     private int id;
     private ArrayObjectAdapter adapter;
     private String title;
     private boolean loading;
     private boolean exhausted;
+    private boolean error;
+    private String errorMessage;
+    private int emptyPageAttempts;
+    private boolean hasShownContent;
     private final Set<String> itemKeys = new HashSet<>();
 
     public MovieRow() {}
@@ -68,6 +74,42 @@ public class MovieRow {
 
     public MovieRow setExhausted(boolean exhausted) {
         this.exhausted = exhausted;
+        return this;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public MovieRow setError(boolean error) {
+        this.error = error;
+        return this;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public MovieRow setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+        return this;
+    }
+
+    public int getEmptyPageAttempts() {
+        return emptyPageAttempts;
+    }
+
+    public MovieRow setEmptyPageAttempts(int emptyPageAttempts) {
+        this.emptyPageAttempts = emptyPageAttempts;
+        return this;
+    }
+
+    public boolean isHasShownContent() {
+        return hasShownContent;
+    }
+
+    public MovieRow setHasShownContent(boolean hasShownContent) {
+        this.hasShownContent = hasShownContent;
         return this;
     }
 

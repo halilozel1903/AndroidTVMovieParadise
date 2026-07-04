@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.core.splashscreen.SplashScreen;
 
 import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 
@@ -11,6 +12,7 @@ import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 public class MainActivity extends BaseTVActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.installSplashScreen(this);
         super.onCreate(savedInstanceState);
         addFragment(MainFragment.newInstance());
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -35,10 +37,5 @@ public class MainActivity extends BaseTVActivity {
             return true;
         }
         return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        // TV ana ekranda yanlışlıkla back ile uygulamayı kapatma.
     }
 }

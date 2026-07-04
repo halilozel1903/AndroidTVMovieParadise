@@ -12,5 +12,7 @@
     <dimen name="full_padding">16dp</dimen>
 
     <dimen name="lb_details_v2_card_height">430dp</dimen>
+    <dimen name="provider_icon_size">44dp</dimen>
+    <dimen name="provider_icon_margin">8dp</dimen>
 
 </resources>
