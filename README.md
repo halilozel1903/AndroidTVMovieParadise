@@ -1,114 +1,270 @@
-# Movie 🎬 Paradise 🎥
+# Paradise 📺🎬
 
-![Screenshot](https://github.com/halilozel1903/AndroidTVMovieParadise/blob/master/screenshots/androidtv.png)
+> A leanback-first Android TV app for browsing **movies** and **TV series**, powered by [The Movie Database (TMDB)](https://www.themoviedb.org/) API.
 
-Android TV is a version of the Android operating system. It's developed by Google for soundbars, set-top boxes, digital media players, and TVs with native applications. It's a replacement for Google TV. Android TV platform was first launched in June 2014. This platform has also been adopted as smart TV middleware by a company such as Sharp and Sony.
+![Paradise TV Banner](./screenshots/paradise_banner.png)
 
+[![Platform](https://img.shields.io/badge/Platform-Android%20TV-3DDC84?style=flat&logo=android&logoColor=white)](https://developer.android.com/tv)
+[![Language](https://img.shields.io/badge/Language-Java-007396?style=flat&logo=coffee&logoColor=white)](https://www.java.com/)
+[![Min SDK](https://img.shields.io/badge/Min%20SDK-24-blue?style=flat)](app/build.gradle)
+[![Target SDK](https://img.shields.io/badge/Target%20SDK-36-blue?style=flat)](app/build.gradle)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
-Movie Paradise is an Android TV 📺 app. This app is working Android TV & Android STB. 📹 🎞
+---
 
-Application is using The Movie Database. 👇🏻
+## Overview 🧭
 
-https://www.themoviedb.org/documentation/api
+**Paradise** is a remote-friendly entertainment catalog for Android TV, Google TV, and Android STB devices. It combines the AndroidX **Leanback** browse/details pattern with TMDB metadata, poster art, cast discovery, genre exploration, watch-provider hints, and inline trailer playback.
 
-The application uses the basic components of Android TV application.
+The app is built for the **10-foot UI**: D-pad navigation, focus-driven scrolling, shared-element poster transitions, skeleton loading states, and retryable error rows.
 
-Build apps that let users experience your app's immersive content on the big screen. Users can discover your content recommendations on the home screen, and the leanback library provides APIs to help you build a great use experience for a remote control.
+📖 Related article: [How to develop an Android TV app](https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b)
 
-I wrote a blog post about Android TV. You can access the article from the link below.
+---
 
-https://medium.com/@halilozel1903/how-to-develop-android-tv-app-5e251f3aa56b
+## Features ✨
 
-## Technologies Used 🛠️
+| Area | What you get |
+|------|----------------|
+| 🏠 **Home** | 8 paginated rows — 4 movie + 4 TV sections with infinite horizontal scroll |
+| 🎬 **Movies** | Now Playing, Top Rated, Popular, Upcoming |
+| 📡 **TV Series** | On The Air, Airing Today, Popular TV, Top Rated TV |
+| 🔎 **Search** | Live movie search via `SearchSupportFragment` |
+| 🏷️ **Genres** | Focusable genre chips → filtered movie grid |
+| 📜 **Details** | Overview, rating, runtime, director, **Watch Trailer**, genres, watch providers, cast, recommendations |
+| 👤 **Cast** | Person detail with portrait/backdrop images, filmography (Movies & Series rows) |
+| ▶️ **Trailers** | WebView embed + **Open in YouTube** fallback for Android TV |
+| 🎨 **UX** | Skeleton loaders, empty states, retry cards, dynamic palette-based hero background |
+| 🎯 **Focus** | Google TV–aligned Leanback focus (1.05× zoom + glow), chip outline rows for tags |
 
-- ☕ **Java** – Main programming language
-- 📐 **AndroidX & Material Components**
-- 📺 **Leanback** library for TV UI components
-- 🌐 **Retrofit** and **OkHttp** for network requests
-- ♻️ **RxJava** and **RxAndroid** for reactive programming
-- 🖼️ **Glide** for image loading
-- 🛠️ **Dagger** for dependency injection
-- 🗄️ **SQLBrite** for local database handling
-- 🌐 **WebView** with the YouTube IFrame Player for trailer playback
+---
 
-## Building
+## Tech Stack 🛠️
 
-All dependencies are available from **Maven Central**, so no additional
-repositories are required to build the project.
+| Layer | Libraries |
+|-------|-----------|
+| 🧱 **UI** | AndroidX Leanback, AppCompat, CardView, Palette, SplashScreen |
+| 🌐 **Networking** | Retrofit 3, OkHttp 5, Gson |
+| ⚡ **Async** | RxJava 3, RxAndroid |
+| 🖼️ **Images** | Glide 5 |
+| 💉 **DI** | Dagger 2 |
+| ▶️ **Playback** | WebView (YouTube embed) + external YouTube intent fallback |
 
-## Home 🏡 Screen 📺
+---
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/home.png)
+## Architecture 🏗️
 
-This is the area where the data retrieved from the API is displayed. The search
-icon sits right on the main page, letting you quickly find a movie. The home
-screen is organized into four categories: **Now Playing**, **Top Rated**,
-**Popular** and **Upcoming**.
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Activities                                                  │
+│  MainActivity · SearchActivity · MediaDetailActivity        │
+│  PersonDetailActivity · GenreMoviesActivity · PlayerActivity  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│  Fragments (Leanback)                                        │
+│  MainFragment · SearchFragment · DetailFragment              │
+│  TvDetailFragment · PersonDetailFragment · GenreMoviesFragment│
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         ▼                 ▼                 ▼
+   Presenters        RowLoadingHelper    TheMovieDbAPI
+   CardViews         UiStateItem         (Retrofit)
+   TagListRow        RecommendationRowHelper
+```
 
-## Now Playing ▶️
+- **MVP** on browse/search/genre flows (`MainContract`, `SearchContract`, `GenreMoviesContract`)
+- **Presenter / ViewHolder** pattern for Leanback rows and cards
+- **Dagger** `ApplicationComponent` injects API + presenters into fragments
+- **RxJava** disposables cleaned up in `onDestroy()` / `BaseRxPresenter`
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/nowplaying_focus.png)
+### Key packages 📦
 
-## Top ✍🏻 Rated 🔝
+```
+com.halil.ozel.movieparadise
+├── data/           # TMDB API + models
+├── dagger/         # App-wide DI graph
+├── ui/
+│   ├── main/       # Browse home + pagination
+│   ├── search/     # Voice/text search
+│   ├── detail/     # Movie detail, cast, tags, trailers
+│   ├── tv/         # TV show detail
+│   ├── genre/      # Genre-filtered grid
+│   ├── person/     # Cast member detail
+│   ├── player/     # Trailer WebView
+│   ├── common/     # Loading/error/empty cards
+│   └── base/       # Focus helpers, Glide, palette utils
+```
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/toprated.png)
+---
 
-## Popular 🥳
+## Screens 📸
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/popular.png)
+### 🏡 Home — Browse rows
 
+Eight TMDB-powered rows with skeleton loading, pagination, and a dynamic background driven by the focused poster (Palette API).
 
-## Upcoming 🔜
+![Home Screen](./screenshots/home.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/upcoming.png)
+| Row | Content |
+|-----|---------|
+| ▶️ Now Playing | Currently in theatres |
+| 🔝 Top Rated | Highest-rated movies |
+| 🥳 Popular | Trending movies |
+| 🔜 Upcoming | Soon-to-release movies |
+| 📡 On The Air | TV shows airing now |
+| 📅 Airing Today | Episodes today |
+| 📺 Popular TV | Trending series |
+| ⭐ Top Rated TV | Highest-rated series |
 
+![Now Playing — Focus](./screenshots/nowplaying_focus.png)
 
-## Detail 📜 Screen ✅
+![Top Rated](./screenshots/toprated.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail.png)
+![Popular](./screenshots/popular.png)
 
-The detail page provides extensive information about a movie, including its
-title, poster, labels, director and overview.
+![Upcoming](./screenshots/upcoming.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_area.png)
+---
 
+### 📜 Detail — Movies & Series
 
-## Detail Screen Recommend 🎁
+Full-width `DetailsOverviewRow` with poster, metadata, **Watch Trailer** action, focusable **Genres** and **Where to Watch** chip rows, cast rail, and merged recommendations/similar titles.
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_recommend.png)
+![Detail Overview](./screenshots/detail.png)
 
+![Detail Metadata](./screenshots/detail_area.png)
 
-## Detail Screen Cast 🙎🏼‍♀️ 👨
+![Recommendations](./screenshots/detail_recommend.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/detail_cast.png)
+![Cast Row](./screenshots/detail_cast.png)
 
+---
 
-## Search Screen 🔎
+### 🔎 Search
 
-The search experience has been modernized using the `SearchSupportFragment` from
-the latest Leanback library. Results appear instantly while typing and the movie
-cards now feature rounded corners for a more polished look. In the example below
-we looked up the Spider-Man movie and opened its details.
+Leanback search fragment with debounced TMDB queries, loading skeletons, and instant navigation to detail.
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search.png)
+![Search Input](./screenshots/search.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result.png)
+![Search Results](./screenshots/search_result.png)
 
-![Screenshot](https://github.com/halilozel1903/MovieParadise/blob/master/screenshots/search_result_detail.png)
+![Search → Detail](./screenshots/search_result_detail.png)
 
-## Sources 📚
+---
 
-- [How to develop Android TV App?](https://halilozel1903.medium.com/how-to-develop-android-tv-app-5e251f3aa56b)
-- [Android TV](https://developer.android.com/tv/) <br>
-- [Building an Android TV app](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446)<br>
+### 📺 Android TV launcher
 
-## Donation 💸
+Leanback launcher entry with TV banner and landscape orientation.
 
-If this project help you 💁 , you can give me a cup of coffee. ☕
+![Android TV](./screenshots/androidtv.png)
 
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/halilozel1903)
+---
 
-## License ℹ️
+## Getting Started 🚀
+
+### Requirements
+
+- Android Studio Ladybug or newer 🐘
+- JDK **17**
+- Android SDK **36**
+- TMDB API key ([get one here](https://www.themoviedb.org/settings/api))
+
+### 1. Clone
+
+```bash
+git clone https://github.com/halilozel1903/AndroidTVMovieParadise.git
+cd AndroidTVMovieParadise
+```
+
+### 2. Configure API key 🔑
+
+Set your TMDB key in `app/src/main/java/com/halil/ozel/movieparadise/Config.java`:
+
+```java
+public static final String API_KEY_URL = "YOUR_TMDB_API_KEY";
+```
+
+### 3. Build & run ▶️
+
+```bash
+./gradlew assembleDebug
+```
+
+Install on an **Android TV emulator** or device with `LEANBACK_LAUNCHER` support. All dependencies resolve from **Maven Central** — no extra repositories required.
+
+```bash
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+---
+
+## TMDB Integration 🌐
+
+| Endpoint | Usage |
+|----------|--------|
+| `/movie/*` | Home rows, detail, recommendations, videos, providers |
+| `/tv/*` | TV rows, show detail, credits, recommendations, videos |
+| `/search/movie` | Search screen |
+| `/discover/movie` | Genre filtering |
+| `/person/*` | Cast detail, images, filmography |
+
+Documentation: https://www.themoviedb.org/documentation/api
+
+---
+
+## TV Focus System 🎯
+
+Focus behavior follows [Google TV focus guidelines](https://developer.android.com/design/ui/tv/guides/styles/focus-system):
+
+- **Poster cards** — Leanback `FocusHighlight.ZOOM_FACTOR_SMALL` (1.05×) + white glow (`lb_default_brand_color`)
+- **Genre / provider chips** — `TagListRow` with selector drawables (outline only, no zoom flicker)
+- **State cards** — Retry / empty / error with `card_focus_border` foreground
+
+Helpers: `TvRows`, `TvFocusHelper`, `BindableCardView`
+
+---
+
+## Trailer Playback ▶️
+
+1. TMDB `/videos` → YouTube key via `TrailerHelper`
+2. `PlayerActivity` loads YouTube embed in hardware-accelerated WebView
+3. On failure → **Open in YouTube** (TV or mobile app intent, no immediate `finish()`)
+
+---
+
+## Project Info ℹ️
+
+| | |
+|---|---|
+| **App name** | Paradise |
+| **Package** | `com.halil.ozel.movieparadise` |
+| **Version** | 1.5 (versionCode 5) |
+| **Min SDK** | 24 (Android 7.0) |
+| **Target SDK** | 36 |
+
+---
+
+## Resources 📚
+
+- [How to develop Android TV App?](https://halilozel1903.medium.com/how-to-develop-android-tv-app-5e251f3aa56b) ✍️
+- [Android TV Developer Guide](https://developer.android.com/tv/) 📺
+- [Building an Android TV app (Marcus)](https://medium.com/@Marcus_fNk/building-an-android-tv-app-part-1-7f59b3747446) 🏗️
+- [Leanback Library](https://developer.android.com/reference/androidx/leanback/package-summary) 📐
+
+---
+
+## Support ☕
+
+If this project helped you, consider buying me a coffee:
+
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/halilozel1903)
+
+---
+
+## License 📄
+
 ```
 MIT License
 
@@ -132,4 +288,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
