@@ -54,9 +54,24 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
     @Override
     protected void onBindRowViewHolder(RowPresenter.ViewHolder holder, Object item) {
         super.onBindRowViewHolder(holder, item);
-        FullWidthDetailsOverviewRowPresenter.ViewHolder viewHolder = (FullWidthDetailsOverviewRowPresenter.ViewHolder) holder;
+        FullWidthDetailsOverviewRowPresenter.ViewHolder viewHolder =
+                (FullWidthDetailsOverviewRowPresenter.ViewHolder) holder;
         View view = viewHolder.getOverviewView();
-        view.setBackgroundColor(getBackgroundColor());
-        view.findViewById(R.id.details_overview_actions_background).setBackgroundColor(getActionsBackgroundColor());
+        if (view != null) {
+            view.setFocusable(false);
+            if (view instanceof ViewGroup) {
+                ViewGroup group = (ViewGroup) view;
+                group.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
+                group.setClipChildren(false);
+                group.setClipToPadding(false);
+            }
+        }
+        if (view != null) {
+            view.setBackgroundColor(getBackgroundColor());
+            View actionsBackground = view.findViewById(R.id.details_overview_actions_background);
+            if (actionsBackground != null) {
+                actionsBackground.setBackgroundColor(getActionsBackgroundColor());
+            }
+        }
     }
 }

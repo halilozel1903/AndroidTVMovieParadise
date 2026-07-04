@@ -46,6 +46,13 @@ public class MediaDetailActivity extends BaseTVActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finishAfterTransition();
+            }
+        });
+
         Bundle extras = getIntent().getExtras();
 
         String mediaType = extras.getString(EXTRA_MEDIA_TYPE);
@@ -67,7 +74,19 @@ public class MediaDetailActivity extends BaseTVActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
         updateBackground();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (glideBackgroundManager != null) {
+            glideBackgroundManager.release();
+            glideBackgroundManager = null;
+        }
+        super.onDestroy();
     }
 
     private void updateBackground() {
