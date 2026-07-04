@@ -2,6 +2,13 @@
 <resources>
 
     <style name="AppTheme" parent="@style/Theme.Leanback">
+        <item name="android:colorAccent">@color/focus_ring</item>
+    </style>
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary_dark</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.Leanback</item>
     </style>
 
 </resources>

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.halil.ozel.movieparadise.BuildConfig;
 import com.halil.ozel.movieparadise.dagger.AppScope;
 import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
 
@@ -30,6 +31,8 @@ public class HttpClientModule {
 
     public static final String BACKDROP_URL    = "https://image.tmdb.org/t/p/w1280/";
     public static final String POSTER_URL      = "https://image.tmdb.org/t/p/w500/";
+    public static final String PROFILE_URL     = "https://image.tmdb.org/t/p/w342/";
+    public static final String PROVIDER_LOGO_URL = "https://image.tmdb.org/t/p/w92/";
     public static final String API_URL         = "https://api.themoviedb.org/3/";
     public static final String NOW_PLAYING     = "movie/now_playing";
     public static final String POPULAR         = "movie/popular";
@@ -57,16 +60,19 @@ public class HttpClientModule {
     @AppScope
     public OkHttpClient provideOkHttpClient(Application app) {
         File cacheDir = new File(app.getCacheDir(), "http_cache");
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
-                .cache(new Cache(cacheDir, DISK_CACHE_SIZE))
-                .addInterceptor(logging)
-                .build();
+                .cache(new Cache(cacheDir, DISK_CACHE_SIZE));
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            builder.addInterceptor(logging);
+        }
+
+        return builder.build();
     }
 
     @Provides

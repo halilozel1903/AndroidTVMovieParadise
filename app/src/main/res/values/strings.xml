@@ -1,13 +1,31 @@
 <resources>
-    <string name="app_name">Movie Paradise</string>
+    <string name="app_name">Paradise</string>
     <string name="under">-</string>
     <string name="director_label">Director: %s</string>
     <string name="overview_label">Overview</string>
+    <string name="watch_providers_label">Nerede izlenir?</string>
     <string name="cast_label">Cast</string>
+    <string name="genres_label">Türler</string>
     <string name="recommendations_label">Recommendations</string>
     <string name="movies_label">Movies</string>
+    <string name="series_label">Series</string>
     <string name="watch_trailer">WATCH TRAILER</string>
     <string name="minutes_format">%d min</string>
     <string name="rating_format">⭐ %.1f / 10</string>
     <string name="year_format">(%s)</string>
+    <string name="error_network">Bağlantı hatası</string>
+    <string name="error_generic">Bir hata oluştu</string>
+    <string name="retry_action">Tekrar Dene</string>
+    <string name="empty_search">Sonuç bulunamadı</string>
+    <string name="empty_genre">Bu türde içerik bulunamadı</string>
+    <string name="empty_recommendations">Öneri bulunamadı</string>
+    <string name="loading_content">Yükleniyor…</string>
+    <string name="player_error">Fragman yüklenemedi</string>
+    <string name="player_loading">Fragman yükleniyor…</string>
+    <string name="player_go_back">Geri Dön</string>
+    <string name="player_open_youtube">YouTube\'da Aç</string>
+    <string name="details_load_error">Detaylar yüklenemedi</string>
+    <string name="empty_row">İçerik bulunamadı</string>
+    <string name="search_results_label">Arama Sonuçları</string>
+    <string name="search_title">Film Ara</string>
 </resources>

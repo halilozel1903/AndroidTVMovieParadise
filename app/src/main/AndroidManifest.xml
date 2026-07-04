@@ -2,32 +2,31 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@drawable/banner"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Leanback"
-        android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity android:name=".ui.search.SearchActivity" />
         <activity
             android:name=".ui.player.PlayerActivity"
-            android:usesCleartextTraffic="true"
-            tools:targetApi="m" />
+            android:hardwareAccelerated="true"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".ui.main.MainActivity"
             android:banner="@drawable/banner"
             android:exported="true"
-            android:icon="@drawable/banner"
+            android:icon="@mipmap/ic_launcher"
             android:launchMode="singleTop"
             android:logo="@drawable/banner"
             android:screenOrientation="landscape"
+            android:theme="@style/Theme.App.Starting"
             tools:ignore="DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,7 +36,6 @@
         </activity>
         <activity android:name=".ui.detail.MediaDetailActivity" />
         <activity android:name=".ui.genre.GenreMoviesActivity" />
-        <activity android:name=".ui.tv.TvMainActivity" />
         <activity android:name=".ui.detail.PersonDetailActivity" />
     </application>
 
@@ -48,8 +46,5 @@
     <uses-feature
         android:name="android.software.leanback"
         android:required="true" />
-    <uses-feature
-        android:name="android.hardware.microphone"
-        android:required="false" />
 
 </manifest>
