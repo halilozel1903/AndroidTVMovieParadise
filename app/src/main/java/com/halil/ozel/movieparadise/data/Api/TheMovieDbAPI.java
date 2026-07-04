@@ -5,10 +5,13 @@ import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.MovieDetails;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.TvShow;
+import com.halil.ozel.movieparadise.data.models.TvCreditsResponse;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.data.models.Person;
+import com.halil.ozel.movieparadise.data.models.PersonImagesResponse;
 import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
+import com.halil.ozel.movieparadise.data.models.WatchProvidersResponse;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -70,6 +73,15 @@ public interface TheMovieDbAPI {
     @GET(HttpClientModule.MOVIE + "{id}/videos")
     Observable<VideoResponse> getMovieVideos(@Path("id") String movieId, @Query("api_key") String apiKey);
 
+    @GET(HttpClientModule.TV + "{id}/videos")
+    Observable<VideoResponse> getTvVideos(@Path("id") String tvShowId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.DISCOVER_MOVIE)
+    Observable<MovieResponse> discoverMovies(@Query("include_adult") boolean includeAdult,
+                                             @Query("sort_by") String sortBy,
+                                             @Query("page") int page,
+                                             @Query("api_key") String apiKey);
+
     @GET(HttpClientModule.SEARCH_MOVIE)
     Observable<MovieResponse> getSearchMovies(@Query("query") String query, @Query("include_adult") Boolean include_adult, @Query("api_key") String apiKey);
 
@@ -83,7 +95,21 @@ public interface TheMovieDbAPI {
     @GET(HttpClientModule.PERSON + "{id}")
     Observable<Person> getPerson(@Path("id") String personId, @Query("api_key") String apiKey);
 
+    @GET(HttpClientModule.MOVIE + "{id}/watch/providers")
+    Observable<WatchProvidersResponse> getMovieWatchProviders(@Path("id") String movieId,
+                                                            @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.TV + "{id}/watch/providers")
+    Observable<WatchProvidersResponse> getTvWatchProviders(@Path("id") String tvShowId,
+                                                         @Query("api_key") String apiKey);
+
     @GET(HttpClientModule.PERSON + "{id}/movie_credits")
     Observable<MovieCreditsResponse> getPersonMovieCredits(@Path("id") String personId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.PERSON + "{id}/tv_credits")
+    Observable<TvCreditsResponse> getPersonTvCredits(@Path("id") String personId, @Query("api_key") String apiKey);
+
+    @GET(HttpClientModule.PERSON + "{id}/images")
+    Observable<PersonImagesResponse> getPersonImages(@Path("id") String personId, @Query("api_key") String apiKey);
 
 }

@@ -9,7 +9,6 @@ import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
 import com.halil.ozel.movieparadise.ui.detail.PersonDetailFragment;
 import com.halil.ozel.movieparadise.ui.genre.GenreMoviesFragment;
 import com.halil.ozel.movieparadise.ui.main.MainFragment;
-import com.halil.ozel.movieparadise.ui.tv.TvMainFragment;
 import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
 import com.halil.ozel.movieparadise.ui.search.SearchFragment;
 
@@ -28,8 +27,6 @@ public interface ApplicationComponent {
     void inject(App app);
 
     void inject(MainFragment mainFragment);
-
-    void inject(TvMainFragment tvMainFragment);
 
     void inject(TvDetailFragment tvDetailFragment);
 

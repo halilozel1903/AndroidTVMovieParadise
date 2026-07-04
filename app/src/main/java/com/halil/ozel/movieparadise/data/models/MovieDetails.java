@@ -45,6 +45,7 @@ public class MovieDetails {
 
     private PaletteColors paletteColors;
     private String director;
+    private List<WatchProvider> watchProviders;
 
     public MovieDetails() {
     }
@@ -160,6 +161,15 @@ public class MovieDetails {
 
     public MovieDetails setDirector(String director) {
         this.director = director;
+        return this;
+    }
+
+    public List<WatchProvider> getWatchProviders() {
+        return watchProviders;
+    }
+
+    public MovieDetails setWatchProviders(List<WatchProvider> watchProviders) {
+        this.watchProviders = watchProviders;
         return this;
     }
 

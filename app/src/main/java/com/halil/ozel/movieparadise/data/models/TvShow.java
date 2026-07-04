@@ -66,6 +66,7 @@ public class TvShow implements Parcelable {
     private String status;
     private String tagline;
     private String type;
+    private List<WatchProvider> watchProviders;
 
     public TvShow() {
     }
@@ -178,6 +179,14 @@ public class TvShow implements Parcelable {
 
     public String getType() {
         return type;
+    }
+
+    public List<WatchProvider> getWatchProviders() {
+        return watchProviders;
+    }
+
+    public void setWatchProviders(List<WatchProvider> watchProviders) {
+        this.watchProviders = watchProviders;
     }
 
     @Override
