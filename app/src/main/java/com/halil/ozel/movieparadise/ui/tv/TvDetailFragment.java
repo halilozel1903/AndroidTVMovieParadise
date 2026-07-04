@@ -3,25 +3,26 @@ package com.halil.ozel.movieparadise.ui.tv;
 import android.content.Intent;
 import android.os.Bundle;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.leanback.app.DetailsSupportFragment;
+import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.DetailsOverviewRow;
-import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
-import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowPresenter;
+import androidx.leanback.widget.SparseArrayObjectAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -35,11 +36,22 @@ import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.TvShow;
+import com.halil.ozel.movieparadise.data.models.VideoResponse;
+import com.halil.ozel.movieparadise.data.models.WatchProvider;
+import com.halil.ozel.movieparadise.ui.common.RowLoadingHelper;
+import com.halil.ozel.movieparadise.ui.base.TvRows;
 import com.halil.ozel.movieparadise.ui.detail.CustomDetailPresenter;
 import com.halil.ozel.movieparadise.ui.detail.DetailDescriptionPresenter;
 import com.halil.ozel.movieparadise.ui.detail.MediaDetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.PersonDetailActivity;
 import com.halil.ozel.movieparadise.ui.detail.PersonPresenter;
+import com.halil.ozel.movieparadise.ui.detail.DetailTagRowsHelper;
+import com.halil.ozel.movieparadise.ui.detail.RecommendationRowHelper;
+import com.halil.ozel.movieparadise.ui.detail.TagListRow;
+import com.halil.ozel.movieparadise.ui.detail.TrailerHelper;
+import com.halil.ozel.movieparadise.ui.detail.WatchProvidersHelper;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,6 +62,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 /** Detail fragment for TV shows. */
 public class TvDetailFragment extends DetailsSupportFragment implements OnItemViewClickedListener {
 
+    private static final String TAG = "TvDetailFragment";
+    private static final int CAST_SKELETON_COUNT = 6;
+    private static final int RECOMMENDATIONS_SKELETON_COUNT = 6;
+
     public static String TRANSITION_NAME = "poster_transition";
 
     @Inject
@@ -59,11 +75,35 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
     private ArrayObjectAdapter arrayObjectAdapter;
     private CustomDetailPresenter customDetailPresenter;
     private DetailsOverviewRow detailsOverviewRow;
-    private final ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(new PersonPresenter());
-    private final ArrayObjectAdapter recommendationsAdapter = new ArrayObjectAdapter(new TvShowPresenter());
+    private final RowLoadingHelper castLoadingHelper = new RowLoadingHelper();
+    private final RowLoadingHelper recommendationsLoadingHelper = new RowLoadingHelper();
+    private final ArrayObjectAdapter castAdapter = new ArrayObjectAdapter(
+            castLoadingHelper.createSelector(new PersonPresenter(), CastMember.class));
+    private final ArrayObjectAdapter recommendationsAdapter = new ArrayObjectAdapter(
+            recommendationsLoadingHelper.createSelector(new TvShowPresenter(), TvShow.class));
+    private final RecommendationRowHelper<TvShow> recommendationsHelper =
+            new RecommendationRowHelper<>(
+                    recommendationsAdapter,
+                    TvShow::getId,
+                    TvShow::getPosterPath,
+                    new RecommendationRowHelper.ResultListener() {
+                        @Override
+                        public void onRecommendationsReady() {
+                            recommendationsLoadingHelper.clearLoading(recommendationsAdapter);
+                            int castIndex = arrayObjectAdapter.indexOf(castRow);
+                            addRowIfMissing(recommendationsRow, getRecommendationsInsertIndex());
+                        }
+
+                        @Override
+                        public void onRecommendationsEmpty() {
+                            recommendationsLoadingHelper.clearLoading(recommendationsAdapter);
+                            removeRow(recommendationsRow);
+                        }
+                    });
     private ListRow castRow;
     private ListRow recommendationsRow;
-    private int pendingRecommendationRequests;
+    private final DetailTagRowsHelper tagRowsHelper = new DetailTagRowsHelper(null);
+    private String youtubeID;
     private final CompositeDisposable disposables = new CompositeDisposable();
     private final CustomTarget<Drawable> mGlideDrawableSimpleTarget = new CustomTarget<Drawable>() {
         @Override
@@ -108,9 +148,17 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         customDetailPresenter.setListener(helper);
         customDetailPresenter.setParticipatingEntranceTransition(false);
 
+        customDetailPresenter.setOnActionClickedListener(action -> {
+            int actionId = (int) action.getId();
+            if (actionId == TrailerHelper.ACTION_TRAILER && youtubeID != null && getActivity() != null) {
+                startActivity(TrailerHelper.createPlayerIntent(requireActivity(), youtubeID));
+            }
+        });
+
         ClassPresenterSelector selector = new ClassPresenterSelector();
         selector.addClassPresenter(DetailsOverviewRow.class, customDetailPresenter);
-        selector.addClassPresenter(ListRow.class, new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
+        selector.addClassPresenter(TagListRow.class, TvRows.tagRowPresenter());
+        selector.addClassPresenter(ListRow.class, TvRows.listRowPresenter());
         arrayObjectAdapter = new ArrayObjectAdapter(selector);
         setAdapter(arrayObjectAdapter);
     }
@@ -120,10 +168,86 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         arrayObjectAdapter.add(detailsOverviewRow);
         loadImage(HttpClientModule.POSTER_URL + tvShow.getPosterPath());
         fetchTvShowDetails();
+        fetchVideos();
+        fetchWatchProviders();
+    }
+
+    private void fetchVideos() {
+        if (tvShow == null || tvShow.getId() == null) {
+            return;
+        }
+        disposables.add(theMovieDbAPI.getTvVideos(tvShow.getId(), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleVideoResponse, e -> Log.e(TAG, "fetchVideos error", e)));
+    }
+
+    private void handleVideoResponse(VideoResponse response) {
+        youtubeID = TrailerHelper.findYoutubeTrailerId(response);
+        updateOverviewActions();
+    }
+
+    private void fetchWatchProviders() {
+        if (tvShow == null || tvShow.getId() == null) {
+            return;
+        }
+        disposables.add(theMovieDbAPI.getTvWatchProviders(tvShow.getId(), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(response -> {
+                    if (tvShow != null) {
+                        tvShow.setWatchProviders(WatchProvidersHelper.pickProviders(response));
+                        refreshTagRows();
+                    }
+                }, e -> Log.e(TAG, "fetchWatchProviders error", e)));
+    }
+
+    private void notifyDetailsChanged() {
+        if (detailsOverviewRow == null || tvShow == null) {
+            return;
+        }
+        detailsOverviewRow.setItem(tvShow);
+        notifyOverviewRowChanged();
+    }
+
+    private void updateOverviewActions() {
+        if (detailsOverviewRow == null) {
+            return;
+        }
+        if (youtubeID == null) {
+            detailsOverviewRow.setActionsAdapter(null);
+            notifyOverviewRowChanged();
+            return;
+        }
+        SparseArrayObjectAdapter adapter = new SparseArrayObjectAdapter();
+        adapter.set(TrailerHelper.ACTION_TRAILER,
+                new Action(TrailerHelper.ACTION_TRAILER, getString(R.string.watch_trailer)));
+        detailsOverviewRow.setActionsAdapter(adapter);
+        notifyOverviewRowChanged();
+    }
+
+    private void notifyOverviewRowChanged() {
+        if (detailsOverviewRow == null || arrayObjectAdapter == null) {
+            return;
+        }
+        int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
+        if (index >= 0) {
+            arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        }
+    }
+
+    private void refreshTagRows() {
+        if (tvShow == null || getContext() == null) {
+            return;
+        }
+        tagRowsHelper.updateGenres(arrayObjectAdapter, requireContext(), tvShow.getGenres());
+        tagRowsHelper.updateProviders(arrayObjectAdapter, requireContext(), tvShow.getWatchProviders());
     }
 
     private void setupCastRow() {
         castRow = new ListRow(new HeaderItem(0, getString(R.string.cast_label)), castAdapter);
+        castLoadingHelper.showInitialLoading(castAdapter, CAST_SKELETON_COUNT);
+        addRowIfMissing(castRow, getCastRowInsertIndex());
         fetchCastMembers();
     }
 
@@ -140,8 +264,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         disposables.add(theMovieDbAPI.getTvShowDetails(tvShow.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindTvShowDetails, ignored -> {
-                }));
+                .subscribe(this::bindTvShowDetails, e -> Log.e(TAG, "fetchTvShowDetails error", e)));
     }
 
     private void fetchCastMembers() {
@@ -151,7 +274,13 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         disposables.add(theMovieDbAPI.getTvCredits(tvShow.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::bindCastMembers, ignored -> removeRow(castRow)));
+                .subscribe(this::bindCastMembers, e -> {
+                    Log.e(TAG, "fetchCastMembers error", e);
+                    castLoadingHelper.showError(
+                            castAdapter,
+                            getString(R.string.error_network),
+                            this::fetchCastMembers);
+                }));
     }
 
     private void fetchRecommendations() {
@@ -159,25 +288,43 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
             removeRow(recommendationsRow);
             return;
         }
-        recommendationsAdapter.clear();
-        pendingRecommendationRequests = 2;
+        recommendationsHelper.cancel();
+        recommendationsHelper.start(tvShow.getId(), 2);
+        recommendationsLoadingHelper.showInitialLoading(recommendationsAdapter, RECOMMENDATIONS_SKELETON_COUNT);
+        addRowIfMissing(recommendationsRow, getRecommendationsInsertIndex());
 
         disposables.add(theMovieDbAPI.getTvRecommendations(tvShow.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::appendRecommendations,
-                        ignored -> finishRecommendationRequest()));
+                        response -> {
+                            recommendationsLoadingHelper.clearLoading(recommendationsAdapter);
+                            recommendationsHelper.append(
+                                    response == null ? null : response.getResults());
+                        },
+                        e -> {
+                            Log.e(TAG, "fetchRecommendations error", e);
+                            recommendationsHelper.finishRequest();
+                        }));
 
         disposables.add(theMovieDbAPI.getSimilarTvShows(tvShow.getId(), Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        this::appendRecommendations,
-                        ignored -> finishRecommendationRequest()));
+                        response -> {
+                            recommendationsLoadingHelper.clearLoading(recommendationsAdapter);
+                            recommendationsHelper.append(
+                                    response == null ? null : response.getResults());
+                        },
+                        e -> {
+                            Log.e(TAG, "fetchSimilarTvShows error", e);
+                            recommendationsHelper.finishRequest();
+                        }));
     }
 
     private void bindCastMembers(CreditsResponse response) {
+        castLoadingHelper.clearLoading(castAdapter);
+        castLoadingHelper.clearState(castAdapter);
         if (response == null || response.getCast() == null || response.getCast().isEmpty()) {
             removeRow(castRow);
             return;
@@ -189,7 +336,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
             }
         }
         if (castAdapter.size() > 0) {
-            addRowIfMissing(castRow, 1);
+            addRowIfMissing(castRow, getCastRowInsertIndex());
         } else {
             removeRow(castRow);
         }
@@ -199,54 +346,23 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (details == null) {
             return;
         }
+        List<WatchProvider> watchProviders = tvShow == null ? null : tvShow.getWatchProviders();
         tvShow = details;
-        detailsOverviewRow.setItem(tvShow);
-        int index = arrayObjectAdapter.indexOf(detailsOverviewRow);
-        if (index >= 0) {
-            arrayObjectAdapter.notifyArrayItemRangeChanged(index, 1);
+        if (watchProviders != null) {
+            tvShow.setWatchProviders(watchProviders);
         }
+        notifyDetailsChanged();
+        refreshTagRows();
+        updateOverviewActions();
     }
 
-    private void appendRecommendations(com.halil.ozel.movieparadise.data.models.TvShowResponse response) {
-        if (response != null && response.getResults() != null) {
-            for (TvShow recommendation : response.getResults()) {
-                if (isValidRecommendation(recommendation) && !hasRecommendation(recommendation)) {
-                    recommendationsAdapter.add(recommendation);
-                }
-            }
-        }
-        finishRecommendationRequest();
+    private int getCastRowInsertIndex() {
+        return tagRowsHelper.getCastInsertIndex(arrayObjectAdapter);
     }
 
-    private boolean isValidRecommendation(TvShow recommendation) {
-        return recommendation != null
-                && recommendation.getId() != null
-                && !recommendation.getId().equals(tvShow.getId())
-                && recommendation.getPosterPath() != null;
-    }
-
-    private boolean hasRecommendation(TvShow recommendation) {
-        for (int i = 0; i < recommendationsAdapter.size(); i++) {
-            Object item = recommendationsAdapter.get(i);
-            if (item instanceof TvShow
-                    && recommendation.getId().equals(((TvShow) item).getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void finishRecommendationRequest() {
-        pendingRecommendationRequests = Math.max(0, pendingRecommendationRequests - 1);
-        if (pendingRecommendationRequests > 0) {
-            return;
-        }
-        if (recommendationsAdapter.size() == 0) {
-            removeRow(recommendationsRow);
-        } else {
-            int castIndex = arrayObjectAdapter.indexOf(castRow);
-            addRowIfMissing(recommendationsRow, castIndex >= 0 ? castIndex + 1 : 1);
-        }
+    private int getRecommendationsInsertIndex() {
+        int castIndex = arrayObjectAdapter.indexOf(castRow);
+        return castIndex >= 0 ? castIndex + 1 : getCastRowInsertIndex();
     }
 
     private void addRowIfMissing(ListRow row, int index) {

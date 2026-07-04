@@ -10,6 +10,7 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.ui.base.BindableCardView;
+import com.halil.ozel.movieparadise.ui.base.GlideUtils;
 
 public class PersonCardView extends BindableCardView<CastMember> {
 
@@ -29,13 +30,14 @@ public class PersonCardView extends BindableCardView<CastMember> {
         String profilePath = castMember.getProfilePath();
         Object posterModel = profilePath == null || profilePath.isEmpty()
                 ? R.drawable.popcorn
-                : HttpClientModule.POSTER_URL + profilePath;
+                : HttpClientModule.PROFILE_URL + profilePath;
 
         Glide.with(getContext())
                 .load(posterModel)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.popcorn)
                 .error(R.drawable.popcorn)
+                .fitCenter()
                 .into(posterImageView);
 
         titleTextView.setText(castMember.getName());
@@ -43,8 +45,7 @@ public class PersonCardView extends BindableCardView<CastMember> {
     }
 
     void unbind() {
-        Glide.with(getContext()).clear(posterImageView);
-        posterImageView.setImageDrawable(null);
+        GlideUtils.clearImageView(posterImageView);
         titleTextView.setText(null);
         subtitleTextView.setText(null);
     }

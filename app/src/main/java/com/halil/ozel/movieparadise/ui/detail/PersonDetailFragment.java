@@ -12,11 +12,9 @@ import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
 import androidx.leanback.widget.DetailsOverviewLogoPresenter;
 import androidx.leanback.widget.DetailsOverviewRow;
-import androidx.leanback.widget.FocusHighlight;
 import androidx.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ListRow;
-import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
 import androidx.leanback.widget.Row;
@@ -35,8 +33,15 @@ import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
 import com.halil.ozel.movieparadise.data.models.Person;
+import com.halil.ozel.movieparadise.data.models.TvCreditsResponse;
+import com.halil.ozel.movieparadise.data.models.TvShow;
+import com.halil.ozel.movieparadise.data.models.PersonImagesResponse;
 import com.halil.ozel.movieparadise.ui.movie.MovieCardView;
+import com.halil.ozel.movieparadise.ui.base.TvRows;
 import com.halil.ozel.movieparadise.ui.movie.MoviePresenter;
+import com.halil.ozel.movieparadise.ui.tv.TvDetailFragment;
+import com.halil.ozel.movieparadise.ui.tv.TvShowCardView;
+import com.halil.ozel.movieparadise.ui.tv.TvShowPresenter;
 
 import android.graphics.drawable.Drawable;
 
@@ -57,7 +62,10 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
     private ArrayObjectAdapter adapter;
     private CustomDetailPresenter presenter;
     private DetailsOverviewRow detailsRow;
+    private ListRow movieRow;
+    private ListRow tvRow;
     private final ArrayObjectAdapter movieAdapter = new ArrayObjectAdapter(new MoviePresenter());
+    private final ArrayObjectAdapter tvAdapter = new ArrayObjectAdapter(new TvShowPresenter());
     private final CompositeDisposable disposables = new CompositeDisposable();
 
     private final CustomTarget<Drawable> mGlideTarget = new CustomTarget<Drawable>() {
@@ -100,7 +108,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
 
         setupAdapter();
         setupDetailsRow();
-        setupMovieCredits();
+        fetchPersonImages();
         setOnItemViewClickedListener(this);
     }
 
@@ -115,7 +123,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
 
         ClassPresenterSelector selector = new ClassPresenterSelector();
         selector.addClassPresenter(DetailsOverviewRow.class, presenter);
-        selector.addClassPresenter(ListRow.class, new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL));
+        selector.addClassPresenter(ListRow.class, TvRows.listRowPresenter());
         adapter = new ArrayObjectAdapter(selector);
         setAdapter(adapter);
     }
@@ -124,13 +132,17 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
         detailsRow = new DetailsOverviewRow(new Person());
         adapter.add(detailsRow);
         if (castMember.getProfilePath() != null) {
-            loadImage(HttpClientModule.POSTER_URL + castMember.getProfilePath());
+            loadPortraitImage(castMember.getProfilePath());
         }
         fetchPersonDetails();
     }
 
-    private void setupMovieCredits() {
-        adapter.add(new ListRow(new HeaderItem(0, getString(R.string.movies_label)), movieAdapter));
+    private void setupMovieRow() {
+        movieRow = new ListRow(new HeaderItem(1, getString(R.string.movies_label)), movieAdapter);
+    }
+
+    private void setupTvRow() {
+        tvRow = new ListRow(new HeaderItem(2, getString(R.string.series_label)), tvAdapter);
     }
 
     private void fetchPersonDetails() {
@@ -149,19 +161,96 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
 
     private void bindPersonDetails(Person p) {
         detailsRow.setItem(p);
+        setupMovieRow();
+        setupTvRow();
         fetchMovieCredits();
+        fetchTvCredits();
     }
 
     private void bindMovieCredits(MovieCreditsResponse response) {
-        movieAdapter.addAll(0, response.getCast());
+        movieAdapter.clear();
+        if (response != null && response.getCast() != null) {
+            for (Movie movie : response.getCast()) {
+                if (movie != null && movie.getPosterPath() != null) {
+                    movieAdapter.add(movie);
+                }
+            }
+        }
+        updateCreditRow(movieRow, movieAdapter);
+    }
+
+    private void fetchTvCredits() {
+        disposables.add(theMovieDbAPI.getPersonTvCredits(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::bindTvCredits, e -> Log.e(TAG, "fetchTvCredits error", e)));
+    }
+
+    private void bindTvCredits(TvCreditsResponse response) {
+        tvAdapter.clear();
+        if (response != null && response.getCast() != null) {
+            for (TvShow show : response.getCast()) {
+                if (show != null && show.getPosterPath() != null) {
+                    tvAdapter.add(show);
+                }
+            }
+        }
+        updateCreditRow(tvRow, tvAdapter);
+    }
+
+    private void updateCreditRow(ListRow row, ArrayObjectAdapter rowAdapter) {
+        if (row == null || rowAdapter.size() == 0) {
+            removeCreditRow(row);
+            return;
+        }
+        if (adapter.indexOf(row) < 0) {
+            adapter.add(row);
+        }
+    }
+
+    private void removeCreditRow(ListRow row) {
+        if (row != null) {
+            int index = adapter.indexOf(row);
+            if (index >= 0) {
+                adapter.remove(row);
+            }
+        }
+    }
+
+    private void fetchPersonImages() {
+        disposables.add(theMovieDbAPI.getPersonImages(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::applyPersonImages, e -> {
+                    Log.e(TAG, "fetchPersonImages error", e);
+                    applyPersonImages(null);
+                }));
+    }
+
+    private void applyPersonImages(PersonImagesResponse response) {
+        String portraitPath = PersonImageHelper.pickPortraitPath(response, castMember.getProfilePath());
+        if (portraitPath != null) {
+            loadPortraitImage(portraitPath);
+        }
+        String backdropPath = PersonImageHelper.pickBackdropPath(response, portraitPath);
+        if (getActivity() instanceof PersonBackgroundHost) {
+            ((PersonBackgroundHost) getActivity()).updatePersonBackground(backdropPath);
+        }
+    }
+
+    private void loadPortraitImage(String profilePath) {
+        loadImage(HttpClientModule.PROFILE_URL + profilePath);
     }
 
     private void loadImage(String url) {
-        if (url == null || url.isEmpty()) return;
+        if (url == null || url.isEmpty()) {
+            return;
+        }
         Glide.with(requireActivity())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .placeholder(R.drawable.popcorn)
+                .fitCenter()
                 .into(mGlideTarget);
     }
 
@@ -177,6 +266,19 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
                         requireActivity(),
                         ((MovieCardView) itemVH.view).getPosterIV(),
                         DetailFragment.TRANSITION_NAME).toBundle();
+                requireActivity().startActivity(intent, bundle);
+            } else {
+                startActivity(intent);
+            }
+        } else if (item instanceof TvShow) {
+            TvShow tvShow = (TvShow) item;
+            Intent intent = MediaDetailActivity.newTvIntent(requireActivity(), tvShow);
+
+            if (itemVH.view instanceof TvShowCardView) {
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(),
+                        ((TvShowCardView) itemVH.view).getPosterIV(),
+                        TvDetailFragment.TRANSITION_NAME).toBundle();
                 requireActivity().startActivity(intent, bundle);
             } else {
                 startActivity(intent);

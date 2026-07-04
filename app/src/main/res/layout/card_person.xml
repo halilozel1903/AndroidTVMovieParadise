@@ -12,14 +12,15 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/primary_dark">
 
         <ImageView
             android:id="@+id/person_poster_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@string/cast_label"
-            android:scaleType="centerCrop" />
+            android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="match_parent"

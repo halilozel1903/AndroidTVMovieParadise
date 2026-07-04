@@ -75,6 +75,18 @@ public class GlideBackgroundManager {
         cancelPending();
     }
 
+    /** Cancels pending updates and detaches Glide/background resources. */
+    public void release() {
+        cancelBackgroundChange();
+        Activity activity = mActivityRef.get();
+        if (activity != null && !activity.isDestroyed() && !activity.isFinishing()) {
+            Glide.with(activity).clear(mTarget);
+        }
+        if (mBackgroundManager != null && mBackgroundManager.isAttached()) {
+            mBackgroundManager.release();
+        }
+    }
+
     private void cancelPending() {
         if (mUpdateRunnable != null) {
             mHandler.removeCallbacks(mUpdateRunnable);

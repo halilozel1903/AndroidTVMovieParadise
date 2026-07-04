@@ -3,6 +3,7 @@ package com.halil.ozel.movieparadise.ui.detail;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.os.BundleCompat;
 
@@ -12,7 +13,7 @@ import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
 import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 
-public class PersonDetailActivity extends BaseTVActivity {
+public class PersonDetailActivity extends BaseTVActivity implements PersonBackgroundHost {
 
     private GlideBackgroundManager glideBackgroundManager;
     private CastMember castMember;
@@ -28,7 +29,6 @@ public class PersonDetailActivity extends BaseTVActivity {
             }
         });
 
-        // API-33 safe parcelable extraction
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             castMember = BundleCompat.getParcelable(
@@ -37,20 +37,42 @@ public class PersonDetailActivity extends BaseTVActivity {
 
         addFragment(PersonDetailFragment.newInstance(castMember));
         glideBackgroundManager = new GlideBackgroundManager(this);
-        updateBackground();
+        showDefaultBackground();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateBackground();
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
     }
 
-    private void updateBackground() {
-        if (castMember != null && castMember.getProfilePath() != null) {
-            glideBackgroundManager.loadImage(HttpClientModule.POSTER_URL + castMember.getProfilePath());
+    @Override
+    protected void onDestroy() {
+        if (glideBackgroundManager != null) {
+            glideBackgroundManager.release();
+            glideBackgroundManager = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public void updatePersonBackground(@Nullable String backdropPath) {
+        if (glideBackgroundManager == null || isFinishing() || isDestroyed()) {
+            return;
+        }
+        if (backdropPath != null && !backdropPath.isEmpty()) {
+            glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + backdropPath);
         } else {
-            glideBackgroundManager.setBackground(ContextCompat.getDrawable(this, R.drawable.material_bg));
+            showDefaultBackground();
+        }
+    }
+
+    private void showDefaultBackground() {
+        if (glideBackgroundManager != null) {
+            glideBackgroundManager.setBackground(
+                    ContextCompat.getDrawable(this, R.drawable.material_bg));
         }
     }
 }
