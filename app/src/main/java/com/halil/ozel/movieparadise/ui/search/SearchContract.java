@@ -7,8 +7,10 @@ import java.util.List;
 public interface SearchContract {
 
     interface View {
+        void onSearchStarted();
         void clearResults();
         void showResults(List<Movie> movies);
+        void showEmpty();
         void showSearchError(Throwable throwable);
     }
 
@@ -16,5 +18,6 @@ public interface SearchContract {
         void attachView(View view);
         void detachView();
         void search(String query);
+        void retryLastSearch();
     }
 }

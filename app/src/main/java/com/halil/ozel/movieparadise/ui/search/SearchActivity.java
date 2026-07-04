@@ -1,43 +1,49 @@
 package com.halil.ozel.movieparadise.ui.search;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
 
 import com.halil.ozel.movieparadise.R;
-import com.halil.ozel.movieparadise.ui.main.MainActivity;
+import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
+import com.halil.ozel.movieparadise.ui.base.BaseTVActivity;
+import com.halil.ozel.movieparadise.ui.base.GlideBackgroundManager;
 
 /**
- * Hosts the {@link SearchFragment} using the support Fragment API.
+ * Hosts the {@link SearchFragment} with TV styling and dynamic background.
  */
-public class SearchActivity extends FragmentActivity {
+public class SearchActivity extends BaseTVActivity {
+
+    private GlideBackgroundManager glideBackgroundManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+
+        glideBackgroundManager = new GlideBackgroundManager(this);
+        glideBackgroundManager.setBackground(ContextCompat.getDrawable(this, R.drawable.material_bg));
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (isTaskRoot()) {
-                    startActivity(new Intent(SearchActivity.this, MainActivity.class));
-                }
                 finish();
             }
         });
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.search_fragment, SearchFragment.newInstance())
-                    .commit();
+        if (getSupportFragmentManager().findFragmentById(R.id.tv_frame_content) == null) {
+            addFragment(SearchFragment.newInstance());
         }
     }
 
-    @Override
-    public boolean onSearchRequested() {
-        startActivity(new Intent(this, SearchActivity.class));
-        return true;
+    public void updateBackground(String backdropPath) {
+        if (glideBackgroundManager == null) {
+            return;
+        }
+        if (backdropPath != null) {
+            glideBackgroundManager.loadImage(HttpClientModule.BACKDROP_URL + backdropPath);
+        } else {
+            glideBackgroundManager.setBackground(ContextCompat.getDrawable(this, R.drawable.material_bg));
+        }
     }
 }

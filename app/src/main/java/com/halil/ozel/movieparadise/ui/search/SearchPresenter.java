@@ -54,11 +54,36 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
             return;
         }
 
+        executeSearch(normalizedQuery);
+    }
+
+    @Override
+    public void retryLastSearch() {
+        if (lastQuery.isEmpty()) {
+            return;
+        }
+        cancelActiveSearch();
+        if (view != null) {
+            view.clearResults();
+        }
+        executeSearch(lastQuery);
+    }
+
+    private void executeSearch(String normalizedQuery) {
+        if (view != null) {
+            view.onSearchStarted();
+        }
+
         searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, true, Config.API_KEY_URL)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
-                    if (view != null && normalizedQuery.equals(lastQuery) && response.getResults() != null) {
+                    if (view == null || !normalizedQuery.equals(lastQuery)) {
+                        return;
+                    }
+                    if (response.getResults() == null || response.getResults().isEmpty()) {
+                        view.showEmpty();
+                    } else {
                         view.showResults(response.getResults());
                     }
                 }, throwable -> {

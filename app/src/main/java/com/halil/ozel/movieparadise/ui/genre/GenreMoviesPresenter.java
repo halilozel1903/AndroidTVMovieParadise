@@ -16,6 +16,7 @@ public class GenreMoviesPresenter extends BaseRxPresenter implements GenreMovies
     private int page = 1;
     private int totalPages = 1;
     private boolean loading;
+    private int lastGenreId;
 
     @Inject
     public GenreMoviesPresenter(TheMovieDbAPI theMovieDbAPI) {
@@ -38,8 +39,13 @@ public class GenreMoviesPresenter extends BaseRxPresenter implements GenreMovies
         if (!canLoadMore()) {
             return;
         }
-
+        lastGenreId = genreId;
+        boolean isFirstPage = page == 1;
         loading = true;
+        if (view != null) {
+            view.onLoadStarted(isFirstPage);
+        }
+
         disposables.add(theMovieDbAPI.getMoviesByGenre(
                         genreId,
                         "popularity.desc",
@@ -51,12 +57,19 @@ public class GenreMoviesPresenter extends BaseRxPresenter implements GenreMovies
                 .subscribe(response -> {
                     loading = false;
                     if (response == null || response.getResults() == null) {
+                        if (view != null && isFirstPage) {
+                            view.showEmpty();
+                        }
                         return;
                     }
                     totalPages = Math.max(1, response.getTotalPages());
                     page = response.getPage() + 1;
                     if (view != null) {
-                        view.showMovies(response.getResults());
+                        if (response.getResults().isEmpty() && isFirstPage) {
+                            view.showEmpty();
+                        } else {
+                            view.showMovies(response.getResults());
+                        }
                     }
                 }, throwable -> {
                     loading = false;
@@ -64,6 +77,14 @@ public class GenreMoviesPresenter extends BaseRxPresenter implements GenreMovies
                         view.showLoadError(throwable);
                     }
                 }));
+    }
+
+    @Override
+    public void retry(int genreId) {
+        if (loading) {
+            return;
+        }
+        loadMoviesByGenre(genreId);
     }
 
     @Override
