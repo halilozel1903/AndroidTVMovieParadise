@@ -17,7 +17,7 @@ public class StateCardPresenter extends Presenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_state, parent, false);
-        view.setDefaultFocusHighlightEnabled(false);
+        TvFocusHelper.disableDefaultFocusHighlight(view);
         return new ViewHolder(view);
     }
 
