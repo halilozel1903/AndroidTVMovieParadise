@@ -5,13 +5,18 @@ import androidx.annotation.Nullable;
 import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SearchPresenter extends BaseRxPresenter implements SearchContract.Presenter {
+
+    private static final long SEARCH_DEBOUNCE_MS = 350L;
 
     private final TheMovieDbAPI theMovieDbAPI;
     @Nullable
@@ -53,7 +58,7 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
             return;
         }
 
-        executeSearch(normalizedQuery);
+        executeSearch(normalizedQuery, SEARCH_DEBOUNCE_MS);
     }
 
     @Override
@@ -65,15 +70,18 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
         if (view != null) {
             view.clearResults();
         }
-        executeSearch(lastQuery);
+        executeSearch(lastQuery, 0);
     }
 
-    private void executeSearch(String normalizedQuery) {
+    private void executeSearch(String normalizedQuery, long delayMs) {
         if (view != null) {
             view.onSearchStarted();
         }
 
-        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, false)
+        // Typing with a remote is slow and noisy: wait for a pause before hitting the network.
+        // A newer query disposes this chain, which also cancels the pending timer.
+        searchDisposable = Observable.timer(delayMs, TimeUnit.MILLISECONDS, Schedulers.io())
+                .flatMap(tick -> theMovieDbAPI.getSearchMovies(normalizedQuery, false))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
