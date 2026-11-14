@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
@@ -97,7 +98,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
 
         Bundle args = getArguments();
         if (args != null) {
-            castMember = args.getParcelable(CastMember.class.getSimpleName());
+            castMember = BundleCompat.getParcelable(args, CastMember.class.getSimpleName(), CastMember.class);
         }
 
         if (castMember == null) {

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -131,7 +132,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (getArguments() == null || !getArguments().containsKey(TvShow.class.getSimpleName())) {
             throw new RuntimeException("A tv show is necessary for TvDetailFragment");
         }
-        tvShow = getArguments().getParcelable(TvShow.class.getSimpleName());
+        tvShow = BundleCompat.getParcelable(getArguments(), TvShow.class.getSimpleName(), TvShow.class);
         setUpAdapter();
         setUpDetailsOverviewRow();
         setupCastRow();

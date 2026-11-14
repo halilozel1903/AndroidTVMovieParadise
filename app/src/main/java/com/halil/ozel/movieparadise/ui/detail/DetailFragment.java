@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -133,7 +134,7 @@ public class DetailFragment extends DetailsSupportFragment
             }
             return;
         }
-        movie = getArguments().getParcelable(Movie.class.getSimpleName());
+        movie = BundleCompat.getParcelable(getArguments(), Movie.class.getSimpleName(), Movie.class);
 
         if (movie == null) {
             Log.e(TAG, "Movie parcelable is null in DetailFragment");
