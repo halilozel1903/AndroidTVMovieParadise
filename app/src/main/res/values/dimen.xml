@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="full_width_height">430dp</dimen>
-    <dimen name="logo_margin_start">50dp</dimen>
-
-    <dimen name="genre_corner">12dp</dimen>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default corner radius for card layouts -->
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="poster_card_width">188dp</dimen>
@@ -11,8 +7,8 @@
     <dimen name="half_padding">8dp</dimen>
     <dimen name="full_padding">16dp</dimen>
 
-    <dimen name="lb_details_v2_card_height">430dp</dimen>
+    <!-- Overrides the Leanback details card height. -->
+    <dimen name="lb_details_v2_card_height" tools:override="true" tools:ignore="UnusedResources">430dp</dimen>
     <dimen name="provider_icon_size">44dp</dimen>
-    <dimen name="provider_icon_margin">8dp</dimen>
 
 </resources>
