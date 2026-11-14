@@ -29,7 +29,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.CastMember;
@@ -176,7 +175,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (tvShow == null || tvShow.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getTvVideos(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getTvVideos(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleVideoResponse, e -> Log.e(TAG, "fetchVideos error", e)));
@@ -191,7 +190,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (tvShow == null || tvShow.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getTvWatchProviders(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getTvWatchProviders(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -261,7 +260,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (tvShow == null || tvShow.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getTvShowDetails(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getTvShowDetails(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindTvShowDetails, e -> Log.e(TAG, "fetchTvShowDetails error", e)));
@@ -271,7 +270,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         if (tvShow == null || tvShow.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getTvCredits(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getTvCredits(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindCastMembers, e -> {
@@ -293,7 +292,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
         recommendationsLoadingHelper.showInitialLoading(recommendationsAdapter, RECOMMENDATIONS_SKELETON_COUNT);
         addRowIfMissing(recommendationsRow, getRecommendationsInsertIndex());
 
-        disposables.add(theMovieDbAPI.getTvRecommendations(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getTvRecommendations(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -307,7 +306,7 @@ public class TvDetailFragment extends DetailsSupportFragment implements OnItemVi
                             recommendationsHelper.finishRequest();
                         }));
 
-        disposables.add(theMovieDbAPI.getSimilarTvShows(tvShow.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getSimilarTvShows(tvShow.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

@@ -2,7 +2,6 @@ package com.halil.ozel.movieparadise.ui.search;
 
 import androidx.annotation.Nullable;
 
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
@@ -74,7 +73,7 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
             view.onSearchStarted();
         }
 
-        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, true, Config.API_KEY_URL)
+        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, true)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {

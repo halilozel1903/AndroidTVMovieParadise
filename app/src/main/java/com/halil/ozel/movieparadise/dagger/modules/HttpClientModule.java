@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.halil.ozel.movieparadise.BuildConfig;
 import com.halil.ozel.movieparadise.dagger.AppScope;
+import com.halil.ozel.movieparadise.data.api.ApiKeyInterceptor;
 import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 
 import java.io.File;
@@ -22,7 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Dagger module that provides network-related dependencies.
- * Uses GsonConverterFactory (replaces the previous MoshiConverterFactory).
+ * The TMDB API key comes from {@link BuildConfig#TMDB_API_KEY} and is attached to
+ * every request by {@link ApiKeyInterceptor}.
  */
 @Module
 public class HttpClientModule {
@@ -64,12 +66,14 @@ public class HttpClientModule {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
-                .cache(new Cache(cacheDir, DISK_CACHE_SIZE));
+                .cache(new Cache(cacheDir, DISK_CACHE_SIZE))
+                .addInterceptor(new ApiKeyInterceptor(BuildConfig.TMDB_API_KEY));
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
             builder.addInterceptor(logging);
+            logging.redactQueryParams(ApiKeyInterceptor.API_KEY_PARAM);
         }
 
         return builder.build();

@@ -2,6 +2,22 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+// The TMDB key is read from (in order) a Gradle property, local.properties, or the
+// environment, so it never has to be committed. See README > Getting Started.
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def tmdbApiKey = (providers.gradleProperty('TMDB_API_KEY').orNull
+        ?: localProperties.getProperty('TMDB_API_KEY')
+        ?: providers.environmentVariable('TMDB_API_KEY').orNull
+        ?: '').trim()
+if (tmdbApiKey.isEmpty()) {
+    logger.warn('TMDB_API_KEY is not set: the app will build, but every TMDB request will fail. ' +
+            'Add TMDB_API_KEY=<your key> to local.properties.')
+}
+
 android {
     namespace 'com.halil.ozel.movieparadise'
     compileSdk 37
@@ -12,6 +28,8 @@ android {
         targetSdk 36
         versionCode 5
         versionName '1.5'
+
+        buildConfigField 'String', 'TMDB_API_KEY', "\"${tmdbApiKey}\""
     }
 
     buildTypes {

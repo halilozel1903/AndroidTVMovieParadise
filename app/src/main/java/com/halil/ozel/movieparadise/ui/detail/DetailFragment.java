@@ -33,7 +33,6 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
@@ -193,7 +192,7 @@ public class DetailFragment extends DetailsSupportFragment
         if (movie == null || movie.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getMovieWatchProviders(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieWatchProviders(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -212,7 +211,7 @@ public class DetailFragment extends DetailsSupportFragment
 
         Log.d(TAG, "Fetching movie details for id=" + movie.getId());
 
-        disposables.add(theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieDetails(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindMovieDetails, e -> {
@@ -227,7 +226,7 @@ public class DetailFragment extends DetailsSupportFragment
             removeRow(castRow);
             return;
         }
-        disposables.add(theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getCredits(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindCastMembers, e -> {
@@ -322,7 +321,7 @@ public class DetailFragment extends DetailsSupportFragment
         recommendationsLoadingHelper.showInitialLoading(mRecommendationsAdapter, RECOMMENDATIONS_SKELETON_COUNT);
         addRowIfMissing(mRecommendationsRow, getRecommendationsInsertIndex());
 
-        disposables.add(theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getRecommendations(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -336,7 +335,7 @@ public class DetailFragment extends DetailsSupportFragment
                             recommendationsHelper.finishRequest();
                         }));
 
-        disposables.add(theMovieDbAPI.getSimilarMovies(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getSimilarMovies(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -352,7 +351,7 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void fetchVideos() {
-        disposables.add(theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieVideos(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleVideoResponse, e -> Log.e(TAG, "fetchVideos error", e)));
