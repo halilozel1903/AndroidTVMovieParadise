@@ -1,4 +1,4 @@
-package com.halil.ozel.movieparadise.data.Api;
+package com.halil.ozel.movieparadise.data.api;
 
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;

@@ -1,7 +1,7 @@
 package com.halil.ozel.movieparadise.ui.main;
 
 import com.halil.ozel.movieparadise.Config;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;

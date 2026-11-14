@@ -1,7 +1,7 @@
 package com.halil.ozel.movieparadise.ui.genre;
 
 import com.halil.ozel.movieparadise.Config;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
 import javax.inject.Inject;

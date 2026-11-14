@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.halil.ozel.movieparadise.BuildConfig;
 import com.halil.ozel.movieparadise.dagger.AppScope;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;

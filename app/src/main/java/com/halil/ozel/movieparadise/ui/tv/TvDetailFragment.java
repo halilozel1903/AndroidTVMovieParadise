@@ -31,7 +31,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
 import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
