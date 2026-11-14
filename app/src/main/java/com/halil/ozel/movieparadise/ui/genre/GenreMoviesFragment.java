@@ -67,7 +67,6 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
         if (genre == null) {
             throw new IllegalArgumentException("A genre is necessary for GenreMoviesFragment");
         }
-        genre = getArguments().getParcelable(ARG_GENRE);
 
         setTitle(genre.getName());
         setupGrid();
