@@ -91,4 +91,7 @@ dependencies {
     // Dependency injection
     implementation libs.dagger
     annotationProcessor libs.dagger.compiler
+
+    // Unit tests
+    testImplementation libs.junit
 }
