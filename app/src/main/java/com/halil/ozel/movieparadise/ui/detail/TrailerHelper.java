@@ -10,6 +10,7 @@ import com.halil.ozel.movieparadise.data.models.VideoResponse;
 import com.halil.ozel.movieparadise.ui.player.PlayerActivity;
 
 import java.util.List;
+import java.util.Locale;
 
 public final class TrailerHelper {
 
@@ -47,7 +48,7 @@ public final class TrailerHelper {
         return videos.stream()
                 .filter(v -> isYoutubeVideo(v)
                         && v.getName() != null
-                        && v.getName().toLowerCase().contains(keyword))
+                        && v.getName().toLowerCase(Locale.ROOT).contains(keyword))
                 .map(Video::getKey)
                 .findFirst()
                 .orElse(null);
@@ -58,7 +59,7 @@ public final class TrailerHelper {
         return videos.stream()
                 .filter(v -> isYoutubeVideo(v)
                         && v.getType() != null
-                        && v.getType().toLowerCase().contains(keyword))
+                        && v.getType().toLowerCase(Locale.ROOT).contains(keyword))
                 .map(Video::getKey)
                 .findFirst()
                 .orElse(null);
