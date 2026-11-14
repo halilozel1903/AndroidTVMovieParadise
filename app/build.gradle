@@ -94,4 +94,5 @@ dependencies {
 
     // Unit tests
     testImplementation libs.junit
+    testImplementation libs.okhttp.mockwebserver
 }
