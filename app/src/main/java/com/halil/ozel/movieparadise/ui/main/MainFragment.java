@@ -109,21 +109,21 @@ public class MainFragment extends BrowseSupportFragment
         TvShowPresenter tvPresenter = new TvShowPresenter();
 
         movieRowSparseArray.put(MainContract.NOW_PLAYING,
-                newMovieRow(MainContract.NOW_PLAYING, "Now Playing", moviePresenter, Movie.class));
+                newMovieRow(MainContract.NOW_PLAYING, getString(R.string.row_now_playing), moviePresenter, Movie.class));
         movieRowSparseArray.put(MainContract.TOP_RATED,
-                newMovieRow(MainContract.TOP_RATED, "Top Rated", moviePresenter, Movie.class));
+                newMovieRow(MainContract.TOP_RATED, getString(R.string.row_top_rated), moviePresenter, Movie.class));
         movieRowSparseArray.put(MainContract.POPULAR,
-                newMovieRow(MainContract.POPULAR, "Popular", moviePresenter, Movie.class));
+                newMovieRow(MainContract.POPULAR, getString(R.string.row_popular), moviePresenter, Movie.class));
         movieRowSparseArray.put(MainContract.UPCOMING,
-                newMovieRow(MainContract.UPCOMING, "Upcoming", moviePresenter, Movie.class));
+                newMovieRow(MainContract.UPCOMING, getString(R.string.row_upcoming), moviePresenter, Movie.class));
         movieRowSparseArray.put(MainContract.TV_ON_THE_AIR,
-                newMovieRow(MainContract.TV_ON_THE_AIR, "On The Air", tvPresenter, TvShow.class));
+                newMovieRow(MainContract.TV_ON_THE_AIR, getString(R.string.row_tv_on_the_air), tvPresenter, TvShow.class));
         movieRowSparseArray.put(MainContract.TV_AIRING_TODAY,
-                newMovieRow(MainContract.TV_AIRING_TODAY, "Airing Today", tvPresenter, TvShow.class));
+                newMovieRow(MainContract.TV_AIRING_TODAY, getString(R.string.row_tv_airing_today), tvPresenter, TvShow.class));
         movieRowSparseArray.put(MainContract.TV_POPULAR,
-                newMovieRow(MainContract.TV_POPULAR, "Popular TV", tvPresenter, TvShow.class));
+                newMovieRow(MainContract.TV_POPULAR, getString(R.string.row_tv_popular), tvPresenter, TvShow.class));
         movieRowSparseArray.put(MainContract.TV_TOP_RATED,
-                newMovieRow(MainContract.TV_TOP_RATED, "Top Rated TV", tvPresenter, TvShow.class));
+                newMovieRow(MainContract.TV_TOP_RATED, getString(R.string.row_tv_top_rated), tvPresenter, TvShow.class));
     }
 
     private MovieRow newMovieRow(int id, String title, Presenter contentPresenter, Class<?> contentClass) {

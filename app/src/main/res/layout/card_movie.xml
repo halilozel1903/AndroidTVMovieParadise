@@ -18,7 +18,7 @@
             android:id="@+id/poster_iv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="Movie Poster"
+            android:contentDescription="@string/poster_content_description"
             android:scaleType="centerCrop" />
 
         <TextView
