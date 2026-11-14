@@ -21,7 +21,7 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.ui.detail.TrailerHelper;
 
 /**
- * Fullscreen trailer player — WebView embed, YouTube uygulamasına fallback.
+ * Fullscreen trailer player: YouTube embed in a WebView, with the YouTube app as fallback.
  */
 public class PlayerActivity extends AppCompatActivity {
 
@@ -62,9 +62,6 @@ public class PlayerActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         videoId = getIntent().getStringExtra(TrailerHelper.EXTRA_VIDEO_ID);
-        if (videoId == null || videoId.isEmpty()) {
-            videoId = getIntent().getStringExtra("videoId");
-        }
         if (videoId != null && !videoId.isEmpty()) {
             playInWebView();
         } else {
