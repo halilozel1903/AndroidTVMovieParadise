@@ -100,6 +100,22 @@ public class MainFragment extends BrowseSupportFragment
         loadInitialRows();
     }
 
+    /**
+     * Brings the row headers back when they are hidden.
+     *
+     * @return {@code true} when the back press was consumed by the headers transition.
+     */
+    public boolean showHeadersIfHidden() {
+        if (isInHeadersTransition()) {
+            return true;
+        }
+        if (isShowingHeaders()) {
+            return false;
+        }
+        startHeadersTransition(true);
+        return true;
+    }
+
     private void createDataRows() {
         movieRowSparseArray = new SparseArray<>();
         visibleRows = new SparseArray<>();
