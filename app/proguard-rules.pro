@@ -1,21 +1,11 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Project-specific R8 rules. Retrofit, OkHttp, Glide, Dagger and RxJava ship their own
+# consumer rules, so only what is unique to this app lives here.
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Readable stack traces in release builds.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Gson reads these models reflectively: several fields rely on their Java name
+# (no @SerializedName), so the fields must survive shrinking and keep their names.
+-keepattributes Signature,*Annotation*
+-keep class com.halil.ozel.movieparadise.data.models.** { *; }
