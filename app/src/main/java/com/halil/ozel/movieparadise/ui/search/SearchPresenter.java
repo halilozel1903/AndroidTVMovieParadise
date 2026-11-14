@@ -73,7 +73,7 @@ public class SearchPresenter extends BaseRxPresenter implements SearchContract.P
             view.onSearchStarted();
         }
 
-        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, true)
+        searchDisposable = theMovieDbAPI.getSearchMovies(normalizedQuery, false)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
