@@ -8,7 +8,6 @@ import androidx.leanback.widget.RowPresenter;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.halil.ozel.movieparadise.R;
 
 
 public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter {
@@ -26,11 +25,11 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
 
         layoutParams.setMarginStart(view.getResources().getDimensionPixelSize(
-                R.dimen.lb_details_v2_logo_margin_start));
-        layoutParams.topMargin = view.getResources().getDimensionPixelSize(R.dimen.lb_details_v2_blank_height) - layoutParams.height / 2;
+                androidx.leanback.R.dimen.lb_details_v2_logo_margin_start));
+        layoutParams.topMargin = view.getResources().getDimensionPixelSize(androidx.leanback.R.dimen.lb_details_v2_blank_height) - layoutParams.height / 2;
 
-        float offset = view.getResources().getDimensionPixelSize(R.dimen.lb_details_v2_actions_height) + view
-                .getResources().getDimensionPixelSize(R.dimen.lb_details_v2_description_margin_top) + (layoutParams.height / 2);
+        float offset = view.getResources().getDimensionPixelSize(androidx.leanback.R.dimen.lb_details_v2_actions_height) + view
+                .getResources().getDimensionPixelSize(androidx.leanback.R.dimen.lb_details_v2_description_margin_top) + (layoutParams.height / 2);
 
         switch (viewHolder.getState()) {
             case STATE_FULL:
@@ -68,7 +67,7 @@ public class CustomDetailPresenter extends FullWidthDetailsOverviewRowPresenter 
         }
         if (view != null) {
             view.setBackgroundColor(getBackgroundColor());
-            View actionsBackground = view.findViewById(R.id.details_overview_actions_background);
+            View actionsBackground = view.findViewById(androidx.leanback.R.id.details_overview_actions_background);
             if (actionsBackground != null) {
                 actionsBackground.setBackgroundColor(getActionsBackgroundColor());
             }
