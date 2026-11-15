@@ -29,7 +29,7 @@ jobs:
       - name: Build, unit tests and lint
         run: ./gradlew assembleDebug testDebugUnitTest lintDebug
         env:
-          # Optional repository secret; the build still passes without it.
+          # Optional repository secret; the bundled demo key is used without it.
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
 
       - name: Upload debug APK
