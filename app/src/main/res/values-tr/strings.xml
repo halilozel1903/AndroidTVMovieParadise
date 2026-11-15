@@ -21,7 +21,6 @@
     <string name="watch_trailer">FRAGMANI İZLE</string>
     <string name="biography_label">Biyografi</string>
     <string name="poster_content_description">Afiş</string>
-    <string name="details_load_error">Detaylar yüklenemedi</string>
 
     <!-- Loading, empty and error states -->
     <string name="error_network">Bağlantı hatası</string>

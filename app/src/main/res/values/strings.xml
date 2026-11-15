@@ -24,7 +24,6 @@
     <string name="watch_trailer">WATCH TRAILER</string>
     <string name="biography_label">Biography</string>
     <string name="poster_content_description">Poster</string>
-    <string name="details_load_error">Couldn\'t load details</string>
 
     <!-- Loading, empty and error states -->
     <string name="error_network">Connection error</string>

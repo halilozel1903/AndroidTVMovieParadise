@@ -377,7 +377,7 @@ public class DetailFragment extends DetailsSupportFragment
         }
         if (detailsLoadFailed) {
             adapter.set(TrailerHelper.ACTION_RETRY_DETAILS,
-                    new Action(TrailerHelper.ACTION_RETRY_DETAILS, getString(R.string.details_load_error)));
+                    new Action(TrailerHelper.ACTION_RETRY_DETAILS, getString(R.string.retry_action)));
             hasActions = true;
         }
 
