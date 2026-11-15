@@ -149,7 +149,7 @@ Focus behaviour follows the [Google TV focus guidelines](https://developer.andro
 - A recent Android Studio release that supports Android Gradle Plugin 9.5
 - JDK 17 or newer
 - Android SDK Platform 37 (the app compiles against 37 and targets 36)
-- A TMDB API key (v3 auth) from your [TMDB account settings](https://www.themoviedb.org/settings/api)
+- Optional: your own TMDB API key (v3 auth) from your [TMDB account settings](https://www.themoviedb.org/settings/api)
 
 ### 1. Clone
 
@@ -158,15 +158,15 @@ git clone https://github.com/halilozel1903/AndroidTVMovieParadise.git
 cd AndroidTVMovieParadise
 ```
 
-### 2. Add your TMDB API key
+### 2. Use your own TMDB API key (optional)
 
-The key is injected at build time and is never committed. Add it to `local.properties` in the project root (the file is git-ignored; see [`local.properties.example`](local.properties.example)):
+A shared demo key is bundled in [`app/build.gradle`](app/build.gradle), so the app works straight after cloning. It is rate-limited and shared by everyone who builds the project, so use your own key for anything beyond trying the app out. Add it to `local.properties` in the project root (the file is git-ignored; see [`local.properties.example`](local.properties.example)):
 
 ```properties
 TMDB_API_KEY=your_tmdb_v3_api_key
 ```
 
-Alternatively, pass it as a Gradle property (`-PTMDB_API_KEY=...`) or as a `TMDB_API_KEY` environment variable, which is what CI uses. Without a key the project still builds, but every row shows a connection error.
+Alternatively, pass it as a Gradle property (`-PTMDB_API_KEY=...`) or as a `TMDB_API_KEY` environment variable. Any of these overrides the bundled key at build time.
 
 ### 3. Build and run
 
@@ -191,7 +191,7 @@ Run it on an Android TV emulator or device; the app is listed under the Leanback
 
 The release build is minified and unsigned; add your own `signingConfig` before distributing it.
 
-GitHub Actions runs the debug build, unit tests and lint on every push and pull request ([workflow](.github/workflows/android.yml)). To let CI builds talk to TMDB, add a `TMDB_API_KEY` repository secret.
+GitHub Actions runs the debug build, unit tests and lint on every push and pull request ([workflow](.github/workflows/android.yml)). An optional `TMDB_API_KEY` repository secret overrides the bundled key in CI builds.
 
 ### Project info
 
