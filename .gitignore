@@ -1,14 +1,29 @@
+# Gradle
+.gradle/
+build/
+
+# Local configuration (SDK path, TMDB_API_KEY, signing)
+local.properties
+*.jks
+*.keystore
+
+# Android Studio / IntelliJ
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/shelf/
+.idea/deploymentTargetDropDown.xml
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
+.idea/appInsightsSettings.xml
+.idea/studiobot.xml
+captures/
+.externalNativeBuild/
+.cxx/
+
+# OS
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx

@@ -1,0 +1,3 @@
+# Optional: copy to local.properties (git-ignored) to replace the bundled demo TMDB key.
+# Android Studio adds sdk.dir automatically.
+TMDB_API_KEY=your_tmdb_v3_api_key

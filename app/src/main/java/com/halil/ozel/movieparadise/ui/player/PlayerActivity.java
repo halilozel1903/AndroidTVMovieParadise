@@ -3,7 +3,6 @@ package com.halil.ozel.movieparadise.ui.player;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -22,7 +21,7 @@ import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.ui.detail.TrailerHelper;
 
 /**
- * Fullscreen trailer player — WebView embed, YouTube uygulamasına fallback.
+ * Fullscreen trailer player: YouTube embed in a WebView, with the YouTube app as fallback.
  */
 public class PlayerActivity extends AppCompatActivity {
 
@@ -63,9 +62,6 @@ public class PlayerActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> finish());
 
         videoId = getIntent().getStringExtra(TrailerHelper.EXTRA_VIDEO_ID);
-        if (videoId == null || videoId.isEmpty()) {
-            videoId = getIntent().getStringExtra("videoId");
-        }
         if (videoId != null && !videoId.isEmpty()) {
             playInWebView();
         } else {
@@ -157,15 +153,6 @@ public class PlayerActivity extends AppCompatActivity {
         webView.setVisibility(View.INVISIBLE);
         errorOverlay.setVisibility(View.VISIBLE);
         retryButton.post(retryButton::requestFocus);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
     }
 
     @Override

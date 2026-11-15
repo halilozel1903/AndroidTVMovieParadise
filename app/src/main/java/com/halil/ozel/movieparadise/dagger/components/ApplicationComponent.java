@@ -2,7 +2,6 @@ package com.halil.ozel.movieparadise.dagger.components;
 
 
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.dagger.AppScope;
 import com.halil.ozel.movieparadise.dagger.modules.ApplicationModule;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
 import com.halil.ozel.movieparadise.ui.detail.DetailFragment;
@@ -16,7 +15,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-@AppScope
 @Singleton
 @Component(modules = {
         ApplicationModule.class,

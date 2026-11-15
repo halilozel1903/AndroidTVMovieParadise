@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.VerticalGridSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.OnItemViewClickedListener;
@@ -60,9 +61,12 @@ public class GenreMoviesFragment extends VerticalGridSupportFragment
         presenter.attachView(this);
 
         if (getArguments() == null || !getArguments().containsKey(ARG_GENRE)) {
-            throw new RuntimeException("A genre is necessary for GenreMoviesFragment");
+            throw new IllegalArgumentException("A genre is necessary for GenreMoviesFragment");
         }
-        genre = getArguments().getParcelable(ARG_GENRE);
+        genre = BundleCompat.getParcelable(getArguments(), ARG_GENRE, Genre.class);
+        if (genre == null) {
+            throw new IllegalArgumentException("A genre is necessary for GenreMoviesFragment");
+        }
 
         setTitle(genre.getName());
         setupGrid();

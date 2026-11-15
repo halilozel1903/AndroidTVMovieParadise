@@ -5,7 +5,7 @@ import androidx.leanback.widget.ListRowPresenter;
 import androidx.leanback.widget.VerticalGridPresenter;
 
 /**
- * Google TV focus önerisi: Leanback yerleşik vurgusu, hafif zoom (1.05x) + glow.
+ * Google TV focus guidance: built-in Leanback highlight with a subtle zoom (1.05x) and glow.
  */
 public final class TvRows {
 
@@ -16,7 +16,7 @@ public final class TvRows {
         return new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_SMALL);
     }
 
-    /** Küçük chip/ikon satırları: zoom flicker yapmaz, sadece outline. */
+    /** Small chip/icon rows: outline only, no zoom (avoids flicker). */
     public static ListRowPresenter tagRowPresenter() {
         return new ListRowPresenter(FocusHighlight.ZOOM_FACTOR_NONE);
     }

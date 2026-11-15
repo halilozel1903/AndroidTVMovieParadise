@@ -1,0 +1,41 @@
+<resources>
+    <!-- Home rows -->
+    <string name="row_now_playing">Vizyondakiler</string>
+    <string name="row_top_rated">En Çok Oy Alanlar</string>
+    <string name="row_popular">Popüler</string>
+    <string name="row_upcoming">Yakında</string>
+    <string name="row_tv_on_the_air">Yayındaki Diziler</string>
+    <string name="row_tv_airing_today">Bugün Yayınlananlar</string>
+    <string name="row_tv_popular">Popüler Diziler</string>
+    <string name="row_tv_top_rated">En Çok Oy Alan Diziler</string>
+    <string name="press_back_again_to_exit">Çıkmak için tekrar geri tuşuna basın</string>
+
+    <!-- Detail -->
+    <string name="overview_label">Özet</string>
+    <string name="watch_providers_label">Nerede izlenir?</string>
+    <string name="cast_label">Oyuncular</string>
+    <string name="genres_label">Türler</string>
+    <string name="recommendations_label">Öneriler</string>
+    <string name="movies_label">Filmler</string>
+    <string name="series_label">Diziler</string>
+    <string name="watch_trailer">FRAGMANI İZLE</string>
+    <string name="biography_label">Biyografi</string>
+    <string name="poster_content_description">Afiş</string>
+
+    <!-- Loading, empty and error states -->
+    <string name="error_network">Bağlantı hatası</string>
+    <string name="retry_action">Tekrar Dene</string>
+    <string name="empty_search">Sonuç bulunamadı</string>
+    <string name="empty_genre">Bu türde içerik bulunamadı</string>
+    <string name="empty_row">İçerik bulunamadı</string>
+
+    <!-- Search -->
+    <string name="search_results_label">Arama Sonuçları</string>
+    <string name="search_title">Film Ara</string>
+
+    <!-- Trailer player -->
+    <string name="player_error">Fragman yüklenemedi</string>
+    <string name="player_loading">Fragman yükleniyor…</string>
+    <string name="player_go_back">Geri Dön</string>
+    <string name="player_open_youtube">YouTube\'da Aç</string>
+</resources>

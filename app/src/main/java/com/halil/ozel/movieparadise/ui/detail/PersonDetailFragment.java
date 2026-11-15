@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.ArrayObjectAdapter;
 import androidx.leanback.widget.ClassPresenterSelector;
@@ -25,10 +26,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.Movie;
 import com.halil.ozel.movieparadise.data.models.MovieCreditsResponse;
@@ -98,7 +98,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
 
         Bundle args = getArguments();
         if (args != null) {
-            castMember = args.getParcelable(CastMember.class.getSimpleName());
+            castMember = BundleCompat.getParcelable(args, CastMember.class.getSimpleName(), CastMember.class);
         }
 
         if (castMember == null) {
@@ -146,14 +146,14 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
     }
 
     private void fetchPersonDetails() {
-        disposables.add(theMovieDbAPI.getPerson(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getPerson(String.valueOf(castMember.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindPersonDetails, e -> Log.e(TAG, "fetchPersonDetails error", e)));
     }
 
     private void fetchMovieCredits() {
-        disposables.add(theMovieDbAPI.getPersonMovieCredits(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getPersonMovieCredits(String.valueOf(castMember.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindMovieCredits, e -> Log.e(TAG, "fetchMovieCredits error", e)));
@@ -180,7 +180,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
     }
 
     private void fetchTvCredits() {
-        disposables.add(theMovieDbAPI.getPersonTvCredits(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getPersonTvCredits(String.valueOf(castMember.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindTvCredits, e -> Log.e(TAG, "fetchTvCredits error", e)));
@@ -218,7 +218,7 @@ public class PersonDetailFragment extends DetailsSupportFragment implements OnIt
     }
 
     private void fetchPersonImages() {
-        disposables.add(theMovieDbAPI.getPersonImages(String.valueOf(castMember.getId()), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getPersonImages(String.valueOf(castMember.getId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::applyPersonImages, e -> {

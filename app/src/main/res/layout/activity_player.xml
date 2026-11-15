@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black">
@@ -59,6 +60,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/tv_focus_chip"
             android:defaultFocusHighlightEnabled="false"
+            tools:targetApi="o"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:paddingStart="24dp"
@@ -77,6 +79,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/tv_focus_chip"
             android:defaultFocusHighlightEnabled="false"
+            tools:targetApi="o"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:paddingStart="24dp"
@@ -95,6 +98,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/tv_focus_chip"
             android:defaultFocusHighlightEnabled="false"
+            tools:targetApi="o"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:paddingStart="24dp"

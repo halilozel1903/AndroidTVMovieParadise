@@ -1,26 +1,56 @@
-apply plugin: 'com.android.application'
+plugins {
+    alias(libs.plugins.android.application)
+}
+
+// A shared demo TMDB key is bundled so the app runs straight after cloning. Replace it with
+// your own through (in order) a Gradle property, local.properties, or the environment.
+// See README > Getting Started.
+def defaultTmdbApiKey = '45dfdbd49fa1f1da1f5b75fd60217433'
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+def tmdbApiKey = (providers.gradleProperty('TMDB_API_KEY').orNull
+        ?: localProperties.getProperty('TMDB_API_KEY')
+        ?: providers.environmentVariable('TMDB_API_KEY').orNull
+        ?: defaultTmdbApiKey).trim()
 
 android {
+    namespace 'com.halil.ozel.movieparadise'
+    compileSdk 37
+
     defaultConfig {
-        compileSdk 36
-        minSdkVersion 24
-        targetSdkVersion 36
-        versionCode 5
-        versionName "1.5"
-        testInstrumentationRunner "android.test.runner.AndroidJUnitRunner"
+        applicationId 'com.halil.ozel.movieparadise'
+        minSdk 24
+        targetSdk 36
+        versionCode 6
+        versionName '1.6'
+
+        buildConfigField 'String', 'TMDB_API_KEY', "\"${tmdbApiKey}\""
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+
     buildFeatures {
         buildConfig = true
+    }
+
+    lint {
+        warningsAsErrors = false
+        abortOnError = true
+        checkDependencies = true
     }
 
     packaging {
@@ -28,37 +58,39 @@ android {
             excludes += ['META-INF/versions/9/OSGI-INF/MANIFEST.MF']
         }
     }
-
-    namespace 'com.halil.ozel.movieparadise'
 }
 
 dependencies {
     // AndroidX UI
-    implementation 'androidx.core:core:1.18.0'
-    implementation 'androidx.core:core-splashscreen:1.2.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.leanback:leanback:1.2.0'
-    implementation 'androidx.palette:palette:1.0.0'
-    implementation 'androidx.annotation:annotation:1.10.0'
+    implementation libs.androidx.annotation
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.cardview
+    implementation libs.androidx.core
+    implementation libs.androidx.leanback
+    implementation libs.androidx.palette
+    implementation libs.androidx.splashscreen
 
     // Network and JSON
-    implementation "com.squareup.retrofit2:retrofit:3.0.0"
-    implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
-    implementation "com.squareup.retrofit2:adapter-rxjava3:3.0.0"
-    implementation "com.squareup.okhttp3:okhttp:5.3.2"
-    implementation "com.squareup.okhttp3:logging-interceptor:5.3.2"
-    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.gson
+    implementation libs.retrofit.adapter.rxjava3
+    implementation libs.okhttp
+    implementation libs.okhttp.logging
+    implementation libs.gson
 
     // Images
-    implementation 'com.github.bumptech.glide:glide:5.0.7'
-    annotationProcessor 'com.github.bumptech.glide:compiler:5.0.7'
+    implementation libs.glide
+    annotationProcessor libs.glide.compiler
 
     // Reactive streams
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.12'
+    implementation libs.rxandroid
+    implementation libs.rxjava
 
     // Dependency injection
-    implementation 'com.google.dagger:dagger:2.59.2'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.59.2'
+    implementation libs.dagger
+    annotationProcessor libs.dagger.compiler
+
+    // Unit tests
+    testImplementation libs.junit
+    testImplementation libs.okhttp.mockwebserver
 }

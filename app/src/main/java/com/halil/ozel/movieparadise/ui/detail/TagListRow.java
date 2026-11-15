@@ -5,7 +5,7 @@ import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ObjectAdapter;
 
 /**
- * Chip satırları — Leanback zoom yerine selector outline kullanır.
+ * Chip rows: use a selector outline instead of the Leanback zoom highlight.
  */
 public class TagListRow extends ListRow {
 

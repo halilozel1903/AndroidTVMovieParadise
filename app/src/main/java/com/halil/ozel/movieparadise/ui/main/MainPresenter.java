@@ -1,7 +1,6 @@
 package com.halil.ozel.movieparadise.ui.main;
 
-import com.halil.ozel.movieparadise.Config;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.MovieResponse;
 import com.halil.ozel.movieparadise.data.models.TvShowResponse;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
@@ -38,35 +37,35 @@ public class MainPresenter extends BaseRxPresenter implements MainContract.Prese
         switch (rowId) {
             case MainContract.NOW_PLAYING:
                 loadMovieSection(rowId, "now playing",
-                        theMovieDbAPI.getNowPlayingMovies(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getNowPlayingMovies(page));
                 break;
             case MainContract.TOP_RATED:
                 loadMovieSection(rowId, "top rated",
-                        theMovieDbAPI.getTopRatedMovies(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getTopRatedMovies(page));
                 break;
             case MainContract.POPULAR:
                 loadMovieSection(rowId, "popular",
-                        theMovieDbAPI.getPopularMovies(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getPopularMovies(page));
                 break;
             case MainContract.UPCOMING:
                 loadMovieSection(rowId, "upcoming",
-                        theMovieDbAPI.getUpcomingMovies(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getUpcomingMovies(page));
                 break;
             case MainContract.TV_ON_THE_AIR:
                 loadTvSection(rowId, "on the air",
-                        theMovieDbAPI.getOnTheAir(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getOnTheAir(page));
                 break;
             case MainContract.TV_AIRING_TODAY:
                 loadTvSection(rowId, "airing today",
-                        theMovieDbAPI.getAiringToday(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getAiringToday(page));
                 break;
             case MainContract.TV_POPULAR:
                 loadTvSection(rowId, "popular tv",
-                        theMovieDbAPI.getPopularTv(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getPopularTv(page));
                 break;
             case MainContract.TV_TOP_RATED:
                 loadTvSection(rowId, "top rated tv",
-                        theMovieDbAPI.getTopRatedTv(Config.API_KEY_URL, page));
+                        theMovieDbAPI.getTopRatedTv(page));
                 break;
             default:
                 break;

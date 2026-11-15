@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.os.BundleCompat;
 import androidx.leanback.app.DetailsSupportFragment;
 import androidx.leanback.widget.Action;
 import androidx.leanback.widget.ArrayObjectAdapter;
@@ -33,10 +34,9 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.halil.ozel.movieparadise.App;
-import com.halil.ozel.movieparadise.Config;
 import com.halil.ozel.movieparadise.R;
 import com.halil.ozel.movieparadise.dagger.modules.HttpClientModule;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.data.models.CastMember;
 import com.halil.ozel.movieparadise.data.models.CreditsResponse;
 import com.halil.ozel.movieparadise.data.models.CrewMember;
@@ -134,7 +134,7 @@ public class DetailFragment extends DetailsSupportFragment
             }
             return;
         }
-        movie = getArguments().getParcelable(Movie.class.getSimpleName());
+        movie = BundleCompat.getParcelable(getArguments(), Movie.class.getSimpleName(), Movie.class);
 
         if (movie == null) {
             Log.e(TAG, "Movie parcelable is null in DetailFragment");
@@ -193,7 +193,7 @@ public class DetailFragment extends DetailsSupportFragment
         if (movie == null || movie.getId() == null) {
             return;
         }
-        disposables.add(theMovieDbAPI.getMovieWatchProviders(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieWatchProviders(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {
@@ -212,7 +212,7 @@ public class DetailFragment extends DetailsSupportFragment
 
         Log.d(TAG, "Fetching movie details for id=" + movie.getId());
 
-        disposables.add(theMovieDbAPI.getMovieDetails(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieDetails(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindMovieDetails, e -> {
@@ -227,7 +227,7 @@ public class DetailFragment extends DetailsSupportFragment
             removeRow(castRow);
             return;
         }
-        disposables.add(theMovieDbAPI.getCredits(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getCredits(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::bindCastMembers, e -> {
@@ -322,7 +322,7 @@ public class DetailFragment extends DetailsSupportFragment
         recommendationsLoadingHelper.showInitialLoading(mRecommendationsAdapter, RECOMMENDATIONS_SKELETON_COUNT);
         addRowIfMissing(mRecommendationsRow, getRecommendationsInsertIndex());
 
-        disposables.add(theMovieDbAPI.getRecommendations(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getRecommendations(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -336,7 +336,7 @@ public class DetailFragment extends DetailsSupportFragment
                             recommendationsHelper.finishRequest();
                         }));
 
-        disposables.add(theMovieDbAPI.getSimilarMovies(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getSimilarMovies(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -352,7 +352,7 @@ public class DetailFragment extends DetailsSupportFragment
     }
 
     private void fetchVideos() {
-        disposables.add(theMovieDbAPI.getMovieVideos(movie.getId(), Config.API_KEY_URL)
+        disposables.add(theMovieDbAPI.getMovieVideos(movie.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleVideoResponse, e -> Log.e(TAG, "fetchVideos error", e)));
@@ -377,7 +377,7 @@ public class DetailFragment extends DetailsSupportFragment
         }
         if (detailsLoadFailed) {
             adapter.set(TrailerHelper.ACTION_RETRY_DETAILS,
-                    new Action(TrailerHelper.ACTION_RETRY_DETAILS, getString(R.string.details_load_error)));
+                    new Action(TrailerHelper.ACTION_RETRY_DETAILS, getString(R.string.retry_action)));
             hasActions = true;
         }
 

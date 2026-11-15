@@ -28,6 +28,11 @@ public class GenreMoviesActivity extends BaseTVActivity {
                 ? null
                 : BundleCompat.getParcelable(extras, EXTRA_GENRE, Genre.class);
 
+        if (genre == null) {
+            // Nothing to browse without a genre; close instead of crashing in the fragment.
+            finish();
+            return;
+        }
         addFragment(GenreMoviesFragment.newInstance(genre));
     }
 }

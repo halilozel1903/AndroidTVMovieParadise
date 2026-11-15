@@ -29,7 +29,7 @@ public abstract class BindableCardView<T> extends FrameLayout {
     private void initLayout() {
         setFocusable(true);
         setFocusableInTouchMode(true);
-        setDefaultFocusHighlightEnabled(false);
+        TvFocusHelper.disableDefaultFocusHighlight(this);
         setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         setBackgroundColor(Color.TRANSPARENT);
         LayoutInflater inflater = LayoutInflater.from(getContext());

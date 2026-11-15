@@ -1,7 +1,6 @@
 package com.halil.ozel.movieparadise.ui.genre;
 
-import com.halil.ozel.movieparadise.Config;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 import com.halil.ozel.movieparadise.ui.base.BaseRxPresenter;
 
 import javax.inject.Inject;
@@ -50,8 +49,7 @@ public class GenreMoviesPresenter extends BaseRxPresenter implements GenreMovies
                         genreId,
                         "popularity.desc",
                         false,
-                        page,
-                        Config.API_KEY_URL)
+                        page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(response -> {

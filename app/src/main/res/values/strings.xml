@@ -1,31 +1,44 @@
 <resources>
-    <string name="app_name">Paradise</string>
-    <string name="under">-</string>
-    <string name="director_label">Director: %s</string>
+    <string name="app_name" translatable="false">Paradise</string>
+    <string name="under" translatable="false">-</string>
+
+    <!-- Home rows -->
+    <string name="row_now_playing">Now Playing</string>
+    <string name="row_top_rated">Top Rated</string>
+    <string name="row_popular">Popular</string>
+    <string name="row_upcoming">Upcoming</string>
+    <string name="row_tv_on_the_air">On The Air</string>
+    <string name="row_tv_airing_today">Airing Today</string>
+    <string name="row_tv_popular">Popular TV</string>
+    <string name="row_tv_top_rated">Top Rated TV</string>
+    <string name="press_back_again_to_exit">Press back again to exit</string>
+
+    <!-- Detail -->
     <string name="overview_label">Overview</string>
-    <string name="watch_providers_label">Nerede izlenir?</string>
+    <string name="watch_providers_label">Where to Watch</string>
     <string name="cast_label">Cast</string>
-    <string name="genres_label">Türler</string>
+    <string name="genres_label">Genres</string>
     <string name="recommendations_label">Recommendations</string>
     <string name="movies_label">Movies</string>
     <string name="series_label">Series</string>
     <string name="watch_trailer">WATCH TRAILER</string>
-    <string name="minutes_format">%d min</string>
-    <string name="rating_format">⭐ %.1f / 10</string>
-    <string name="year_format">(%s)</string>
-    <string name="error_network">Bağlantı hatası</string>
-    <string name="error_generic">Bir hata oluştu</string>
-    <string name="retry_action">Tekrar Dene</string>
-    <string name="empty_search">Sonuç bulunamadı</string>
-    <string name="empty_genre">Bu türde içerik bulunamadı</string>
-    <string name="empty_recommendations">Öneri bulunamadı</string>
-    <string name="loading_content">Yükleniyor…</string>
-    <string name="player_error">Fragman yüklenemedi</string>
-    <string name="player_loading">Fragman yükleniyor…</string>
-    <string name="player_go_back">Geri Dön</string>
-    <string name="player_open_youtube">YouTube\'da Aç</string>
-    <string name="details_load_error">Detaylar yüklenemedi</string>
-    <string name="empty_row">İçerik bulunamadı</string>
-    <string name="search_results_label">Arama Sonuçları</string>
-    <string name="search_title">Film Ara</string>
+    <string name="biography_label">Biography</string>
+    <string name="poster_content_description">Poster</string>
+
+    <!-- Loading, empty and error states -->
+    <string name="error_network">Connection error</string>
+    <string name="retry_action">Try Again</string>
+    <string name="empty_search">No results found</string>
+    <string name="empty_genre">No titles found in this genre</string>
+    <string name="empty_row">Nothing to show</string>
+
+    <!-- Search -->
+    <string name="search_results_label">Search Results</string>
+    <string name="search_title">Search Movies</string>
+
+    <!-- Trailer player -->
+    <string name="player_error">Couldn\'t load the trailer</string>
+    <string name="player_loading">Loading trailer…</string>
+    <string name="player_go_back">Go Back</string>
+    <string name="player_open_youtube">Open in YouTube</string>
 </resources>

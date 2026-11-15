@@ -5,11 +5,13 @@ import android.app.Application;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.halil.ozel.movieparadise.BuildConfig;
-import com.halil.ozel.movieparadise.dagger.AppScope;
-import com.halil.ozel.movieparadise.data.Api.TheMovieDbAPI;
+import com.halil.ozel.movieparadise.data.api.ApiKeyInterceptor;
+import com.halil.ozel.movieparadise.data.api.TheMovieDbAPI;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,7 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Dagger module that provides network-related dependencies.
- * Uses GsonConverterFactory (replaces the previous MoshiConverterFactory).
+ * The TMDB API key comes from {@link BuildConfig#TMDB_API_KEY} and is attached to
+ * every request by {@link ApiKeyInterceptor}.
  */
 @Module
 public class HttpClientModule {
@@ -49,7 +52,7 @@ public class HttpClientModule {
     public static final String SEARCH_MOVIE    = "search/movie";
 
     @Provides
-    @AppScope
+    @Singleton
     public Gson provideGson() {
         return new GsonBuilder()
                 .setLenient()
@@ -57,17 +60,19 @@ public class HttpClientModule {
     }
 
     @Provides
-    @AppScope
+    @Singleton
     public OkHttpClient provideOkHttpClient(Application app) {
         File cacheDir = new File(app.getCacheDir(), "http_cache");
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(30, TimeUnit.SECONDS)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
-                .cache(new Cache(cacheDir, DISK_CACHE_SIZE));
+                .cache(new Cache(cacheDir, DISK_CACHE_SIZE))
+                .addInterceptor(new ApiKeyInterceptor(BuildConfig.TMDB_API_KEY));
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.redactQueryParams(ApiKeyInterceptor.API_KEY_PARAM);
             logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
             builder.addInterceptor(logging);
         }
@@ -76,7 +81,7 @@ public class HttpClientModule {
     }
 
     @Provides
-    @AppScope
+    @Singleton
     public Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(API_URL)
@@ -87,7 +92,7 @@ public class HttpClientModule {
     }
 
     @Provides
-    @AppScope
+    @Singleton
     public TheMovieDbAPI provideMovieDbApi(Retrofit retrofit) {
         return retrofit.create(TheMovieDbAPI.class);
     }

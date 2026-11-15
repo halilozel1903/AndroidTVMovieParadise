@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
+rootProject.name = 'MovieParadise'
 include ':app'
-rootProject.name='MovieParadise'

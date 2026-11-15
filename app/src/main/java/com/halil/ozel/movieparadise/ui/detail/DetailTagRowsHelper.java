@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Detay ekranında tür ve platform chip'lerini odaklanabilir yatay satırlara taşır.
+ * Lays out the genre and watch-provider chips of the detail screen as focusable horizontal rows.
  */
 public class DetailTagRowsHelper {
 
