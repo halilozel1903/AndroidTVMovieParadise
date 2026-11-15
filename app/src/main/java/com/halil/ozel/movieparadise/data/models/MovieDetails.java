@@ -13,9 +13,9 @@ public class MovieDetails {
     private List<Genre> genres;
     private String title;
     private float popularity;
-    private int budget;
+    private long budget;
     private int runtime;
-    private int revenue;
+    private long revenue;
     private String tagline;
     private String status;
 
@@ -94,7 +94,7 @@ public class MovieDetails {
         return popularity;
     }
 
-    public int getBudget() {
+    public long getBudget() {
         return budget;
     }
 
@@ -102,7 +102,7 @@ public class MovieDetails {
         return runtime;
     }
 
-    public int getRevenue() {
+    public long getRevenue() {
         return revenue;
     }
 
